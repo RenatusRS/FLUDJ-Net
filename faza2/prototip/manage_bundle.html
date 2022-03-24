@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Manage Bundle</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="pictures/logo.png">
+</head>
+
+<body>
+    <div class=navbar>
+        <ul>
+            <li><a href=index.html id="logo"><img src=pictures/logo.png height=40px></a></li>
+            <li><a href=index.html>STORE</a></li>
+            <li><a href=profile.html>PROFILE</a></li>
+            <li style="float:right"><a href=add_funds.html>55,29€</a></li>
+            <li style="float:right"><a href=profile.html>hose</a></li>
+        </ul>
+    </div>
+
+    <form>
+        <div id=main style="display:flex;flex-wrap: wrap;">
+            <div style="flex:50%; padding: 0 16px">
+                <h3>Bundle Details</h3>
+                Bundle Name
+                <input type="text" placeholder="Eidos Anthalogy" class=full>
+                Price Reduction
+                <input type="text" placeholder="15,00%" class=full>
+            </div>
+
+            <div style="flex:50%; padding: 0 16px">
+                <h3>Assets</h3>
+                Image
+                <input type="file" accept="image/*">
+            </div>
+
+            <div style="flex:50%; padding: 0 16px;">
+                <h3>Products</h3>
+                <img src="pictures/packs/feather/search.svg" style="vertical-align: middle; padding:5px"><input
+                    type="text" placeholder="Search" class=full style="width:95%">
+                <div
+                    style="display:flex; margin: 10px 0px; align-items: center;font-size: 25px;background-color: black; ">
+                    <img width=14% src="pictures/games/elden_ring/small.jpg">
+                    <p style="padding:0px 10px; font-size: 80%;">ELDEN RING</p>
+                    <span style="color:red; cursor: pointer;">✖</span>
+                </div>
+
+                <div
+                    style="display:flex; margin: 10px 0px; align-items: center;font-size: 25px;background-color: black; ">
+                    <img width=14% src="pictures/games/elden_ring/small.jpg">
+                    <p style="padding:0px 10px; font-size: 80%;">ELDEN RING</p>
+                    <span style="color:red; cursor: pointer;">✖</span>
+                </div>
+            </div>
+
+            <div style="flex:60%; padding: 0 16px">
+                <h3>Description</h3>
+                <textarea style="width: 100%; height: 200px;" placeholder="Describe your product..."></textarea>
+            </div>
+
+
+        </div>
+        <div id="main" style="margin: -100px 50px;">
+
+
+            <input type="submit" value="SUBMIT" class="btn">
+        </div>
+
+
+    </form>
+</body>
+
+</html>
