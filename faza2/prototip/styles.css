@@ -7,7 +7,7 @@ body {
 body::after {
     content: "";
     background: linear-gradient(to bottom, rgba(255,255,255,0) 20%,
-    rgba(18,18,18,1)), url("pictures/games/elden_ring/background.png");
+    rgba(18,18,18,1)), url("assets/games/elden_ring/background.png");
     background-size: cover;
     background-repeat: no-repeat;
     opacity: 0.4;
