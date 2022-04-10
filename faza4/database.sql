@@ -137,7 +137,7 @@ CREATE TABLE `ownership` (
   `id_user` int NOT NULL,
   `text` varchar(1500) DEFAULT NULL,
   `rating` int DEFAULT NULL,
-  PRIMARY KEY (`id_product`),
+  PRIMARY KEY (`id_product`,`id_user`),
   KEY `fk_id_user_idx` (`id_user`),
   CONSTRAINT `fk_id_product` FOREIGN KEY (`id_product`) REFERENCES `product` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_id_user` FOREIGN KEY (`id_user`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
@@ -308,4 +308,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-04-10 16:21:25
+-- Dump completed on 2022-04-10 17:42:47
