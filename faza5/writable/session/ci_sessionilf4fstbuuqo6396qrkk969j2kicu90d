@@ -1,0 +1,1 @@
+__ci_last_regenerate|i:1650838132;_ci_previous_url|s:26:"http://localhost:8080/User";user|O:8:"stdClass":12:{s:2:"id";s:1:"1";s:8:"username";s:4:"doom";s:8:"password";s:4:"king";s:12:"admin_rights";s:1:"0";s:7:"balance";s:2:"25";s:10:"review_ban";s:1:"0";s:6:"avatar";N;s:11:"description";N;s:7:"country";N;s:9:"real_name";N;s:8:"nickname";s:4:"doom";s:15:"featured_review";N;}

@@ -1,0 +1,1 @@
+Profile of <?php echo $user_profile->nickname ?>.
