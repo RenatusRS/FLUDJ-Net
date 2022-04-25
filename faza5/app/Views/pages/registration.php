@@ -1,3 +1,5 @@
+<title>Registration</title>
+
 <div id="main" style="margin: 100px auto; width: 325px; padding: 15px; border-radius: 9px;">
     <form name='loginForm' action="<?= site_url("Guest/registrationSubmit") ?>" method="POST">
         <h3>Username</h3>
