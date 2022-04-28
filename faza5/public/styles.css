@@ -1,0 +1,218 @@
+/* Autor: Uroš Lončar 2019/0691 */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+body {
+    background-color: rgb(18, 18, 18);
+    font-family: Verdana, sans-serif;
+    color: yellow;
+}
+
+body::after {
+    content: "";
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 20%,
+            rgba(18, 18, 18, 1)), url("assets/games/elden_ring/background.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    opacity: 0.4;
+
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    position: absolute;
+    z-index: -1;
+}
+
+.button {
+    color: black;
+    text-decoration: none;
+    text-align: center;
+    padding: 12px;
+    margin: auto;
+    background-color: yellow;
+    border-radius: 5px;
+    font-size: 17px;
+    width: 100%;
+}
+
+.button:hover {
+    background-color: black;
+    color: yellow
+}
+
+.btn {
+    background-color: yellow;
+    color: black;
+    padding: 12px;
+    margin: 10px 0;
+    border: none;
+    width: 100%;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.btn:hover {
+    background-color: black;
+    color: yellow
+}
+
+.container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 20px 0px
+}
+
+.block {
+    margin: 30px 0px
+}
+
+.showcase-picture {
+    width: 100%;
+    margin: 0px 10px;
+
+}
+
+.showcase-picture img {
+    width: 100%;
+    border-radius: 5px;
+    box-shadow: 0px 0px 15px black;
+
+}
+
+.smooth-border {
+    border-radius: 5px;
+}
+
+header {
+    background-color: black;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+}
+
+header ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: black;
+}
+
+header li {
+    float: left;
+    border-right: 1px solid rgb(92, 92, 92);
+}
+
+header li:nth-last-child(2),
+header li:first-child {
+    border-right: none;
+}
+
+a {
+    color: yellow;
+    text-decoration: none;
+}
+
+header li a:not(#logo) {
+    display: block;
+    color: yellow;
+    text-align: center;
+    padding: 18px 16px;
+    text-decoration: none;
+}
+
+#logo {
+    display: block;
+    margin: 9px 20px;
+}
+
+header li a:hover:not(#logo),
+.active {
+    border-bottom: 3px solid yellow;
+}
+
+#main {
+    margin: 100px 5%
+}
+
+#search {
+    display: inline-block;
+
+    align-items: center;
+
+}
+
+#search>* {
+    vertical-align: middle;
+}
+
+.highlight-text {
+    text-align: justify;
+    padding: 0px 8px;
+}
+
+.highlight-image {
+    box-shadow: 0px 0px 15px black;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+
+
+input[type=text].full,
+input[type=password].full {
+    width: 100%;
+    margin-bottom: 20px;
+    padding: 10px;
+    border: transparent;
+    border-radius: 4px;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    grid-column-gap: 0px;
+    grid-row-gap: 0px;
+}
+
+.grid-container>div {
+    text-align: center;
+    padding: 10px 10px;
+}
+
+.grid-container2 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(7, 1fr);
+    grid-column-gap: 5px;
+    grid-row-gap: 0px;
+    font-size: 10px;
+}
+
+.grid-container2>div {
+    text-align: center;
+    padding: 0;
+}
