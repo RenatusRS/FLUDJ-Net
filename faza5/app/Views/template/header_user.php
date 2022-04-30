@@ -7,7 +7,7 @@
         <li><a href=http://localhost:8080/User/Profile><?php echo $user->username; ?></a></li>
         <li style="float:right"><a href=http://localhost:8080/User/Logout>LOG OUT</a></li>
         <li style="float:right"><a href=http://localhost:8080/User/AddFunds><?php echo number_format($user->balance, 2); ?>$</a></li>
-
+            
     </ul>
 </header>
 <i class="fa-solid fa-flask-vial"></i>
