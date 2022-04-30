@@ -34,4 +34,24 @@ class User extends BaseController {
 
         $this->show('user', ['user_profile' => $user]);
     }
+    
+    public function addFunds() {
+        $this->show('addFunds', []);
+    }
+
+    public function addFundsSubmit() {
+        if (!$this->validate(['funds' => 'required|numeric|greater_than[0]']))
+            return $this->show('addFunds', ['errors' => $this->validator->getErrors()]);
+
+        $user = $this->session->get('user');
+
+        $user->balance += $this->request->getVar('funds');
+
+        $userM = new UserM();
+        $userM->update($user->id, [
+            'balance' => $user->balance
+        ]);
+
+        return redirect()->to(site_url("User/Profile/"));
+    }
 }
