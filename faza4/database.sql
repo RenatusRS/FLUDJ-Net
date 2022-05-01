@@ -4,7 +4,7 @@ USE `fludj`;
 --
 -- Host: localhost    Database: fludj
 -- ------------------------------------------------------
--- Server version	8.0.28
+-- Server version	8.0.27
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -39,15 +39,6 @@ CREATE TABLE `bundle` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `bundle`
---
-
-LOCK TABLES `bundle` WRITE;
-/*!40000 ALTER TABLE `bundle` DISABLE KEYS */;
-/*!40000 ALTER TABLE `bundle` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `bundled`
 --
 
@@ -63,15 +54,6 @@ CREATE TABLE `bundled` (
   CONSTRAINT `fk_id_product_b` FOREIGN KEY (`id_product`) REFERENCES `product` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `bundled`
---
-
-LOCK TABLES `bundled` WRITE;
-/*!40000 ALTER TABLE `bundled` DISABLE KEYS */;
-/*!40000 ALTER TABLE `bundled` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `coupon`
@@ -93,15 +75,6 @@ CREATE TABLE `coupon` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `coupon`
---
-
-LOCK TABLES `coupon` WRITE;
-/*!40000 ALTER TABLE `coupon` DISABLE KEYS */;
-/*!40000 ALTER TABLE `coupon` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `genre`
 --
 
@@ -115,15 +88,6 @@ CREATE TABLE `genre` (
   CONSTRAINT `fk_id_product_g` FOREIGN KEY (`id_product`) REFERENCES `product` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `genre`
---
-
-LOCK TABLES `genre` WRITE;
-/*!40000 ALTER TABLE `genre` DISABLE KEYS */;
-/*!40000 ALTER TABLE `genre` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `ownership`
@@ -143,15 +107,6 @@ CREATE TABLE `ownership` (
   CONSTRAINT `fk_id_user` FOREIGN KEY (`id_user`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `ownership`
---
-
-LOCK TABLES `ownership` WRITE;
-/*!40000 ALTER TABLE `ownership` DISABLE KEYS */;
-/*!40000 ALTER TABLE `ownership` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `product`
@@ -197,22 +152,13 @@ CREATE TABLE `product` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `product`
+-- Table structure for table `relationship`
 --
 
-LOCK TABLES `product` WRITE;
-/*!40000 ALTER TABLE `product` DISABLE KEYS */;
-/*!40000 ALTER TABLE `product` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `relationships`
---
-
-DROP TABLE IF EXISTS `relationships`;
+DROP TABLE IF EXISTS `relationship`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `relationships` (
+CREATE TABLE `relationship` (
   `id_user1` int NOT NULL,
   `id_user2` int NOT NULL,
   `status` tinyint NOT NULL,
@@ -222,15 +168,6 @@ CREATE TABLE `relationships` (
   CONSTRAINT `fk_id_user2` FOREIGN KEY (`id_user2`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `relationships`
---
-
-LOCK TABLES `relationships` WRITE;
-/*!40000 ALTER TABLE `relationships` DISABLE KEYS */;
-/*!40000 ALTER TABLE `relationships` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `review_vote`
@@ -254,15 +191,6 @@ CREATE TABLE `review_vote` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `review_vote`
---
-
-LOCK TABLES `review_vote` WRITE;
-/*!40000 ALTER TABLE `review_vote` DISABLE KEYS */;
-/*!40000 ALTER TABLE `review_vote` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `user`
 --
 
@@ -282,22 +210,14 @@ CREATE TABLE `user` (
   `real_name` varchar(20) DEFAULT NULL,
   `nickname` varchar(20) NOT NULL,
   `featured_review` int DEFAULT NULL,
+  `points` int NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`),
   UNIQUE KEY `username_UNIQUE` (`username`),
   KEY `fk_featured_review_idx` (`featured_review`),
   CONSTRAINT `fk_featured_review` FOREIGN KEY (`featured_review`) REFERENCES `product` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `user`
---
-
-LOCK TABLES `user` WRITE;
-/*!40000 ALTER TABLE `user` DISABLE KEYS */;
-/*!40000 ALTER TABLE `user` ENABLE KEYS */;
-UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -308,4 +228,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-04-10 17:42:47
+-- Dump completed on 2022-05-01 13:19:32
