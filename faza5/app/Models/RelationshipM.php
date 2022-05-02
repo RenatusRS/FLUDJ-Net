@@ -4,8 +4,8 @@ namespace App\Models;
 
 use CodeIgniter\Model;
 
-class RelationshipsM extends Model {
-    protected $table = 'relationships';
+class RelationshipM extends Model {
+    protected $table = 'relationship';
     protected $primaryKey = 'id_user1';
 
     protected $returnType = 'object';

@@ -5,13 +5,13 @@
 ob_start();
 
 use App\Models\UserM;
-use App\Models\RelationshipsM;
+use App\Models\RelationshipM;
 ?>
 
 <h2>Friends</h2>
 <?php
 $id = $user_profile->id;
-$r = (new RelationshipsM())->asArray()->where('id_user1', $id)->where('status', true)->orWhere('id_user2', $id)->where('status', true)->findAll();
+$r = (new RelationshipM())->asArray()->where('id_user1', $id)->where('status', true)->orWhere('id_user2', $id)->where('status', true)->findAll();
 foreach ($r as $row) {
     $friend = $row['id_user1'] == $id ? $row['id_user2'] :  $row['id_user1'];
     $usM = (new UserM())->where('id', $friend)->first();
@@ -23,10 +23,10 @@ if ($user->username == $user_profile->nickname) {
 } else {
     echo "Profile of $user_profile->nickname";
     $buttonName = "ADD_FRIEND";
-    $cory = (new RelationshipsM())->asArray()->where('id_user1', $user->id)->where('id_user2', $user_profile->id)->where('status', 1)->orWhere('id_user1', $user_profile->id)->where('id_user2', $user->id)->where('status', 1)->findAll();
+    $cory = (new RelationshipM())->asArray()->where('id_user1', $user->id)->where('id_user2', $user_profile->id)->where('status', 1)->orWhere('id_user1', $user_profile->id)->where('id_user2', $user->id)->where('status', 1)->findAll();
     //"SELECT * FROM `relationships` WHERE (id_user1=$user->id AND id_user2=$user_profile->id AND status=true) OR (id_user1=$user_profile->id AND id_user2=$user->id AND status=true)"
     if (sizeof($cory) > 0) $buttonName = "REMOVE_FRIEND";
-    $cory = (new RelationshipsM())->asArray()->where('id_user1', $user->id)->where('id_user2', $user_profile->id)->where('status', 0)->Orwhere('id_user1', $user_profile->id)->where('id_user2', $user->id)->where('status', 0)->findAll();
+    $cory = (new RelationshipM())->asArray()->where('id_user1', $user->id)->where('id_user2', $user_profile->id)->where('status', 0)->Orwhere('id_user1', $user_profile->id)->where('id_user2', $user->id)->where('status', 0)->findAll();
     //"SELECT `id_user1` FROM `relationships` WHERE (id_user1=$user->id AND id_user2=$user_profile->id AND status=false) OR (id_user1=$user_profile->id AND id_user2=$user->id AND status=false)"
     if (sizeof($cory) > 0) {
         $value = $cory[0];
@@ -40,9 +40,9 @@ if ($user->username == $user_profile->nickname) {
     <?php
     if (isset($_POST['frnd_btn'])) {
         $db = \Config\Database::connect();
-        $builder = $db->table('relationships');
+        $builder = $db->table('relationship');
         if ($buttonName == "ADD_FRIEND") {
-            $data = ['id_user1' => $user->id,'id_user2'=>$user_profile->id,'status'=>0,];
+            $data = ['id_user1' => $user->id, 'id_user2' => $user_profile->id, 'status' => 0,];
             $builder->insert($data);
         } else if ($buttonName == "CANCEL_REQUEST") {
             $builder->where('id_user1', $user->id)->where('id_user2', $user_profile->id)->delete();

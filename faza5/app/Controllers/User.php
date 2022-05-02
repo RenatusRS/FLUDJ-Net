@@ -37,6 +37,7 @@ class User extends BaseController {
 
     public function friends() {
         $this->show('friends.php');
+    }
     
     public function addFunds() {
         $this->show('addFunds', []);
