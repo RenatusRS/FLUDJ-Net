@@ -2,8 +2,9 @@
 
 namespace App\Controllers;
 
+use App\Models\GenreM;
+use App\Models\ProductM;
 use App\Models\UserM;
-use Tests\Support\Models\UserModel;
 
 class User extends BaseController {
 
@@ -25,12 +26,7 @@ class User extends BaseController {
     }
 
     public function profile($id = null) {
-        if ($id == null)
-            $user = $this->session->get('user');
-        else {
-            $userModel = new UserM();
-            $user = $userModel->find($id);
-        }
+        $user = $id == null ? $this->session->get('user') : (new UserM())->find($id);
 
         $this->show('user', ['user_profile' => $user]);
     }
@@ -40,7 +36,7 @@ class User extends BaseController {
     }
     
     public function addFunds() {
-        $this->show('addFunds', []);
+        $this->show('addFunds');
     }
 
     public function addFundsSubmit() {
@@ -57,5 +53,18 @@ class User extends BaseController {
         ]);
 
         return redirect()->to(site_url("User/Profile/"));
+    }
+
+    public function product($id) {
+        $productM = new ProductM();
+        $product = $productM->find($id);
+
+        $genres = implode(' ', (new GenreM())->asArray()->where('id_product', $id)->findAll());
+
+        $product_base = $product->base_game != null ? $productM->find($product->base_game) : null;
+
+        $product_dlc = $productM->asArray()->where('base_game', $product->id)->findAll();
+
+        $this->show('product', ['product' => $product, 'genres' => $genres, 'product_base' => $product_base, 'product_dlc' => $product_dlc]);
     }
 }

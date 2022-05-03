@@ -1,3 +1,4 @@
 debugbar_*.json
 *.log
 ci_session*
+faza5/public/uploads/*
