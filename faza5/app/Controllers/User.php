@@ -53,7 +53,7 @@ class User extends BaseController {
             $builder = $builder->set('nickname', $this->request->getVar('nickname'))->set('real_name', $this->request->getVar('real_name'))
             ->set('country', $this->request->getVar('location'))->set('description', $this->request->getVar('description'))
             ->/*set('featured_review', $this->request->getVar('review'))*/where('id', $user->id)->update();
-            $this->upload('public/uploads/user/','profile_pic', $user->id);
+            $this->upload('public/uploads/user/' . $user->id, 'profile_pic');
         }
 
         $this->show('user', ['user_profile' => $user]);

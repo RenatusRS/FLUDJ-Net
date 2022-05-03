@@ -96,11 +96,11 @@ class Admin extends BaseController {
                 'genre_name' => $genre,
             ]);
 
-        $this->upload('uploads/product/' . $id, 'banner', 'banner');
-        $this->upload('uploads/product/' . $id, 'background', 'background');
-        $this->upload('uploads/product/' . $id, 'ss1', 'ss1');
-        $this->upload('uploads/product/' . $id, 'ss2', 'ss2');
-        $this->upload('uploads/product/' . $id, 'ss3', 'ss3');
+            $this->upload('uploads/product/' . $id, 'banner', 'banner');
+            $this->upload('uploads/product/' . $id, 'background', 'background');
+            $this->upload('uploads/product/' . $id, 'ss1', 'ss1');
+            $this->upload('uploads/product/' . $id, 'ss2', 'ss2');
+            $this->upload('uploads/product/' . $id, 'ss3', 'ss3');
 
         return redirect()->to(site_url("User/Product/" . $id));
     }
