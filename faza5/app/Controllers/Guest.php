@@ -3,7 +3,6 @@
 namespace App\Controllers;
 
 use App\Models\UserM;
-use Tests\Support\Models\UserModel;
 
 class Guest extends BaseController {
 

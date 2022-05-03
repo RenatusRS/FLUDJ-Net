@@ -4,7 +4,7 @@ USE `fludj`;
 --
 -- Host: localhost    Database: fludj
 -- ------------------------------------------------------
--- Server version	8.0.28
+-- Server version	8.0.27
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -29,9 +29,6 @@ CREATE TABLE `bundle` (
   `name` varchar(30) NOT NULL,
   `discount` int NOT NULL,
   `description` varchar(4000) NOT NULL,
-  `pic_big_rect` varchar(200) NOT NULL,
-  `pic_small_rect` varchar(200) NOT NULL,
-  `pic_background` varchar(200) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`),
   UNIQUE KEY `name_UNIQUE` (`name`)
@@ -170,15 +167,7 @@ CREATE TABLE `product` (
   `description` varchar(4000) NOT NULL,
   `developer` varchar(30) NOT NULL,
   `publisher` varchar(30) NOT NULL,
-  `release_date` date NOT NULL,
-  `video` varchar(200) NOT NULL,
-  `pic_big_rect` varchar(200) NOT NULL,
-  `pic_small_rect` varchar(200) NOT NULL,
-  `pic_background` varchar(200) NOT NULL,
-  `pic_vertical` varchar(200) NOT NULL,
-  `pic_ss1` varchar(200) NOT NULL,
-  `pic_ss2` varchar(200) NOT NULL,
-  `pic_ss3` varchar(200) NOT NULL,
+  `release_date` varchar(15) NOT NULL,
   `os_min` varchar(30) NOT NULL,
   `ram_min` varchar(30) NOT NULL,
   `gpu_min` varchar(30) NOT NULL,
@@ -188,12 +177,13 @@ CREATE TABLE `product` (
   `ram_rec` varchar(30) NOT NULL,
   `gpu_rec` varchar(30) NOT NULL,
   `cpu_rec` varchar(30) NOT NULL,
+  `mem_rec` varchar(30) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`),
   UNIQUE KEY `name_UNIQUE` (`name`),
   KEY `fk_base_game_idx` (`base_game`),
   CONSTRAINT `fk_base_game` FOREIGN KEY (`base_game`) REFERENCES `product` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -202,17 +192,18 @@ CREATE TABLE `product` (
 
 LOCK TABLES `product` WRITE;
 /*!40000 ALTER TABLE `product` DISABLE KEYS */;
+INSERT INTO `product` VALUES (1,'Elden Ring',23,NULL,NULL,NULL,'','Dev','Sher','15/07/2015','W6','M1','G1','C1','D1','W66','M2','G2','C2','D2');
 /*!40000 ALTER TABLE `product` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `relationships`
+-- Table structure for table `relationship`
 --
 
-DROP TABLE IF EXISTS `relationships`;
+DROP TABLE IF EXISTS `relationship`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `relationships` (
+CREATE TABLE `relationship` (
   `id_user1` int NOT NULL,
   `id_user2` int NOT NULL,
   `status` tinyint NOT NULL,
@@ -224,12 +215,12 @@ CREATE TABLE `relationships` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `relationships`
+-- Dumping data for table `relationship`
 --
 
-LOCK TABLES `relationships` WRITE;
-/*!40000 ALTER TABLE `relationships` DISABLE KEYS */;
-/*!40000 ALTER TABLE `relationships` ENABLE KEYS */;
+LOCK TABLES `relationship` WRITE;
+/*!40000 ALTER TABLE `relationship` DISABLE KEYS */;
+/*!40000 ALTER TABLE `relationship` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -276,18 +267,18 @@ CREATE TABLE `user` (
   `admin_rights` tinyint NOT NULL,
   `balance` decimal(10,0) NOT NULL,
   `review_ban` tinyint NOT NULL,
-  `avatar` varchar(200) DEFAULT NULL,
   `description` varchar(150) DEFAULT NULL,
   `country` varchar(2) DEFAULT NULL,
   `real_name` varchar(20) DEFAULT NULL,
   `nickname` varchar(20) NOT NULL,
   `featured_review` int DEFAULT NULL,
+  `points` int NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`),
   UNIQUE KEY `username_UNIQUE` (`username`),
   KEY `fk_featured_review_idx` (`featured_review`),
   CONSTRAINT `fk_featured_review` FOREIGN KEY (`featured_review`) REFERENCES `product` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -296,6 +287,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
+INSERT INTO `user` VALUES (1,'a','a',1,0,0,NULL,NULL,NULL,'a',NULL,0);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -308,4 +300,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-04-10 17:42:47
+-- Dump completed on 2022-05-03 17:48:59
