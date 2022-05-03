@@ -1,3 +1,13 @@
+<!--
+Autori:
+	Djordje Stanojevic 2019/0288
+	Uros Loncar 2019/0691
+	
+Opis: Stranica profila korisnika, sa ispisanom listom prijatelja (sopstveni profil ili tudji)
+Ako je tudji profil - mogucnost dodavanja, uklanjanja, odbijanja i prihvatanja zahteva za prijatelja
+
+-->
+
 <title><?php echo $user_profile->nickname ?></title>
 <h3>Profile</h3>
 
@@ -39,8 +49,7 @@ if ($user->username == $user_profile->nickname) {
 ?>
     <?php
     if (isset($_POST['frnd_btn'])) {
-        $db = \Config\Database::connect();
-        $builder = $db->table('relationship');
+        $builder = \Config\Database::connect()->table('relationship');
         if ($buttonName == "ADD_FRIEND") {
             $data = ['id_user1' => $user->id, 'id_user2' => $user_profile->id, 'status' => 0,];
             $builder->insert($data);
