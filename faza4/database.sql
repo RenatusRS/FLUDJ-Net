@@ -36,15 +36,6 @@ CREATE TABLE `bundle` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `bundle`
---
-
-LOCK TABLES `bundle` WRITE;
-/*!40000 ALTER TABLE `bundle` DISABLE KEYS */;
-/*!40000 ALTER TABLE `bundle` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `bundled`
 --
 
@@ -60,15 +51,6 @@ CREATE TABLE `bundled` (
   CONSTRAINT `fk_id_product_b` FOREIGN KEY (`id_product`) REFERENCES `product` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `bundled`
---
-
-LOCK TABLES `bundled` WRITE;
-/*!40000 ALTER TABLE `bundled` DISABLE KEYS */;
-/*!40000 ALTER TABLE `bundled` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `coupon`
@@ -90,15 +72,6 @@ CREATE TABLE `coupon` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `coupon`
---
-
-LOCK TABLES `coupon` WRITE;
-/*!40000 ALTER TABLE `coupon` DISABLE KEYS */;
-/*!40000 ALTER TABLE `coupon` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `genre`
 --
 
@@ -112,15 +85,6 @@ CREATE TABLE `genre` (
   CONSTRAINT `fk_id_product_g` FOREIGN KEY (`id_product`) REFERENCES `product` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `genre`
---
-
-LOCK TABLES `genre` WRITE;
-/*!40000 ALTER TABLE `genre` DISABLE KEYS */;
-/*!40000 ALTER TABLE `genre` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `ownership`
@@ -140,15 +104,6 @@ CREATE TABLE `ownership` (
   CONSTRAINT `fk_id_user` FOREIGN KEY (`id_user`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `ownership`
---
-
-LOCK TABLES `ownership` WRITE;
-/*!40000 ALTER TABLE `ownership` DISABLE KEYS */;
-/*!40000 ALTER TABLE `ownership` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `product`
@@ -243,15 +198,6 @@ CREATE TABLE `review_vote` (
   CONSTRAINT `fk_id_user_rv` FOREIGN KEY (`id_user`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `review_vote`
---
-
-LOCK TABLES `review_vote` WRITE;
-/*!40000 ALTER TABLE `review_vote` DISABLE KEYS */;
-/*!40000 ALTER TABLE `review_vote` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `user`
