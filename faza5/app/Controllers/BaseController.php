@@ -54,8 +54,8 @@ class BaseController extends Controller {
         $this->session = session();
     }
     
-    protected function upload($location, $name) {
-        $file = $this->request->getFile($name);
+    protected function upload($location, $field, $name) {
+        $file = $this->request->getFile($field);
 
         if ($file != null && $file->isValid() && !$file->hasMoved())
             $file->move($location, $name . '.' . $file->getExtension(), true);
