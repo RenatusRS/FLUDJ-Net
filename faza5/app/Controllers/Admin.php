@@ -14,13 +14,6 @@ class Admin extends BaseController {
         echo view('template/footer');
     }
 
-    protected function upload($location, $name) {
-        $file = $this->request->getFile($name);
-
-        if ($file != null && $file->isValid() && !$file->hasMoved())
-            $file->move($location, $name . '.' . $file->getExtension(), true);
-    }
-
     public function manageProduct($id = null) {
         if ($id != null) {
             $product = (new ProductM())->find($id);

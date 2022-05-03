@@ -1,5 +1,11 @@
 <?php
-
+/*
+Autori:
+	Uros Loncar 2019/0691
+    Djordje Stanojevic 2019/0288
+	
+Opis: Bazicni kontroler
+*/
 namespace App\Controllers;
 
 use CodeIgniter\Controller;
@@ -46,5 +52,12 @@ class BaseController extends Controller {
         // Preload any models, libraries, etc, here.
 
         $this->session = session();
+    }
+    
+    protected function upload($location, $name) {
+        $file = $this->request->getFile($name);
+
+        if ($file != null && $file->isValid() && !$file->hasMoved())
+            $file->move($location, $name . '.' . $file->getExtension(), true);
     }
 }
