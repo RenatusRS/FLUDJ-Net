@@ -9,7 +9,7 @@
         <img width=100% class=smooth-border src="<?php echo base_url('uploads/product/' . $product->id . '/banner.jpg')  ?>">
         <p class=highlight-text><?php echo $product->description; ?></p>
         <h4><?php echo $product->name . " " . $product->price; ?></h4>
-        <form action="purchase.html">
+        <form action="<?= site_url("User/buyProduct/{$product->id}") ?>" method="POST">
             <input type="submit" class="btn" value="BUY">
         </form>
 
