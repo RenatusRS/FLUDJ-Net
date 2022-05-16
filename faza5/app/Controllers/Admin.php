@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Models\GenreM;
 use App\Models\ProductM;
+use App\Models\BundleM;
 
 class Admin extends BaseController {
     protected function show($page, $data = []) {
@@ -103,5 +104,56 @@ class Admin extends BaseController {
         $this->upload('uploads/product/' . $id, 'ss3', 'ss3');
 
         return redirect()->to(site_url("User/Product/" . $id));
+    }
+
+    public function manageBundle($id=null) {
+        if ($id != null) {
+            $bundle = (new BundleM())->find($id);
+        } else {
+            $bundle = null;
+        }
+
+        $this->show('manageBundle', ['bundle' => $bundle]);
+    }
+
+    public function manageBundleSubmit() {
+        $max_disc = MAX_BUNDLE_DISCOUNT;
+        $min_disc = MIN_BUNDLE_DISCOUNT;
+
+        if (!$this->validate([
+            'name' => 'required',
+            'discount' => 'required|integer|less_than_equal_to[15]',
+
+            'big_rect' => 'uploaded[big_rect]|ext_in[big_rect,jpg]|is_image[big_rect]',
+            'small_rect' => 'uploaded[small_rect]|ext_in[small_rect,jpg]|is_image[small_rect]'
+
+        ])) return $this->show('manageBundle', ['errors' => $this->validator->getErrors()]);
+
+        $background = $this->request->getVar('background');
+        if ($background != null && !$this->validate(['background' => 'ext_in[background,png]|is_image[background]']))
+            return $this->show('manageBundle', ['errors' => $this->validator->getErrors()]);
+
+        $data = [
+            'name' => $this->request->getVar('name'),
+            'discount' => $this->request->getVar('discount'),
+            'description' => $this->request->getVar('description')
+        ];
+
+        $bundleM = new bundleM();
+
+        $id = $this->request->getVar('id');
+        if ($id != -1)
+            $data['id'] = $id;
+
+        $bundleM->save($data);
+
+        if ($id == -1)
+            $id = $bundleM->getInsertID();
+
+        $this->upload('uploads/bundle/' . $id, 'big_rect', 'big_rect');
+        $this->upload('uploads/bundle/' . $id, 'small_rect', 'small_rect');
+        $this->upload('uploads/bundle/' . $id, 'background', 'background');
+
+        return redirect()->to(site_url("User/Bundle/" . $id));
     }
 }
