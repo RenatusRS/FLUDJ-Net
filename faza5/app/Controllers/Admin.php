@@ -109,6 +109,10 @@ class Admin extends BaseController {
     public function manageBundle($id=null) {
         if ($id != null) {
             $bundle = (new BundleM())->find($id);
+            if (!is_object($bundle)) {
+                echo "<h2>Bundle [$id] doesn't exist.";
+                return;
+            }
         } else {
             $bundle = null;
         }
@@ -119,20 +123,32 @@ class Admin extends BaseController {
     public function manageBundleSubmit() {
         $max_disc = MAX_BUNDLE_DISCOUNT;
         $min_disc = MIN_BUNDLE_DISCOUNT;
+        $max_descr = MAX_DESCRIPTION_SIZE;
+        $min_descr = MIN_DESCRIPTION_SIZE;
 
+        // TODO da se inputi forme zadržavaju nakon neuspešne validacije
         if (!$this->validate([
             'name' => 'required',
-            'discount' => 'required|integer|less_than_equal_to[15]',
+            'discount' => "required|integer|less_than_equal_to[$max_disc]|greater_than_equal_to[$min_disc]",
+            'description' => "required|min_length[$min_descr]|max_length[$max_descr]",
 
-            'big_rect' => 'uploaded[big_rect]|ext_in[big_rect,jpg]|is_image[big_rect]',
-            'small_rect' => 'uploaded[small_rect]|ext_in[small_rect,jpg]|is_image[small_rect]'
+            // FIXME trenutno ne radi validacija fajlova
+            // 'rectBig' => 'uploaded[rectBig]|ext_in[rectBig,jpg]|is_image[rectBig]',
+            // 'rectSmall' => 'uploaded[rectSmall]|ext_in[rectSmall,jpg]|is_image[rectSmall]'
 
-        ])) return $this->show('manageBundle', ['errors' => $this->validator->getErrors()]);
+            // TODO za veličinu isto ograničenje za slike
+            // TODO dinamička provera fajla koji može da bude uploadovan pod bilo kojim imenom
+
+        ])){ 
+            // return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
+            return $this->show('manageBundle', ['errors' => $this->validator->getErrors()]);
+        }
 
         $background = $this->request->getVar('background');
         if ($background != null && !$this->validate(['background' => 'ext_in[background,png]|is_image[background]']))
             return $this->show('manageBundle', ['errors' => $this->validator->getErrors()]);
-
+        
+        // FIXME pošto je 'name' unique u bazi, problem je kada se unosi novi bundle sa već postojećim imenom
         $data = [
             'name' => $this->request->getVar('name'),
             'discount' => $this->request->getVar('discount'),
@@ -142,17 +158,22 @@ class Admin extends BaseController {
         $bundleM = new bundleM();
 
         $id = $this->request->getVar('id');
-        if ($id != -1)
+        if ($id != -1) {
             $data['id'] = $id;
+        }
 
         $bundleM->save($data);
 
-        if ($id == -1)
+        if ($id == -1) {
             $id = $bundleM->getInsertID();
+            $data['id'] = $id;
+        }
 
-        $this->upload('uploads/bundle/' . $id, 'big_rect', 'big_rect');
-        $this->upload('uploads/bundle/' . $id, 'small_rect', 'small_rect');
-        $this->upload('uploads/bundle/' . $id, 'background', 'background');
+        $target_dir = 'uploads/bundle/' . $id;
+        
+        $this->upload($target_dir, 'big_rect', 'big_rect');
+        $this->upload($target_dir, 'small_rect', 'small_rect');
+        $this->upload($target_dir, 'background', 'background');
 
         return redirect()->to(site_url("User/Bundle/" . $id));
     }
