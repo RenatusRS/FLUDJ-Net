@@ -106,18 +106,25 @@ class Admin extends BaseController {
         return redirect()->to(site_url("User/Product/" . $id));
     }
 
+    public function addBundle() {
+        $this->manageBundle();
+    }
+
     public function manageBundle($id=null) {
+        $ret = [];
+        $bundle = null;
+
         if ($id != null) {
             $bundle = (new BundleM())->find($id);
+
             if (!is_object($bundle)) {
-                echo "<h2>Bundle [$id] doesn't exist.";
-                return;
+                $ret['errors'] = ['bundle' => "bundle doesn't exist, redirected to adding new bundle"];
             }
-        } else {
-            $bundle = null;
         }
 
-        $this->show('manageBundle', ['bundle' => $bundle]);
+        $ret['bundle'] = $bundle;
+
+        $this->show('manageBundle', $ret);
     }
 
     public function manageBundleSubmit() {
@@ -139,16 +146,12 @@ class Admin extends BaseController {
             // TODO za veličinu isto ograničenje za slike
             // TODO dinamička provera fajla koji može da bude uploadovan pod bilo kojim imenom
 
-        ])){ 
-            // return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
-            return $this->show('manageBundle', ['errors' => $this->validator->getErrors()]);
-        }
+        ])) return $this->show('manageBundle', ['errors' => $this->validator->getErrors()]);
 
         $background = $this->request->getVar('background');
         if ($background != null && !$this->validate(['background' => 'ext_in[background,png]|is_image[background]']))
             return $this->show('manageBundle', ['errors' => $this->validator->getErrors()]);
-        
-        // FIXME pošto je 'name' unique u bazi, problem je kada se unosi novi bundle sa već postojećim imenom
+
         $data = [
             'name' => $this->request->getVar('name'),
             'discount' => $this->request->getVar('discount'),
@@ -160,6 +163,8 @@ class Admin extends BaseController {
         $id = $this->request->getVar('id');
         if ($id != -1) {
             $data['id'] = $id;
+        } else if ($bundleM->nameAlreadyExists($data['name'])) {
+            return $this->show('manageBundle', ['errors' => ['name' => 'name already exists in database']]);
         }
 
         $bundleM->save($data);
@@ -170,7 +175,7 @@ class Admin extends BaseController {
         }
 
         $target_dir = 'uploads/bundle/' . $id;
-        
+
         $this->upload($target_dir, 'big_rect', 'big_rect');
         $this->upload($target_dir, 'small_rect', 'small_rect');
         $this->upload($target_dir, 'background', 'background');

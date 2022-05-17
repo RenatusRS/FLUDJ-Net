@@ -26,6 +26,7 @@ if (!isset($bundle)) {
 
     <div id=main style="display:flex;flex-wrap: wrap;">
         <div style="flex:50%; padding: 0 16px">
+            <?php if (!empty($errors['bundle'])) echo $errors['bundle'] ?>
             <h3>Bundle Details <?php if (isset($fuck)) echo $fuck ?></h3>
             Bundle Name
             <input type="text" name="name" placeholder="Bundle name" value="<?php echo $bundle->name ?>" class=full>
