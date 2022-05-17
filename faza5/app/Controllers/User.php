@@ -194,10 +194,12 @@ class User extends BaseController {
     */
     public function friendRequests(){
         $user = $this->session->get('user');
-        $requesters=(new RelationshipM())->getIncoming($user);
-        $requestedTo=(new RelationshipM())->getSent($user);
+        $relationshipM= new RelationshipM();
+        
+        $requesters= $relationshipM->getIncoming($user);
+        $requestedTo= $relationshipM->getSent($user);
 
-        $this->show('friendReq.php', ['requesters' => $requesters, 'requestedTo' => $requestedTo]);
+        $this->show('friendRequests.php', ['requesters' => $requesters, 'requestedTo' => $requestedTo]);
     }
 
 }
