@@ -111,20 +111,20 @@ class Admin extends BaseController {
     }
 
     public function manageBundle($id=null) {
-        $ret = [];
+        $data = [];
         $bundle = null;
 
         if ($id != null) {
             $bundle = (new BundleM())->find($id);
 
             if (!is_object($bundle)) {
-                $ret['errors'] = ['bundle' => "bundle doesn't exist, redirected to adding new bundle"];
+                $data['errors'] = ['bundle' => "bundle doesn't exist, redirected to adding new bundle"];
             }
         }
 
-        $ret['bundle'] = $bundle;
+        $data['bundle'] = $bundle;
 
-        $this->show('manageBundle', $ret);
+        $this->show('manageBundle', $data);
     }
 
     public function manageBundleSubmit() {
@@ -134,42 +134,36 @@ class Admin extends BaseController {
         $min_descr = MIN_DESCRIPTION_SIZE;
 
         // TODO da se inputi forme zadržavaju nakon neuspešne validacije
+        // TODO da se banner/background zadržavaju tokom editovanja bundle-a
         if (!$this->validate([
-            'name' => 'required',
-            'discount' => "required|integer|less_than_equal_to[$max_disc]|greater_than_equal_to[$min_disc]",
+            'name' =>        'required',
+            'discount' =>    "required|integer|less_than_equal_to[$max_disc]|greater_than_equal_to[$min_disc]",
             'description' => "required|min_length[$min_descr]|max_length[$max_descr]",
 
-            'banner' => 'uploaded[banner]|ext_in[banner,jpg]|is_image[banner]',
-            'background' => 'uploaded[background]|ext_in[background,jpg]|is_image[background]'
+            'banner' =>      'uploaded[banner]|ext_in[banner,jpg]|is_image[banner]',
+            'background' =>  'uploaded[background]|ext_in[background,jpg]|is_image[background]'
+
             // TODO za veličinu isto ograničenje za slike
             // TODO dinamička provera fajla koji može da bude uploadovan pod bilo kojim imenom
         ])) return $this->show('manageBundle', ['errors' => $this->validator->getErrors()]);
 
-
+        $id = $this->request->getVar('id');
         $data = [ // niz podataka koji se čuvaju kao red u bazi
             'name' =>           trim($this->request->getVar('name')),
             'discount' =>       trim($this->request->getVar('discount')),
-            'description' =>    trim($this->request->getVar('description'))
+            'description' =>    trim($this->request->getVar('description')),
+            'id' =>             ($id != -1) ? $id : ''
         ];
 
-        $bundleM = new bundleM();
-
-        $id = $this->request->getVar('id');
-        if ($id != -1) {
-            $data['id'] = $id;
-        } else if ($bundleM->nameAlreadyExists($data['name'])) {
+        $bundleM = new BundleM();
+        // ako se ubacuje novi bundle i ako bundle sa takvim imenom već postoji
+        if ($id == -1 && $bundleM->nameAlreadyExists($data['name'])) {
             return $this->show('manageBundle', ['errors' => ['name' => 'name already exists in database']]);
         }
 
         $bundleM->save($data);
 
-        if ($id == -1) {
-            $id = $bundleM->getInsertID();
-            $data['id'] = $id;
-        }
-
-        $target_dir = 'uploads/bundle/' . $id;
-
+        $target_dir = 'uploads/bundle/' . (($id == -1) ? $bundleM->getInsertID() : $id);
         $this->upload($target_dir, 'banner', 'banner');
         $this->upload($target_dir, 'background', 'background');
 
