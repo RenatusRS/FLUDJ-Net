@@ -11,4 +11,15 @@ class ProductM extends Model {
     protected $returnType = 'object';
 
     protected $allowedFields = ['name', 'price', 'base_game', 'discount', 'discount_expire', 'description', 'developer', 'publisher', 'release_date', 'os_min', 'ram_min', 'gpu_min', 'cpu_min', 'mem_min', 'os_rec', 'ram_rec', 'gpu_rec', 'cpu_rec', 'mem_rec'];
+
+    public function nameAlreadyExists($name) {
+        $this->db = \Config\Database::connect();
+        $builder = $this->db->table($this->table);
+
+        $result = $builder->select('id')
+                          ->where('name', $name)
+                          ->countAllResults();
+
+        return ($result > 0);
+    }
 }
