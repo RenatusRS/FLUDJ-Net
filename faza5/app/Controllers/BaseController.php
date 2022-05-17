@@ -3,7 +3,7 @@
 Autori:
 	Uros Loncar 2019/0691
     Djordje Stanojevic 2019/0288
-	
+
 Opis: Bazicni kontroler
 */
 namespace App\Controllers;
@@ -53,11 +53,22 @@ class BaseController extends Controller {
 
         $this->session = session();
     }
-    
-    protected function upload($location, $field, $name) {
-        $file = $this->request->getFile($field);
+
+
+    /**
+     * upload
+     *
+     * @param  string $destDir    where file will be uploaded
+     * @param  string $file       name of file to be uploaded
+     * @param  string $name       how it will be saved
+     * @param  bool   $overwrite  overwrite file if it has same name
+     * @return void
+     *
+     */
+    protected function upload($destDir, $file, $name, $overwrite=true) {
+        $file = $this->request->getFile($file);
 
         if ($file != null && $file->isValid() && !$file->hasMoved())
-            $file->move($location, $name . '.' . $file->getExtension(), true);
+            $file->move($destDir, $name . '.' . $file->getExtension(), $overwrite);
     }
 }
