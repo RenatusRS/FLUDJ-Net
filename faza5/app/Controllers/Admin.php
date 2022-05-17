@@ -56,15 +56,19 @@ class Admin extends BaseController {
             'ram_rec' => 'required',
             'mem_rec' => 'required',
 
-            'banner' =>     'uploaded[banner]|ext_in[banner,jpg]|is_image[banner]',
-            'background' => 'uploaded[background]|ext_in[background,jpg]|is_image[background]',
-
-            'ss1' => 'uploaded[ss1]|ext_in[ss1,jpg]|is_image[ss1]',
-            'ss2' => 'uploaded[ss2]|ext_in[ss2,jpg]|is_image[ss2]',
-            'ss3' => 'uploaded[ss3]|ext_in[ss3,jpg]|is_image[ss3]',
+            'banner' =>  'uploaded[banner]|ext_in[banner,jpg]|is_image[banner]',
+            'ss1' =>     'uploaded[ss1]|ext_in[ss1,jpg]|is_image[ss1]',
+            'ss2' =>     'uploaded[ss2]|ext_in[ss2,jpg]|is_image[ss2]',
+            'ss3' =>     'uploaded[ss3]|ext_in[ss3,jpg]|is_image[ss3]',
         ])) return $this->show('manageProduct', ['errors' => $this->validator->getErrors()]);
 
+        $uploaded = (is_uploaded_file($_FILES['background']['tmp_name']));
+        if ($uploaded && !$this->validate(['background' =>  'uploaded[background]|ext_in[background,jpg]|is_image[background]'])) {
+            return $this->show('manageProduct', ['errors' => $this->validator->getErrors()]);
+        }
+
         $id = $this->request->getVar('id');
+        $isEditing = ($id != -1);
         $data = [
             'id' =>           ($id != -1) ? $id : '',
             'name' =>         $this->request->getVar('name'),
@@ -109,11 +113,16 @@ class Admin extends BaseController {
         }
 
         $targetDir = "uploads/product/$id";
+
+        if ($isEditing && file_exists($targetDir . "/background.jpg"))
+            unlink($targetDir . "/background.jpg");
+
         $this->upload($targetDir, 'banner', 'banner');
-        $this->upload($targetDir, 'background', 'background');
         $this->upload($targetDir, 'ss1', 'ss1');
         $this->upload($targetDir, 'ss2', 'ss2');
         $this->upload($targetDir, 'ss3', 'ss3');
+        if ($uploaded)
+            $this->upload($targetDir, 'background', 'background');
 
         return redirect()->to(site_url("User/Product/" . $id));
     }
@@ -152,14 +161,20 @@ class Admin extends BaseController {
             'discount' =>    "required|integer|less_than_equal_to[$max_disc]|greater_than_equal_to[$min_disc]",
             'description' => "required|min_length[$min_descr]|max_length[$max_descr]",
 
-            'banner' =>      'uploaded[banner]|ext_in[banner,jpg]|is_image[banner]',
-            'background' =>  'uploaded[background]|ext_in[background,jpg]|is_image[background]'
-
+            'banner' =>      'uploaded[banner]|ext_in[banner,jpg]|is_image[banner]'
             // TODO za veličinu isto ograničenje za slike
             // TODO dinamička provera fajla koji može da bude uploadovan pod bilo kojim imenom
         ])) return $this->show('manageBundle', ['errors' => $this->validator->getErrors()]);
 
+        $uploaded = (is_uploaded_file($_FILES['background']['tmp_name']));
+        if ($uploaded && !$this->validate(['background' =>  'uploaded[background]|ext_in[background,jpg]|is_image[background]'])) {
+            return $this->show('manageBundle', ['errors' => $this->validator->getErrors()]);
+        }
+
+        // ----------------- ubacivanje u bazu ----------------
+
         $id = $this->request->getVar('id');
+        $isEditing = ($id != -1);
         $data = [ // niz podataka koji se čuvaju kao red u bazi
             'name' =>           trim($this->request->getVar('name')),
             'discount' =>       trim($this->request->getVar('discount')),
@@ -175,9 +190,18 @@ class Admin extends BaseController {
 
         $bundleM->save($data);
 
-        $target_dir = 'uploads/bundle/' . (($id == -1) ? $bundleM->getInsertID() : $id);
-        $this->upload($target_dir, 'banner', 'banner');
-        $this->upload($target_dir, 'background', 'background');
+        if ($id == -1)
+            $id = $bundleM->getInsertID();
+
+        $targetDir = 'uploads/bundle/' . $id;
+
+        // ako je postojao background za bundle, prošli se briše
+        if ($isEditing && file_exists($targetDir . "/background.jpg"))
+            unlink($targetDir . "/background.jpg");
+
+        $this->upload($targetDir, 'banner', 'banner');
+        if ($uploaded)
+            $this->upload($targetDir, 'background', 'background');
 
         return redirect()->to(site_url("User/Bundle/" . $id));
     }
