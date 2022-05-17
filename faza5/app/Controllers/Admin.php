@@ -139,23 +139,17 @@ class Admin extends BaseController {
             'discount' => "required|integer|less_than_equal_to[$max_disc]|greater_than_equal_to[$min_disc]",
             'description' => "required|min_length[$min_descr]|max_length[$max_descr]",
 
-            // FIXME trenutno ne radi validacija fajlova
-            // 'rectBig' => 'uploaded[rectBig]|ext_in[rectBig,jpg]|is_image[rectBig]',
-            // 'rectSmall' => 'uploaded[rectSmall]|ext_in[rectSmall,jpg]|is_image[rectSmall]'
-
+            'banner' => 'uploaded[banner]|ext_in[banner,jpg]|is_image[banner]',
+            'background' => 'uploaded[background]|ext_in[background,jpg]|is_image[background]'
             // TODO za veličinu isto ograničenje za slike
             // TODO dinamička provera fajla koji može da bude uploadovan pod bilo kojim imenom
-
         ])) return $this->show('manageBundle', ['errors' => $this->validator->getErrors()]);
 
-        $background = $this->request->getVar('background');
-        if ($background != null && !$this->validate(['background' => 'ext_in[background,png]|is_image[background]']))
-            return $this->show('manageBundle', ['errors' => $this->validator->getErrors()]);
 
-        $data = [
-            'name' => $this->request->getVar('name'),
-            'discount' => $this->request->getVar('discount'),
-            'description' => $this->request->getVar('description')
+        $data = [ // niz podataka koji se čuvaju kao red u bazi
+            'name' =>           trim($this->request->getVar('name')),
+            'discount' =>       trim($this->request->getVar('discount')),
+            'description' =>    trim($this->request->getVar('description'))
         ];
 
         $bundleM = new bundleM();
@@ -176,8 +170,7 @@ class Admin extends BaseController {
 
         $target_dir = 'uploads/bundle/' . $id;
 
-        $this->upload($target_dir, 'big_rect', 'big_rect');
-        $this->upload($target_dir, 'small_rect', 'small_rect');
+        $this->upload($target_dir, 'banner', 'banner');
         $this->upload($target_dir, 'background', 'background');
 
         return redirect()->to(site_url("User/Bundle/" . $id));

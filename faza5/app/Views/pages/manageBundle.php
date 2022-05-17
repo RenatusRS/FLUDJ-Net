@@ -20,7 +20,7 @@ if (!isset($bundle)) {
 
 <body>
 
-<?php echo form_open(site_url("Admin/manageBundleSubmit")) ?>" 
+<form name='manageBundleForm' action="<?= site_url("Admin/manageBundleSubmit") ?>" method="POST" enctype="multipart/form-data">
 
     <input type="hidden" name="id" value="<?php echo $bundle->id ?>" />
 
@@ -40,13 +40,9 @@ if (!isset($bundle)) {
 
         <div style="flex:1%; padding: 0 16px">
             <h3>Assets</h3>
-            Picture big rectangle
-            <input type="file" name="rectBig">
-            <?php if (!empty($errors['rectBig'])) echo $errors['rectBig'] ?>
-</br>
-            Picture small rectangle
-            <input type="file" name="rectSmall">
-            <?php if (!empty($errors['rectSmall'])) echo $errors['rectSmall'] ?>
+            Banner
+            <input type="file" name="banner">
+            <?php if (!empty($errors['banner'])) echo $errors['banner'] ?>
 </br>
             Background
             <input type="file" name="background">
@@ -68,7 +64,7 @@ if (!isset($bundle)) {
     </div>
 
 
-<?php echo form_close(); ?>
+</form>
 
 </body>
 </html>
