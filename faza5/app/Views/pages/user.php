@@ -28,9 +28,9 @@ foreach ($r as $row) {
     echo '<h5>' . $usM->nickname . '</h5>';
 }
 
-if ($user->username == $user_profile->nickname) {
+if ($user->id == $user_profile->id)
     echo "Your profile.";
-} else {
+else {
     echo "Profile of $user_profile->nickname";
     $buttonName = "ADD_FRIEND";
     $cory = (new RelationshipM())->asArray()->where('id_user1', $user->id)->where('id_user2', $user_profile->id)->where('status', 1)->orWhere('id_user1', $user_profile->id)->where('id_user2', $user->id)->where('status', 1)->findAll();
