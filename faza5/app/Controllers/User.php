@@ -19,9 +19,9 @@ use App\Models\RelationshipM;
 
 class User extends BaseController {
 
-    /*
-    Prikaz sadrzaja na stranici
-    @return void
+    /**
+    *Prikaz sadrzaja na stranici
+    *@return void
     */
     protected function show($page, $data = []) {
         $data['controller'] = 'User';
@@ -35,18 +35,18 @@ class User extends BaseController {
         $this->show('index');
     }
     
-    /*
-    Odjavljivanje korisnika
-    @return void
+    /**
+    *Odjavljivanje korisnika
+    *@return void
     */
     public function logout() {
         $this->session->destroy();
         return redirect()->to(site_url('/'));
     }
 
-    /*
-    Prikaz svog ili tudjeg profila
-    @return void
+    /** 
+    *Prikaz svog ili tudjeg profila
+    *@return void
     */
     public function profile($id = null) {
         $user = $id == null ? $this->session->get('user') : (new UserM())->find($id);
@@ -58,11 +58,7 @@ class User extends BaseController {
             $this->upload('public/uploads/user/','profile_pic', $user->id);
         }
 
-        $this->show('user', ['user_profile' => $user]);
-    }
-
-    public function friends() {
-        $this->show('friends.php');
+        $this->show('user.php', ['user_profile' => $user]);
     }
 
     /**
@@ -184,12 +180,24 @@ class User extends BaseController {
         return redirect()->to(site_url("User/Product/{$product->id}"));
     }
       
-    /*
-    Prikaz opcija za izmenu/unos podataka
-    @return void
+    /**
+    *Prikaz stranice sa opcijama za izmenu/unos podataka
+    *@return void
     */
     public function editProfile() {
         $this->show('editProfile.php');
+    }
+
+    /**
+    *Prikaz stranice sa listom zahteva prijateljsva (odlazeci i dolazeci)
+    *@return void
+    */
+    public function friendRequests(){
+        $user = $this->session->get('user');
+        $requesters=(new RelationshipM())->getIncoming($user);
+        $requestedTo=(new RelationshipM())->getSent($user);
+
+        $this->show('friendReq.php', ['requesters' => $requesters, 'requestedTo' => $requestedTo]);
     }
 
 }
