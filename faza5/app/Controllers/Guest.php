@@ -58,4 +58,16 @@ class Guest extends BaseController {
         $this->session->set('user', $user);
         return redirect()->to(site_url("User/Profile/"));
     }
+
+    protected function determineBundlePriceAndDiscount($products, $discount) {
+        $price = 0.0;
+        foreach ($products as $product) {
+            $price += $product->price;
+        }
+
+        return ['price' => $price,
+                'discount' => $discount];
+    }
+
+    public function product($id) {}
 }
