@@ -15,6 +15,13 @@ use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
 use Psr\Log\LoggerInterface;
 
+use App\Models\BundleM;
+use App\Models\ProductM;
+use App\Models\OwnershipM;
+use App\Models\ReviewVoteM;
+use App\Models\UserM;
+use App\Models\BundledProductsM;
+
 /**
  * Class BaseController
  *
@@ -71,4 +78,98 @@ class BaseController extends Controller {
         if ($file != null && $file->isValid() && !$file->hasMoved())
             $file->move($destDir, $name . '.' . $file->getExtension(), $overwrite);
     }
+
+    protected function show($page, $data = []) {}
+
+    /**
+     *
+     * Prikaz stranice proizvoda
+     *
+     * @return void
+     */
+    public function product($id) {} // TODO
+
+    /**
+     *
+     * Trazenje najboljih recenzija za zadati proizvod
+     *
+     * @return array(reviews)
+     */
+    protected function getTopReviews($id) {
+        $review_voteM = new ReviewVoteM();
+        $ownershipM = new OwnershipM();
+        $ownerships = $ownershipM->where("id_product", $id)->where("text !=", "NULL")->where("rating !=", "NULL")->findAll();
+
+        $posterScore = array();
+        $posterPosNeg = array();
+
+        foreach ($ownerships as $ownership) {
+
+            $userPoster = (new userM())->find($ownership->id_user);
+            if ($userPoster->review_ban == 1) continue;
+
+            $reviewsForPoster = $review_voteM->where('id_product', $id)->where('id_poster', $ownership->id_user)->findAll();
+            $positive = 0;
+            $negative = 0;
+
+            foreach ($reviewsForPoster as $review) {
+                if ($review->like == 0) $negative++;
+                else $positive++;
+            }
+
+            $score = $this->getRating($positive, $negative);
+            $posterScore[$ownership->id_user] = $score;
+            $posterPosNeg[$ownership->id_user] = ["positive" => $positive, "negative" => $negative];
+        }
+
+        arsort($posterScore);
+
+        $userM = new UserM();
+        $reviews = array();
+
+        foreach ($posterScore as $poster => $score) {
+            $review = $ownershipM->where('id_product', $id)->where('id_user', $poster)->first();
+            $user = $userM->find($poster);
+            $reviews[$user->username] = ["review" => $review, "positive" => $posterPosNeg[$poster]["positive"], "negative" => $posterPosNeg[$poster]["negative"]];
+        }
+
+        return $reviews;
+    }
+
+    /**
+     *
+     * Izracunavanje skora
+     *
+     * @return double
+     */
+    protected function getRating($positiveVotes, $negativeVotes) {
+        if ($positiveVotes == 0 && $negativeVotes == 0) return 50;
+        $totalVotes = $positiveVotes + $negativeVotes;
+        $average = $positiveVotes / $totalVotes;
+        $score = $average - ($average - 0.5) * 2 ** -log10($totalVotes + 1);
+
+        return $score * 100;
+    }
+
+    /**
+     * prikaži bundle sa id-jem $id
+     *
+     * @param  integer $id
+     * @return void
+     */
+    public function bundle($id) {
+        $bundle = (new BundleM())->find($id);
+
+        if (!isset($bundle))
+            return redirect()->to(site_url());
+
+        $result = [];
+        foreach ((new BundledProductsM())->findBundledProducts($id) as $idproduct) {
+            array_push($result, (new ProductM())->find($idproduct)->name);
+        }
+
+        return $this->show('bundle', ['bundle' => $bundle,
+                                      'bundledProducts' => $result]);
+    }
+
 }
