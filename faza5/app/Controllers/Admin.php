@@ -92,15 +92,13 @@ class Admin extends BaseController {
         $genreM = new GenreM();
         $productM = new ProductM();
 
-        // ako unosimo novi proizvod i ime je već zauzeto bacamo grešku
-        if ($id == -1 && $productM->nameAlreadyExists($data['name'])) {
-            return $this->show('manageProduct', ['errors' => ['name' => "Name [{$data['name']}] already exists"]]);
+        // ažuriraj bazu
+        if ($productM->save($data) === false) {
+            return $this->show('manageProduct', ['errors' => $productM->errors()]);
         }
 
-        // ažuriraj bazu
-        if ($id != -1)
+        if ($id != -1) // otklanjamo stare žanrove iz baze jer će biti zamenjeni novim
             $genreM->where('id_product', $id)->delete();
-        $productM->save($data);
 
         // napravi niz žanrova
         $genres = explode(' ', $this->request->getVar('genres'));
