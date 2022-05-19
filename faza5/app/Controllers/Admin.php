@@ -146,7 +146,7 @@ class Admin extends BaseController {
         $this->show('manageBundle', $data);
     }
 
-    public function manageBundleSubmit() {
+    private function validateBundle($uploadedBackground) {
         $max_disc = MAX_BUNDLE_DISCOUNT;
         $min_disc = MIN_BUNDLE_DISCOUNT;
         $max_descr = MAX_DESCRIPTION_SIZE;
@@ -154,7 +154,7 @@ class Admin extends BaseController {
 
         // TODO da se inputi forme zadržavaju nakon neuspešne validacije
         // TODO da se banner/background zadržavaju tokom editovanja bundle-a
-        if (!$this->validate([
+        $notValid = (!$this->validate([
             'name' =>        'required',
             'discount' =>    "required|integer|less_than_equal_to[$max_disc]|greater_than_equal_to[$min_disc]",
             'description' => "required|min_length[$min_descr]|max_length[$max_descr]",
@@ -162,12 +162,17 @@ class Admin extends BaseController {
             'banner' =>      'uploaded[banner]|ext_in[banner,jpg]|is_image[banner]'
             // TODO za veličinu isto ograničenje za slike
             // TODO dinamička provera fajla koji može da bude uploadovan pod bilo kojim imenom
-        ])) return $this->show('manageBundle', ['errors' => $this->validator->getErrors()]);
+        ]) ||
+            ($uploadedBackground && !$this->validate([
+                'background' =>  'uploaded[background]|ext_in[background,jpg]|is_image[background]'])));
 
+        return !$notValid;
+    }
+
+    public function manageBundleSubmit() {
         $uploaded = (is_uploaded_file($_FILES['background']['tmp_name']));
-        if ($uploaded && !$this->validate(['background' =>  'uploaded[background]|ext_in[background,jpg]|is_image[background]'])) {
+        if (!$this->validateBundle($uploaded))
             return $this->show('manageBundle', ['errors' => $this->validator->getErrors()]);
-        }
 
         // ----------------- ubacivanje u bazu ----------------
 
