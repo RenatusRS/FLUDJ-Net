@@ -23,9 +23,9 @@ use App\Models\BundledProductsM;
 class User extends BaseController {
 
     /**
-    *Prikaz sadrzaja na stranici
-    *@return void
-    */
+     *Prikaz sadrzaja na stranici
+     *@return void
+     */
     protected function show($page, $data = []) {
         $data['controller'] = 'User';
         $data['user'] = $this->session->get('user');
@@ -39,18 +39,18 @@ class User extends BaseController {
     }
 
     /**
-    *Odjavljivanje korisnika
-    *@return void
-    */
+     *Odjavljivanje korisnika
+     *@return void
+     */
     public function logout() {
         $this->session->destroy();
         return redirect()->to(site_url('/'));
     }
 
     /** 
-    *Prikaz svog ili tudjeg profila
-    *@return void
-    */
+     *Prikaz svog ili tudjeg profila
+     *@return void
+     */
     public function profile($id = null) {
         $user = $id == null ? $this->session->get('user') : (new UserM())->find($id);
         if ($id == null) {
@@ -124,7 +124,10 @@ class User extends BaseController {
 
         $topReviews = $this->getTopReviews($id);
 
-        $this->show('product', ['product' => $product, 'genres' => $genres, 'product_base' => $product_base, 'product_dlc' => $product_dlc, 'product_review' => $product_review, 'reviews' => $topReviews]);
+
+        $admin = $user->admin_rights;
+
+        $this->show('product', ['product' => $product, 'genres' => $genres, 'product_base' => $product_base, 'product_dlc' => $product_dlc, 'product_review' => $product_review, 'reviews' => $topReviews, 'admin' => $admin]);
     }
 
     /**
@@ -202,28 +205,28 @@ class User extends BaseController {
     }
 
     /**
-    *Prikaz stranice sa opcijama za izmenu/unos podataka
-    *@return void
-    */
+     *Prikaz stranice sa opcijama za izmenu/unos podataka
+     *@return void
+     */
     public function editProfile() {
         $this->show('editProfile.php');
     }
 
     /**
-    *Prikaz stranice sa listom zahteva prijateljsva (odlazeci i dolazeci)
-    *@return void
-    */
-    public function friendRequests(){
+     *Prikaz stranice sa listom zahteva prijateljsva (odlazeci i dolazeci)
+     *@return void
+     */
+    public function friendRequests() {
         $user = $this->session->get('user');
-        $relationshipM= new RelationshipM();
-        
-        $requesters= $relationshipM->getIncoming($user);
-        $requestedTo= $relationshipM->getSent($user);
+        $relationshipM = new RelationshipM();
+
+        $requesters = $relationshipM->getIncoming($user);
+        $requestedTo = $relationshipM->getSent($user);
 
         $this->show('friendRequests.php', ['requesters' => $requesters, 'requestedTo' => $requestedTo]);
     }
-     
-     /**
+
+    /**
      * 
      * Procesiranje pravljenja recenzije
      * 
@@ -307,4 +310,28 @@ class User extends BaseController {
         return redirect()->to(site_url("User/Product/{$id}"));
     }
 
+    public function deleteReviewSubmit($id) {
+        $user = $this->session->get('user');
+
+        (new OwnershipM())->where('id_product', $id)->where('id_user', $user->id)->set(['rating' => NULL, 'text' => NULL])->update();
+
+        (new ReviewVoteM())->where('id_product', $id)->where("id_poster", $user->id)->delete();
+
+        return redirect()->to(site_url("User/Product/{$id}"));
+    }
+
+    public function DeleteReviewAdminSubmit($id, $posterUsername) {
+        $poster = (new UserM())->where('username', $posterUsername)->first();
+
+        $user = $this->session->get('user');
+
+        if ($user->admin_rights) {
+
+            (new OwnershipM())->where('id_product', $id)->where('id_user', $poster->id)->set(['rating' => NULL, 'text' => NULL])->update();
+
+            (new ReviewVoteM())->where('id_product', $id)->where("id_poster", $poster->id)->delete();
+        }
+
+        return redirect()->to(site_url("User/Product/{$id}"));
+    }
 }
