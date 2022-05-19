@@ -15,16 +15,13 @@ class GenreM extends Model {
     public $db;
 
     public function getGenres($productId) {
-        $this->db = \Config\Database::connect();
-
-        $query = $this->db->query("SELECT genre_name
-                                   FROM   $this->table
-                                   WHERE  $this->primaryKey = $productId ;"
-        );
+        $rows = $this->where($this->primaryKey, $productId)
+                      ->findAll();
 
         $genres = [];
-        while ($row = $query->getUnbufferedRow())
+        foreach ($rows as $row) {
             array_push($genres, $row->genre_name);
+        }
 
         return $genres;
     }

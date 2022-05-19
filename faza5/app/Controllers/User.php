@@ -26,16 +26,12 @@ class User extends BaseController {
     *Prikaz sadrzaja na stranici
     *@return void
     */
-    protected function show($page, $data = [], $viewDir="pages") {
+    protected function show($page, $data = []) {
         $data['controller'] = 'User';
         $data['user'] = $this->session->get('user');
         echo view('template/header_user', $data);
-        echo view("$viewDir/$page", $data);
+        echo view("pages/$page", $data);
         echo view('template/footer');
-    }
-
-    protected function showError($page, $data) {
-        $this->show($page, $data, "errors");
     }
 
     public function index() {
@@ -171,6 +167,9 @@ class User extends BaseController {
     public function product($id) {
         $productM = new ProductM();
         $product = $productM->find($id);
+
+        if (!isset($product))
+            return redirect()->to(site_url());
 
         $genres = implode(' ', (new GenreM())->getGenres($id));
 
@@ -381,7 +380,7 @@ class User extends BaseController {
         $bundle = (new BundleM())->find($id);
 
         if (!isset($bundle))
-            return $this->showError('doesntExist', ['errors' => "Bundle with id=[$id] doesn't exist"]);
+            return redirect()->to(site_url());
 
         $result = [];
         foreach ((new BundledProductsM())->findBundledProducts($id) as $idproduct) {

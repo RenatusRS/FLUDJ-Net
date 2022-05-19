@@ -22,15 +22,11 @@ class BundledProductsM extends Model {
      * @return array array of id-s of found products
      */
     public function findBundledProducts($id) { // TODO ovo je isti kod kao traženje žanrova. napraviti u nadklasi apstrakciju ova dva
-        $this->db = \Config\Database::connect();
-
-        $query = $this->db->query("SELECT id_product
-                                   FROM   $this->table
-                                   WHERE  $this->primaryKey = $id ;"
-        );
+        $rows = $this->where($this->primaryKey, $id)
+                     ->findAll();
 
         $result = [];
-        foreach ($query->getResult() as $row) {
+        foreach ($rows as $row) {
             array_push($result, $row->id_product);
         }
 
