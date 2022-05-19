@@ -17,6 +17,8 @@ use App\Models\UserM;
 use App\Models\OwnershipM;
 use App\Models\RelationshipM;
 use App\Models\ReviewVoteM;
+use App\Models\BundleM;
+use App\Models\BundledProductsM;
 
 class User extends BaseController {
 
@@ -35,7 +37,7 @@ class User extends BaseController {
     public function index() {
         $this->show('index');
     }
-  
+
     /**
     *Odjavljivanje korisnika
     *@return void
@@ -165,6 +167,9 @@ class User extends BaseController {
     public function product($id) {
         $productM = new ProductM();
         $product = $productM->find($id);
+
+        if (!isset($product))
+            return redirect()->to(site_url());
 
         $genres = implode(' ', (new GenreM())->getGenres($id));
 
@@ -363,4 +368,27 @@ class User extends BaseController {
 
         return redirect()->to(site_url("User/Product/{$id}"));
     }
+
+
+    /**
+     * prikaži bundle sa id-jem $id
+     *
+     * @param  integer $id
+     * @return void
+     */
+    public function bundle($id) {
+        $bundle = (new BundleM())->find($id);
+
+        if (!isset($bundle))
+            return redirect()->to(site_url());
+
+        $result = [];
+        foreach ((new BundledProductsM())->findBundledProducts($id) as $idproduct) {
+            array_push($result, (new ProductM())->find($idproduct)->name);
+        }
+
+        return $this->show('bundle', ['bundle' => $bundle,
+                                      'bundledProducts' => $result]);
+    }
+
 }
