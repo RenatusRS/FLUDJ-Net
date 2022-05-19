@@ -58,4 +58,6 @@ class Guest extends BaseController {
         $this->session->set('user', $user);
         return redirect()->to(site_url("User/Profile/"));
     }
+
+    protected function userViewProduct($id) { return []; }
 }
