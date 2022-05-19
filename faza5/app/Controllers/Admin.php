@@ -183,12 +183,10 @@ class Admin extends BaseController {
         ];
 
         $bundleM = new BundleM();
-        // ako se ubacuje novi bundle i ako bundle sa takvim imenom već postoji
-        if ($id == -1 && $bundleM->nameAlreadyExists($data['name'])) {
-            return $this->show('manageBundle', ['errors' => ['name' => 'name already exists in database']]);
+        if ($bundleM->save($data) === false) { // ako čuvanje u bazu nije prošlo validaciju
+            // TODO
+            return $this->show('manageBundle', ['errors' => $bundleM->errors()]);
         }
-
-        $bundleM->save($data);
 
         if ($id == -1)
             $id = $bundleM->getInsertID();
