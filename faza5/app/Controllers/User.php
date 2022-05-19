@@ -166,7 +166,7 @@ class User extends BaseController {
         $productM = new ProductM();
         $product = $productM->find($id);
 
-        $genres = implode(' ', (new GenreM())->asArray()->where('id_product', $id)->findAll());
+        $genres = implode(' ', (new GenreM())->getGenres($id));
 
         $product_base = $product->base_game != null ? $productM->find($product->base_game) : null;
 
