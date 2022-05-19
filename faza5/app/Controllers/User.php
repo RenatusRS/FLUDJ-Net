@@ -17,6 +17,8 @@ use App\Models\UserM;
 use App\Models\OwnershipM;
 use App\Models\RelationshipM;
 use App\Models\ReviewVoteM;
+use App\Models\BundleM;
+use App\Models\BundledProductsM;
 
 class User extends BaseController {
 
@@ -367,4 +369,27 @@ class User extends BaseController {
 
         return redirect()->to(site_url("User/Product/{$id}"));
     }
+
+
+    /**
+     * prikaži bundle sa id-jem $id
+     *
+     * @param  integer $id
+     * @return void
+     */
+    public function bundle($id) {
+        $bundle = (new BundleM())->find($id);
+
+        if (!isset($bundle))
+            return $this->showError('doesntExist', ['errors' => "Bundle with id=[$id] doesn't exist"]);
+
+        $result = [];
+        foreach ((new BundledProductsM())->findBundledProducts($id) as $idproduct) {
+            array_push($result, (new ProductM())->find($idproduct)->name);
+        }
+
+        return $this->show('bundle', ['bundle' => $bundle,
+                                      'bundledProducts' => $result]);
+    }
+
 }
