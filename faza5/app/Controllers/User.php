@@ -17,6 +17,8 @@ use App\Models\UserM;
 use App\Models\OwnershipM;
 use App\Models\RelationshipM;
 use App\Models\ReviewVoteM;
+use App\Models\BundleM;
+use App\Models\BundledProductsM;
 
 class User extends BaseController {
 
@@ -96,70 +98,6 @@ class User extends BaseController {
 
     /**
      * 
-     * Izracunavanje skora
-     * 
-     * @return double  
-     */
-    protected function getRating($positiveVotes, $negativeVotes) {
-        if ($positiveVotes == 0 && $negativeVotes == 0) return 50;
-        $totalVotes = $positiveVotes + $negativeVotes;
-        $average = $positiveVotes / $totalVotes;
-        $score = $average - ($average - 0.5) * 2 ** -log10($totalVotes + 1);
-
-        return $score * 100;
-    }
-
-    /**
-     * 
-     * Trazenje najboljih recenzija za zadati proizvod
-     * 
-     * @return array(reviews)  
-     */
-    protected function getTopReviews($id) {
-        $review_voteM = new ReviewVoteM();
-        $ownershipM = new OwnershipM();
-        $ownerships = $ownershipM->where("id_product", $id)->where("text !=", "NULL")->where("rating !=", "NULL")->findAll();
-
-        $user = $this->session->get('user');
-
-        $posterScore = array();
-        $posterPosNeg = array();
-
-        foreach ($ownerships as $ownership) {
-
-            $userPoster = (new userM())->find($ownership->id_user);
-            if ($userPoster->review_ban == 1 && !($user->admin_rights)) continue;
-
-            $reviewsForPoster = $review_voteM->where('id_product', $id)->where('id_poster', $ownership->id_user)->findAll();
-            $positive = 0;
-            $negative = 0;
-
-            foreach ($reviewsForPoster as $review) {
-                if ($review->like == 0) $negative++;
-                else $positive++;
-            }
-
-            $score = $this->getRating($positive, $negative);
-            $posterScore[$ownership->id_user] = $score;
-            $posterPosNeg[$ownership->id_user] = ["positive" => $positive, "negative" => $negative];
-        }
-
-        arsort($posterScore);
-
-        $userM = new UserM();
-        $reviews = array();
-
-        foreach ($posterScore as $poster => $score) {
-            $review = $ownershipM->where('id_product', $id)->where('id_user', $poster)->first();
-            $user = $userM->find($poster);
-            $reviews[$user->username] = ["review" => $review, "positive" => $posterPosNeg[$poster]["positive"], "negative" => $posterPosNeg[$poster]["negative"]];
-        }
-
-        return $reviews;
-    }
-
-    /**
-     * 
      * Prikaz stranice proizvoda
      * 
      * @return void   
@@ -168,7 +106,10 @@ class User extends BaseController {
         $productM = new ProductM();
         $product = $productM->find($id);
 
-        $genres = implode(' ', (new GenreM())->asArray()->where('id_product', $id)->findAll());
+        if (!isset($product))
+            return redirect()->to(site_url());
+
+        $genres = implode(' ', (new GenreM())->getGenres($id));
 
         $product_base = $product->base_game != null ? $productM->find($product->base_game) : null;
 
