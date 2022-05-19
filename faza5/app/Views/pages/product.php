@@ -14,12 +14,15 @@
         </form>
     </div>
 </div>
-<?php if ($product_review!=NULL) { ?>
+<?php if ($product_review != NULL) { ?>
     <form action="<?= site_url("User/makeReviewSubmit/{$product->id}") ?>" method="POST">
         <textarea name="text" id="" cols="30" rows="10"><?php echo $product_review->text ?></textarea>
         <br>
         <input type="range" name="rating" value="<?php echo $product_review->rating ?>" min="1" max="5">
         <input type="submit" class="btn" value="Make Review">
+    </form>
+    <form action="<?= site_url("User/deleteReviewSubmit/{$product->id}") ?>" method="POST">
+        <input type="submit" class="btn" value="Delete Review">
     </form>
 <?php
 }
@@ -103,8 +106,16 @@
                 <input type="submit" class="btn" name="action" value="Like <?php echo $review["positive"] ?>">
             </form>
             <form action="<?= site_url("User/DislikeSubmit/{$product->id}/{$name}") ?>" method="POST">
-                <input type="submit" class="btn" name="action" value="Dislike <?php echo $review["negative"]?>">
+                <input type="submit" class="btn" name="action" value="Dislike <?php echo $review["negative"] ?>">
             </form>
+            <br>
+            <?php if ($admin != 0) { ?>
+                <form action="<?= site_url("Admin/DeleteReviewAdminSubmit/{$product->id}/{$name}") ?>" method="POST">
+                    <input type="submit" class="btn" name="action" value="Delete Review">
+                </form>
+            <?php
+            }
+            ?>
     <?php
         }
     }

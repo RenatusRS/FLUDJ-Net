@@ -5,6 +5,9 @@ namespace App\Controllers;
 use App\Models\GenreM;
 use App\Models\ProductM;
 use App\Models\BundleM;
+use App\Models\UserM;
+use App\Models\OwnershipM;
+use App\Models\ReviewVoteM;
 
 class Admin extends BaseController {
     protected function show($page, $data = []) {
@@ -15,7 +18,7 @@ class Admin extends BaseController {
         echo view('template/footer');
     }
 
-    public function manageProduct($id=null) {
+    public function manageProduct($id = null) {
         $data = [];
         $product = $genres = null;
 
@@ -66,7 +69,7 @@ class Admin extends BaseController {
 
         $id = $this->request->getVar('id');
         $data = [
-            'id' =>           ($id != -1) ? $id : '',
+            'id' => ($id != -1) ? $id : '',
             'name' =>         $this->request->getVar('name'),
             'price' =>        $this->request->getVar('price'),
             'developer' =>    $this->request->getVar('developer'),
@@ -122,7 +125,7 @@ class Admin extends BaseController {
         $this->manageBundle();
     }
 
-    public function manageBundle($id=null) {
+    public function manageBundle($id = null) {
         $data = [];
         $bundle = null;
 
@@ -164,7 +167,7 @@ class Admin extends BaseController {
             'name' =>           trim($this->request->getVar('name')),
             'discount' =>       trim($this->request->getVar('discount')),
             'description' =>    trim($this->request->getVar('description')),
-            'id' =>             ($id != -1) ? $id : ''
+            'id' => ($id != -1) ? $id : ''
         ];
 
         $bundleM = new BundleM();
@@ -180,5 +183,17 @@ class Admin extends BaseController {
         $this->upload($target_dir, 'background', 'background');
 
         return redirect()->to(site_url("User/Bundle/" . $id));
+    }
+
+    public function DeleteReviewAdminSubmit($id, $posterUsername) {
+        $poster = (new UserM())->where('username', $posterUsername)->first();
+
+        $user = $this->session->get('user');
+
+        (new OwnershipM())->where('id_product', $id)->where('id_user', $poster->id)->set(['rating' => NULL, 'text' => NULL])->update();
+
+        (new ReviewVoteM())->where('id_product', $id)->where("id_poster", $poster->id)->delete();
+
+        return redirect()->to(site_url("User/Product/{$id}"));
     }
 }
