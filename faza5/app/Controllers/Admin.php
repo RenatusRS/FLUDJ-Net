@@ -35,8 +35,8 @@ class Admin extends BaseController {
         $this->show('manageProduct', $data);
     }
 
-    public function manageProductSubmit() {
-        if (!$this->validate([
+    private function validateProduct($uploadedBackground) {
+        $notValid = (!$this->validate([
             'name' =>   'required',
             'genres' => 'required',
             'price' =>  'required|numeric|greater_than_equal_to[1]',
@@ -60,12 +60,18 @@ class Admin extends BaseController {
             'ss1' =>     'uploaded[ss1]|ext_in[ss1,jpg]|is_image[ss1]',
             'ss2' =>     'uploaded[ss2]|ext_in[ss2,jpg]|is_image[ss2]',
             'ss3' =>     'uploaded[ss3]|ext_in[ss3,jpg]|is_image[ss3]',
-        ])) return $this->show('manageProduct', ['errors' => $this->validator->getErrors()]);
+        ]) ||
+            ($uploadedBackground && !$this->validate([
+                'background' => 'uploaded[background]|ext_in[background,jpg]|is_image[background]'])));
 
+        return !$notValid;
+    }
+
+    public function manageProductSubmit() {
         $uploaded = (is_uploaded_file($_FILES['background']['tmp_name']));
-        if ($uploaded && !$this->validate(['background' =>  'uploaded[background]|ext_in[background,jpg]|is_image[background]'])) {
+        if (!$this->validateProduct($uploaded))
             return $this->show('manageProduct', ['errors' => $this->validator->getErrors()]);
-        }
+
 
         $id = $this->request->getVar('id');
         $isEditing = ($id != -1);
