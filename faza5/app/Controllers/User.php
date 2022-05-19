@@ -24,18 +24,22 @@ class User extends BaseController {
     *Prikaz sadrzaja na stranici
     *@return void
     */
-    protected function show($page, $data = []) {
+    protected function show($page, $data = [], $viewDir="pages") {
         $data['controller'] = 'User';
         $data['user'] = $this->session->get('user');
         echo view('template/header_user', $data);
-        echo view("pages/$page", $data);
+        echo view("$viewDir/$page", $data);
         echo view('template/footer');
+    }
+
+    protected function showError($page, $data) {
+        $this->show($page, $data, "errors");
     }
 
     public function index() {
         $this->show('index');
     }
-  
+
     /**
     *Odjavljivanje korisnika
     *@return void
