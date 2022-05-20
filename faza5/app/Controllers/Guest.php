@@ -61,7 +61,7 @@ class Guest extends BaseController {
 
     protected function userViewProduct($id) { return []; }
 
-    protected function determineBundlePriceAndDiscount($products, $discount) {
+    protected function bundlePrice($products, $discount) {
         $price = 0.0;
         foreach ($products as $product) {
             $price += $product->price;

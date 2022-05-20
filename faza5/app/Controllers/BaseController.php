@@ -182,19 +182,17 @@ class BaseController extends Controller {
      * 'final' => finalna cena kada se primeni sniženje
      *
      */
-    protected function determineBundlePriceAndDiscount($products, $discount) {
+    protected function bundlePrice($products, $discount) {
         $price = 0.0;
         $owned = 0;
         $user = $this->session->get('user');
         $cnt = count($products);
 
         foreach ($products as $product) {
-            $query = (new OwnershipM())
-                    ->where('id_product', $product->id)
-                    ->where('id_user', $user->id)
-                    ->first();
+            $owns = (new OwnershipM())
+                            ->owns($user->id, $product->id);
 
-            if (isset($query)) {
+            if ($owns === true) {
                 $owned++;
             } else {
                 $price += $product->price;
@@ -221,6 +219,16 @@ class BaseController extends Controller {
                 'final'    => $final];
     }
 
+    protected function bundleProducts($bundleId) {
+        $iter = (new BundledProductsM())
+                        ->where('id_bundle', $bundleId)
+                        ->findAll();
+
+        foreach ($iter as $bundle) {
+            yield ((new ProductM())->find($bundle->id_product));
+        }
+    }
+
     /**
      * prikaži bundle sa id-jem $id
      *
@@ -233,12 +241,9 @@ class BaseController extends Controller {
         if (!isset($bundle))
             return redirect()->to(site_url());
 
-        $products = [];
-        foreach ((new BundledProductsM())->findBundledProducts($id) as $idproduct) {
-            array_push($products, (new ProductM())->find($idproduct));
-        }
+        $products = iterator_to_array($this->bundleProducts($id));
 
-        $result = $this->determineBundlePriceAndDiscount($products, $bundle->discount);
+        $result = $this->bundlePrice($products, $bundle->discount);
 
         return $this->show('bundle', ['bundle' => $bundle,
                                       'bundledProducts' => $products,
