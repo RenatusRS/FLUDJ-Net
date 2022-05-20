@@ -363,7 +363,8 @@ class User extends BaseController {
     */
     public function searchProduct() {
         $this->show('searchProduct.php');
-      
+    }
+    
     public function deleteReviewSubmit($id) {
         $user = $this->session->get('user');
 
