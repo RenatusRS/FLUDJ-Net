@@ -389,4 +389,47 @@ class User extends BaseController {
 
         return redirect()->to(site_url("User/Product/{$id}"));
     }
+
+    /**
+     * prikaz stranice za kupovanje kolekcije
+     *
+     * @param  integer $id id kolekcije
+     * @return void
+     */
+    public function buyBundle($id = null) {
+        $user = $this->session->get('user');
+        $bundle = (new BundleM())->find($id);
+
+        if (!isset($bundle)) {
+            return redirect()->to(site_url());
+        }
+
+        $friends = (new RelationshipM())->getFriends($user);
+        $price = [
+            'price'    => $this->request->getVar('price'),
+            'discount' => $this->request->getVar('discount'),
+            'final'    => $this->request->getVar('final'),
+        ];
+
+        $this->show('buyBundle', ['bundle' => $bundle, 'friends' => $friends, 'price' => $price]);
+    }
+
+    public function buyBundleSubmit($id) {
+        $finalPrice = $this->request->getVar('final');
+        $user = $this->session->get('user');
+
+        if ($user->balance < $finalPrice) {
+            return;
+        }
+
+        $products = $this->bundleProducts($id);
+        foreach ($products as $product) {
+            (new OwnershipM())
+                        ->acquire($user->id, $product->id);
+        }
+
+        $user->balance -= $finalPrice;
+
+        // TODO redirect
+    }
 }

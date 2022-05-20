@@ -174,45 +174,59 @@ class BaseController extends Controller {
     }
 
     /**
-     * determineBundlePriceAndDiscount determines price and discount of a bundle
-     * for current user
+     * određuje početnu cenu, sniženje i finalnu cenu kolekcije za trenutnog korisnika
      *
-     * @param  mixed $products model fetched directly from database
-     * @param  mixed $discount discount of bundle
-     * @return array array is of 'price'=>price and 'discount'=>discount with price
-     * denoting full price of bundle and discount denoting discount of current user
+     * @param  array $products niz modela dohvaćenih iz baze sa ProductM->find($id)
+     * @param  mixed $discount sniženje kolekcije
+     * @return array 'price' => puna cena, 'discount' => sniženje,
+     * 'final' => finalna cena kada se primeni sniženje
+     *
      */
-    protected function determineBundlePriceAndDiscount($products, $discount) {
+    protected function bundlePrice($products, $discount) {
         $price = 0.0;
         $owned = 0;
         $user = $this->session->get('user');
         $cnt = count($products);
 
         foreach ($products as $product) {
-            $query = (new OwnershipM())
-                    ->where('id_product', $product->id)
-                    ->where('id_user', $user->id)
-                    ->first();
+            $owns = (new OwnershipM())
+                            ->owns($user->id, $product->id);
 
-            if (isset($query)) {
+            if ($owns === true) {
                 $owned++;
             } else {
                 $price += $product->price;
             }
         }
 
-        if ($cnt == $owned)
-            return ['price' => 0, 'discount' => 0];
-        if (($cnt - $owned) == 1)
-            return ['price' => $price, 'discount' => 0];
-
-        while ($owned > 0) {
-            $discount -= ceil($discount / ($cnt - 1));
-            $owned--;
+        if ($cnt == $owned) {
+            $price = $discount = 0;
+        } else if (($cnt - $owned) == 1) {
+            $discount = 0;
+        } else {
+            while ($owned > 0) {
+                $discount -= ceil($discount / ($cnt - 1));
+                $owned--;
+            }
         }
 
-        return ['price' => $price,
-                'discount' => $discount];
+        $final = ($price == 0) ?
+            0 :
+            $price - ($price * $discount) / 100;
+
+        return ['price'    => $price,
+                'discount' => $discount,
+                'final'    => $final];
+    }
+
+    protected function bundleProducts($bundleId) {
+        $iter = (new BundledProductsM())
+                        ->where('id_bundle', $bundleId)
+                        ->findAll();
+
+        foreach ($iter as $bundle) {
+            yield ((new ProductM())->find($bundle->id_product));
+        }
     }
 
     /**
@@ -227,14 +241,9 @@ class BaseController extends Controller {
         if (!isset($bundle))
             return redirect()->to(site_url());
 
-        $products = [];
-        foreach ((new BundledProductsM())->findBundledProducts($id) as $idproduct) {
-            array_push($products, (new ProductM())->find($idproduct));
-        }
+        $products = iterator_to_array($this->bundleProducts($id));
 
-        $result = $this->determineBundlePriceAndDiscount($products, $bundle->discount);
-
-        $result['final'] = $result['price'] * (100 - $result['discount']) / 100;
+        $result = $this->bundlePrice($products, $bundle->discount);
 
         return $this->show('bundle', ['bundle' => $bundle,
                                       'bundledProducts' => $products,
