@@ -174,6 +174,48 @@ class BaseController extends Controller {
     }
 
     /**
+     * determineBundlePriceAndDiscount determines price and discount of a bundle
+     * for current user
+     *
+     * @param  mixed $products model fetched directly from database
+     * @param  mixed $discount discount of bundle
+     * @return array array is of 'price'=>price and 'discount'=>discount with price
+     * denoting full price of bundle and discount denoting discount of current user
+     */
+    protected function determineBundlePriceAndDiscount($products, $discount) {
+        $price = 0.0;
+        $owned = 0;
+        $user = $this->session->get('user');
+        $cnt = count($products);
+
+        foreach ($products as $product) {
+            $query = (new OwnershipM())
+                    ->where('id_product', $product->id)
+                    ->where('id_user', $user->id)
+                    ->first();
+
+            if (isset($query)) {
+                $owned++;
+            } else {
+                $price += $product->price;
+            }
+        }
+
+        if ($cnt == $owned)
+            return ['price' => 0, 'discount' => 0];
+        if (($cnt - $owned) == 1)
+            return ['price' => $price, 'discount' => 0];
+
+        while ($owned > 0) {
+            $discount -= ceil($discount / ($cnt - 1));
+            $owned--;
+        }
+
+        return ['price' => $price,
+                'discount' => $discount];
+    }
+
+    /**
      * prikaži bundle sa id-jem $id
      *
      * @param  integer $id
@@ -185,13 +227,17 @@ class BaseController extends Controller {
         if (!isset($bundle))
             return redirect()->to(site_url());
 
-        $result = [];
+        $products = [];
         foreach ((new BundledProductsM())->findBundledProducts($id) as $idproduct) {
-            array_push($result, (new ProductM())->find($idproduct)->name);
+            array_push($products, (new ProductM())->find($idproduct));
         }
 
-        return $this->show('bundle', ['bundle' => $bundle,
-                                      'bundledProducts' => $result]);
-    }
+        $result = $this->determineBundlePriceAndDiscount($products, $bundle->discount);
 
+        $result['final'] = $result['price'] * (100 - $result['discount']) / 100;
+
+        return $this->show('bundle', ['bundle' => $bundle,
+                                      'bundledProducts' => $products,
+                                      'price' => $result]);
+    }
 }

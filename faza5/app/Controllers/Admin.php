@@ -38,8 +38,8 @@ class Admin extends BaseController {
         $this->show('manageProduct', $data);
     }
 
-    public function manageProductSubmit() {
-        if (!$this->validate([
+    private function validateProduct($uploadedBackground) {
+        $notValid = (!$this->validate([
             'name' =>   'required',
             'genres' => 'required',
             'price' =>  'required|numeric|greater_than_equal_to[1]',
@@ -63,12 +63,18 @@ class Admin extends BaseController {
             'ss1' =>     'uploaded[ss1]|ext_in[ss1,jpg]|is_image[ss1]',
             'ss2' =>     'uploaded[ss2]|ext_in[ss2,jpg]|is_image[ss2]',
             'ss3' =>     'uploaded[ss3]|ext_in[ss3,jpg]|is_image[ss3]',
-        ])) return $this->show('manageProduct', ['errors' => $this->validator->getErrors()]);
+        ]) ||
+            ($uploadedBackground && !$this->validate([
+                'background' => 'uploaded[background]|ext_in[background,jpg]|is_image[background]'])));
 
+        return !$notValid;
+    }
+
+    public function manageProductSubmit() {
         $uploaded = (is_uploaded_file($_FILES['background']['tmp_name']));
-        if ($uploaded && !$this->validate(['background' =>  'uploaded[background]|ext_in[background,jpg]|is_image[background]'])) {
+        if (!$this->validateProduct($uploaded))
             return $this->show('manageProduct', ['errors' => $this->validator->getErrors()]);
-        }
+
 
         $id = $this->request->getVar('id');
         $isEditing = ($id != -1);
@@ -95,15 +101,13 @@ class Admin extends BaseController {
         $genreM = new GenreM();
         $productM = new ProductM();
 
-        // ako unosimo novi proizvod i ime je već zauzeto bacamo grešku
-        if ($id == -1 && $productM->nameAlreadyExists($data['name'])) {
-            return $this->show('manageProduct', ['errors' => ['name' => "Name [{$data['name']}] already exists"]]);
+        // ažuriraj bazu
+        if ($productM->save($data) === false) {
+            return $this->show('manageProduct', ['errors' => $productM->errors()]);
         }
 
-        // ažuriraj bazu
-        if ($id != -1)
+        if ($id != -1) // otklanjamo stare žanrove iz baze jer će biti zamenjeni novim
             $genreM->where('id_product', $id)->delete();
-        $productM->save($data);
 
         // napravi niz žanrova
         $genres = explode(' ', $this->request->getVar('genres'));
@@ -151,7 +155,7 @@ class Admin extends BaseController {
         $this->show('manageBundle', $data);
     }
 
-    public function manageBundleSubmit() {
+    private function validateBundle($uploadedBackground) {
         $max_disc = MAX_BUNDLE_DISCOUNT;
         $min_disc = MIN_BUNDLE_DISCOUNT;
         $max_descr = MAX_DESCRIPTION_SIZE;
@@ -159,7 +163,7 @@ class Admin extends BaseController {
 
         // TODO da se inputi forme zadržavaju nakon neuspešne validacije
         // TODO da se banner/background zadržavaju tokom editovanja bundle-a
-        if (!$this->validate([
+        $notValid = (!$this->validate([
             'name' =>        'required',
             'discount' =>    "required|integer|less_than_equal_to[$max_disc]|greater_than_equal_to[$min_disc]",
             'description' => "required|min_length[$min_descr]|max_length[$max_descr]",
@@ -167,12 +171,17 @@ class Admin extends BaseController {
             'banner' =>      'uploaded[banner]|ext_in[banner,jpg]|is_image[banner]'
             // TODO za veličinu isto ograničenje za slike
             // TODO dinamička provera fajla koji može da bude uploadovan pod bilo kojim imenom
-        ])) return $this->show('manageBundle', ['errors' => $this->validator->getErrors()]);
+        ]) ||
+            ($uploadedBackground && !$this->validate([
+                'background' =>  'uploaded[background]|ext_in[background,jpg]|is_image[background]'])));
 
+        return !$notValid;
+    }
+
+    public function manageBundleSubmit() {
         $uploaded = (is_uploaded_file($_FILES['background']['tmp_name']));
-        if ($uploaded && !$this->validate(['background' =>  'uploaded[background]|ext_in[background,jpg]|is_image[background]'])) {
+        if (!$this->validateBundle($uploaded))
             return $this->show('manageBundle', ['errors' => $this->validator->getErrors()]);
-        }
 
         // ----------------- ubacivanje u bazu ----------------
 
@@ -186,12 +195,10 @@ class Admin extends BaseController {
         ];
 
         $bundleM = new BundleM();
-        // ako se ubacuje novi bundle i ako bundle sa takvim imenom već postoji
-        if ($id == -1 && $bundleM->nameAlreadyExists($data['name'])) {
-            return $this->show('manageBundle', ['errors' => ['name' => 'name already exists in database']]);
+        if ($bundleM->save($data) === false) { // ako čuvanje u bazu nije prošlo validaciju
+            // TODO
+            return $this->show('manageBundle', ['errors' => $bundleM->errors()]);
         }
-
-        $bundleM->save($data);
 
         if ($id == -1)
             $id = $bundleM->getInsertID();
