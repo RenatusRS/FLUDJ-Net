@@ -14,7 +14,7 @@
         </form>
     </div>
 </div>
-<?php if ($product_review != NULL) { ?>
+<?php if (isset($product_review)) { ?>
     <form action="<?= site_url("User/makeReviewSubmit/{$product->id}") ?>" method="POST">
         <textarea name="text" id="" cols="30" rows="10"><?php echo $product_review->text ?></textarea>
         <br>

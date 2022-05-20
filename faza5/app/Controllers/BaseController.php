@@ -21,6 +21,7 @@ use App\Models\OwnershipM;
 use App\Models\ReviewVoteM;
 use App\Models\UserM;
 use App\Models\BundledProductsM;
+use App\Models\GenreM;
 
 /**
  * Class BaseController
@@ -87,7 +88,28 @@ class BaseController extends Controller {
      *
      * @return void
      */
-    public function product($id) {} // TODO
+    public function product($id) {
+        $productM = new ProductM();
+        $product = $productM->find($id);
+
+        if (!isset($product))
+            return redirect()->to(site_url());
+
+        $genres = implode(' ', (new GenreM())->getGenres($id));
+
+        $product_base = $product->base_game != null ? $productM->find($product->base_game) : null;
+
+        $product_dlc = $productM->asArray()->where('base_game', $product->id)->findAll();
+
+        $topReviews = $this->getTopReviews($id);
+
+        $userRes = $this->userViewProduct($id);
+        $res = ['product' => $product, 'genres' => $genres, 'product_base' => $product_base, 'product_dlc' => $product_dlc, 'reviews' => $topReviews];
+
+        $this->show('product', array_merge($res, $userRes));
+    }
+
+    protected function userViewProduct($id) { return []; }
 
     /**
      *

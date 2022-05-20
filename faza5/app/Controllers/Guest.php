@@ -59,6 +59,8 @@ class Guest extends BaseController {
         return redirect()->to(site_url("User/Profile/"));
     }
 
+    protected function userViewProduct($id) { return []; }
+
     protected function determineBundlePriceAndDiscount($products, $discount) {
         $price = 0.0;
         foreach ($products as $product) {
@@ -68,6 +70,4 @@ class Guest extends BaseController {
         return ['price' => $price,
                 'discount' => $discount];
     }
-
-    public function product($id) {}
 }

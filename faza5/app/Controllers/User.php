@@ -98,40 +98,6 @@ class User extends BaseController {
 
     /**
      * 
-     * Prikaz stranice proizvoda
-     * 
-     * @return void   
-     */
-    public function product($id) {
-        $productM = new ProductM();
-        $product = $productM->find($id);
-
-        if (!isset($product))
-            return redirect()->to(site_url());
-
-        $genres = implode(' ', (new GenreM())->getGenres($id));
-
-        $product_base = $product->base_game != null ? $productM->find($product->base_game) : null;
-
-        $product_dlc = $productM->asArray()->where('base_game', $product->id)->findAll();
-
-        $user = $this->session->get('user');
-
-        $product_review = (new OwnershipM())->where('id_product', $id)->where('id_user', $user->id)->first();
-
-        if ($user->review_ban == 1 || !(isset($product_review)))
-            $product_review = NULL;
-
-        $topReviews = $this->getTopReviews($id);
-
-
-        $admin = $user->admin_rights;
-
-        $this->show('product', ['product' => $product, 'genres' => $genres, 'product_base' => $product_base, 'product_dlc' => $product_dlc, 'product_review' => $product_review, 'reviews' => $topReviews, 'admin' => $admin]);
-    }
-
-    /**
-     * 
      * Prikaz stranice za kupovanje proizvoda
      * 
      * @return void   
@@ -145,6 +111,25 @@ class User extends BaseController {
         $product = $productM->find($id);
 
         $this->show('buyProduct', ['product' => $product, 'friends' => $friends]);
+    }
+
+    /**
+     * userViewProduct performs all user-specific actions regarding viewing products
+     *
+     *
+     * @param  integer $id id of product that is being viewed
+     * @return array array containing user-specific info such as if user has review of product, and if user has admin privileges
+     */
+    protected function userViewProduct($id) {
+        $user = $this->session->get('user');
+
+        $product_review = (new OwnershipM())->where('id_product', $id)->where('id_user', $user->id)->first();
+
+        if ($user->review_ban == 1 || !(isset($product_review)))
+            $product_review = NULL;
+
+        $admin = $user->admin_rights;
+        return ['product_review' => $product_review, 'admin' => $admin];
     }
 
     /**
