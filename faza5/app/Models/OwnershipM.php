@@ -27,4 +27,24 @@ class OwnershipM extends Model {
 
         return (isset($query));
     }
+
+    /**
+     * korisnik sa id-jem $idUser dobija proizvod sa id-jem $idProduct ako ga već nije imao.
+     *
+     * @param  mixed $idUser
+     * @param  mixed $idProduct
+     * @return boolean vraća true ako ga je dobio, a false ako nije
+     */
+    public function acquire($idUser, $idProduct) {
+        if ($this->owns($idUser, $idProduct))
+            return false;
+
+        $this->db = \Config\Database::connect();
+        $this->db->query("INSERT INTO $this->table
+                          (id_product, id_user) VALUES
+                          ('$idProduct', '$idUser'); ");
+
+        return true;
+    }
+
 }

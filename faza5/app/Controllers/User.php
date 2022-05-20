@@ -344,5 +344,22 @@ class User extends BaseController {
         $this->show('buyBundle', ['bundle' => $bundle, 'friends' => $friends, 'price' => $price]);
     }
 
-    public function buyBundleSubmit($id) {} // TODO
+    public function buyBundleSubmit($id) {
+        $finalPrice = $this->request->getVar('final');
+        $user = $this->session->get('user');
+
+        if ($user->balance < $finalPrice) {
+            return;
+        }
+
+        $products = $this->bundleProducts($id);
+        foreach ($products as $product) {
+            (new OwnershipM())
+                        ->acquire($user->id, $product->id);
+        }
+
+        $user->balance -= $finalPrice;
+
+        // TODO redirect
+    }
 }
