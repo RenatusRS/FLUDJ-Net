@@ -17,13 +17,15 @@ use App\Models\UserM;
 use App\Models\OwnershipM;
 use App\Models\RelationshipM;
 use App\Models\ReviewVoteM;
+use App\Models\BundleM;
+use App\Models\BundledProductsM;
 
 class User extends BaseController {
 
     /**
-    *Prikaz sadrzaja na stranici
-    *@return void
-    */
+     *Prikaz sadrzaja na stranici
+     *@return void
+     */
     protected function show($page, $data = []) {
         $data['controller'] = 'User';
         $data['user'] = $this->session->get('user');
@@ -35,20 +37,20 @@ class User extends BaseController {
     public function index() {
         $this->show('index');
     }
-  
+
     /**
-    *Odjavljivanje korisnika
-    *@return void
-    */
+     *Odjavljivanje korisnika
+     *@return void
+     */
     public function logout() {
         $this->session->destroy();
         return redirect()->to(site_url('/'));
     }
 
     /** 
-    *Prikaz svog ili tudjeg profila
-    *@return void
-    */
+     *Prikaz svog ili tudjeg profila
+     *@return void
+     */
     public function profile($id = null) {
         $user = $id == null ? $this->session->get('user') : (new UserM())->find($id);
         if ($id == null) {
@@ -98,96 +100,6 @@ class User extends BaseController {
 
     /**
      * 
-     * Izracunavanje skora
-     * 
-     * @return double  
-     */
-    protected function getRating($positiveVotes, $negativeVotes) {
-        if ($positiveVotes == 0 && $negativeVotes == 0) return 50;
-        $totalVotes = $positiveVotes + $negativeVotes;
-        $average = $positiveVotes / $totalVotes;
-        $score = $average - ($average - 0.5) * 2 ** -log10($totalVotes + 1);
-
-        return $score * 100;
-    }
-
-    /**
-     * 
-     * Trazenje najboljih recenzija za zadati proizvod
-     * 
-     * @return array(reviews)  
-     */
-    protected function getTopReviews($id) {
-        $review_voteM = new ReviewVoteM();
-        $ownershipM = new OwnershipM();
-        $ownerships = $ownershipM->where("id_product", $id)->where("text !=", "NULL")->where("rating !=", "NULL")->findAll();
-
-        $posterScore = array();
-        $posterPosNeg = array();
-
-        foreach ($ownerships as $ownership) {
-
-            $userPoster = (new userM())->find($ownership->id_user);
-            if ($userPoster->review_ban == 1) continue;
-
-            $reviewsForPoster = $review_voteM->where('id_product', $id)->where('id_poster', $ownership->id_user)->findAll();
-            $positive = 0;
-            $negative = 0;
-
-            foreach ($reviewsForPoster as $review) {
-                if ($review->like == 0) $negative++;
-                else $positive++;
-            }
-
-            $score = $this->getRating($positive, $negative);
-            $posterScore[$ownership->id_user] = $score;
-            $posterPosNeg[$ownership->id_user] = ["positive" => $positive, "negative" => $negative];
-        }
-
-        arsort($posterScore);
-
-        $userM = new UserM();
-        $reviews = array();
-
-        foreach ($posterScore as $poster => $score) {
-            $review = $ownershipM->where('id_product', $id)->where('id_user', $poster)->first();
-            $user = $userM->find($poster);
-            $reviews[$user->username] = ["review" => $review, "positive" => $posterPosNeg[$poster]["positive"], "negative" => $posterPosNeg[$poster]["negative"]];
-        }
-
-        return $reviews;
-    }
-
-    /**
-     * 
-     * Prikaz stranice proizvoda
-     * 
-     * @return void   
-     */
-    public function product($id) {
-        $productM = new ProductM();
-        $product = $productM->find($id);
-
-        $genres = implode(' ', (new GenreM())->getGenres($id));
-
-        $product_base = $product->base_game != null ? $productM->find($product->base_game) : null;
-
-        $product_dlc = $productM->asArray()->where('base_game', $product->id)->findAll();
-
-        $user = $this->session->get('user');
-
-        $product_review = (new OwnershipM())->where('id_product', $id)->where('id_user', $user->id)->first();
-
-        if ($user->review_ban == 1 || !(isset($product_review)))
-            $product_review = NULL;
-
-        $topReviews = $this->getTopReviews($id);
-
-        $this->show('product', ['product' => $product, 'genres' => $genres, 'product_base' => $product_base, 'product_dlc' => $product_dlc, 'product_review' => $product_review, 'reviews' => $topReviews]);
-    }
-
-    /**
-     * 
      * Prikaz stranice za kupovanje proizvoda
      * 
      * @return void   
@@ -201,6 +113,25 @@ class User extends BaseController {
         $product = $productM->find($id);
 
         $this->show('buyProduct', ['product' => $product, 'friends' => $friends]);
+    }
+
+    /**
+     * userViewProduct performs all user-specific actions regarding viewing products
+     *
+     *
+     * @param  integer $id id of product that is being viewed
+     * @return array array containing user-specific info such as if user has review of product, and if user has admin privileges
+     */
+    protected function userViewProduct($id) {
+        $user = $this->session->get('user');
+
+        $product_review = (new OwnershipM())->where('id_product', $id)->where('id_user', $user->id)->first();
+
+        if ($user->review_ban == 1 || !(isset($product_review)))
+            $product_review = NULL;
+
+        $admin = $user->admin_rights;
+        return ['product_review' => $product_review, 'admin' => $admin];
     }
 
     /**
@@ -261,28 +192,28 @@ class User extends BaseController {
     }
 
     /**
-    *Prikaz stranice sa opcijama za izmenu/unos podataka
-    *@return void
-    */
+     *Prikaz stranice sa opcijama za izmenu/unos podataka
+     *@return void
+     */
     public function editProfile() {
         $this->show('editProfile.php');
     }
 
     /**
-    *Prikaz stranice sa listom zahteva prijateljsva (odlazeci i dolazeci)
-    *@return void
-    */
-    public function friendRequests(){
+     *Prikaz stranice sa listom zahteva prijateljsva (odlazeci i dolazeci)
+     *@return void
+     */
+    public function friendRequests() {
         $user = $this->session->get('user');
-        $relationshipM= new RelationshipM();
-        
-        $requesters= $relationshipM->getIncoming($user);
-        $requestedTo= $relationshipM->getSent($user);
+        $relationshipM = new RelationshipM();
+
+        $requesters = $relationshipM->getIncoming($user);
+        $requestedTo = $relationshipM->getSent($user);
 
         $this->show('friendRequests.php', ['requesters' => $requesters, 'requestedTo' => $requestedTo]);
     }
-     
-     /**
+
+    /**
      * 
      * Procesiranje pravljenja recenzije
      * 
@@ -366,7 +297,6 @@ class User extends BaseController {
         return redirect()->to(site_url("User/Product/{$id}"));
     }
 
-
     /**
     *Ajax funkcija za azurno ucitavanje rezultata korisnika
     *@return array(data)
@@ -433,5 +363,29 @@ class User extends BaseController {
     */
     public function searchProduct() {
         $this->show('searchProduct.php');
+      
+    public function deleteReviewSubmit($id) {
+        $user = $this->session->get('user');
+
+        (new OwnershipM())->where('id_product', $id)->where('id_user', $user->id)->set(['rating' => NULL, 'text' => NULL])->update();
+
+        (new ReviewVoteM())->where('id_product', $id)->where("id_poster", $user->id)->delete();
+
+        return redirect()->to(site_url("User/Product/{$id}"));
+    }
+
+    public function DeleteReviewAdminSubmit($id, $posterUsername) {
+        $poster = (new UserM())->where('username', $posterUsername)->first();
+
+        $user = $this->session->get('user');
+
+        if ($user->admin_rights) {
+
+            (new OwnershipM())->where('id_product', $id)->where('id_user', $poster->id)->set(['rating' => NULL, 'text' => NULL])->update();
+
+            (new ReviewVoteM())->where('id_product', $id)->where("id_poster", $poster->id)->delete();
+        }
+
+        return redirect()->to(site_url("User/Product/{$id}"));
     }
 }

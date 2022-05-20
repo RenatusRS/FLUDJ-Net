@@ -15,13 +15,13 @@ class BundleM extends Model {
 
     public $db;
 
-    public function nameAlreadyExists($name) {
-        $this->db = \Config\Database::connect();
-        $builder = $this->db->table($this->table);
-        $result = $builder->select('id')->where('name', $name)->countAllResults();
-
-        return ($result > 0);
-    }
-
+    protected $validationRules = [
+        'name' => [
+            'rules'  => 'required|alpha_numeric_space|is_unique[bundle.name]',
+            'errors' => [
+                'is_unique' => 'Name of bundle already exists in database.'
+            ]
+        ]
+    ];
 }
 

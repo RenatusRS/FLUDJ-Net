@@ -15,6 +15,14 @@ use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
 use Psr\Log\LoggerInterface;
 
+use App\Models\BundleM;
+use App\Models\ProductM;
+use App\Models\OwnershipM;
+use App\Models\ReviewVoteM;
+use App\Models\UserM;
+use App\Models\BundledProductsM;
+use App\Models\GenreM;
+
 /**
  * Class BaseController
  *
@@ -70,5 +78,166 @@ class BaseController extends Controller {
 
         if ($file != null && $file->isValid() && !$file->hasMoved())
             $file->move($destDir, $name . '.' . $file->getExtension(), $overwrite);
+    }
+
+    protected function show($page, $data = []) {}
+
+    /**
+     *
+     * Prikaz stranice proizvoda
+     *
+     * @return void
+     */
+    public function product($id) {
+        $productM = new ProductM();
+        $product = $productM->find($id);
+
+        if (!isset($product))
+            return redirect()->to(site_url());
+
+        $genres = implode(' ', (new GenreM())->getGenres($id));
+
+        $product_base = $product->base_game != null ? $productM->find($product->base_game) : null;
+
+        $product_dlc = $productM->asArray()->where('base_game', $product->id)->findAll();
+
+        $topReviews = $this->getTopReviews($id);
+
+        $userRes = $this->userViewProduct($id);
+        $res = ['product' => $product, 'genres' => $genres, 'product_base' => $product_base, 'product_dlc' => $product_dlc, 'reviews' => $topReviews];
+
+        $this->show('product', array_merge($res, $userRes));
+    }
+
+    protected function userViewProduct($id) { return []; }
+
+    /**
+     *
+     * Trazenje najboljih recenzija za zadati proizvod
+     *
+     * @return array(reviews)
+     */
+    protected function getTopReviews($id) {
+        $review_voteM = new ReviewVoteM();
+        $ownershipM = new OwnershipM();
+        $ownerships = $ownershipM->where("id_product", $id)->where("text !=", "NULL")->where("rating !=", "NULL")->findAll();
+
+        $posterScore = array();
+        $posterPosNeg = array();
+
+        foreach ($ownerships as $ownership) {
+
+            $userPoster = (new userM())->find($ownership->id_user);
+            if ($userPoster->review_ban == 1) continue;
+
+            $reviewsForPoster = $review_voteM->where('id_product', $id)->where('id_poster', $ownership->id_user)->findAll();
+            $positive = 0;
+            $negative = 0;
+
+            foreach ($reviewsForPoster as $review) {
+                if ($review->like == 0) $negative++;
+                else $positive++;
+            }
+
+            $score = $this->getRating($positive, $negative);
+            $posterScore[$ownership->id_user] = $score;
+            $posterPosNeg[$ownership->id_user] = ["positive" => $positive, "negative" => $negative];
+        }
+
+        arsort($posterScore);
+
+        $userM = new UserM();
+        $reviews = array();
+
+        foreach ($posterScore as $poster => $score) {
+            $review = $ownershipM->where('id_product', $id)->where('id_user', $poster)->first();
+            $user = $userM->find($poster);
+            $reviews[$user->username] = ["review" => $review, "positive" => $posterPosNeg[$poster]["positive"], "negative" => $posterPosNeg[$poster]["negative"]];
+        }
+
+        return $reviews;
+    }
+
+    /**
+     *
+     * Izracunavanje skora
+     *
+     * @return double
+     */
+    protected function getRating($positiveVotes, $negativeVotes) {
+        if ($positiveVotes == 0 && $negativeVotes == 0) return 50;
+        $totalVotes = $positiveVotes + $negativeVotes;
+        $average = $positiveVotes / $totalVotes;
+        $score = $average - ($average - 0.5) * 2 ** -log10($totalVotes + 1);
+
+        return $score * 100;
+    }
+
+    /**
+     * determineBundlePriceAndDiscount determines price and discount of a bundle
+     * for current user
+     *
+     * @param  mixed $products model fetched directly from database
+     * @param  mixed $discount discount of bundle
+     * @return array array is of 'price'=>price and 'discount'=>discount with price
+     * denoting full price of bundle and discount denoting discount of current user
+     */
+    protected function determineBundlePriceAndDiscount($products, $discount) {
+        $price = 0.0;
+        $owned = 0;
+        $user = $this->session->get('user');
+        $cnt = count($products);
+
+        foreach ($products as $product) {
+            $query = (new OwnershipM())
+                    ->where('id_product', $product->id)
+                    ->where('id_user', $user->id)
+                    ->first();
+
+            if (isset($query)) {
+                $owned++;
+            } else {
+                $price += $product->price;
+            }
+        }
+
+        if ($cnt == $owned)
+            return ['price' => 0, 'discount' => 0];
+        if (($cnt - $owned) == 1)
+            return ['price' => $price, 'discount' => 0];
+
+        while ($owned > 0) {
+            $discount -= ceil($discount / ($cnt - 1));
+            $owned--;
+        }
+
+        return ['price' => $price,
+                'discount' => $discount];
+    }
+
+    /**
+     * prikaži bundle sa id-jem $id
+     *
+     * @param  integer $id
+     * @return void
+     */
+    public function bundle($id) {
+        $bundle = (new BundleM())->find($id);
+
+        if (!isset($bundle))
+            return redirect()->to(site_url());
+
+        $products = [];
+        foreach ((new BundledProductsM())->findBundledProducts($id) as $idproduct) {
+            array_push($products, (new ProductM())->find($idproduct));
+        }
+
+        $result = $this->determineBundlePriceAndDiscount($products, $bundle->discount);
+
+        $result['final'] = $result['price'] * (100 - $result['discount']) / 100;
+
+        return $this->show('bundle', ['bundle' => $bundle,
+                                      'bundledProducts' => $products,
+                                      'price' => $result]);
     }
 }
