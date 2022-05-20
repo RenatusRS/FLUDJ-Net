@@ -384,11 +384,11 @@ class User extends BaseController {
     }
 
     /**
-    *Prikaz stranice za pretragu korisnika/proizvoda
+    *Prikaz stranice za pretragu korisnika
     *@return void
     */
-    public function search() {
-        $this->show('search.php');
+    public function searchUser() {
+        $this->show('searchUser.php');
     }
 
     /**
@@ -399,5 +399,39 @@ class User extends BaseController {
         $nickname = $_GET['tst'];
         $myUsr = (new UserM())->where('nickname', $nickname)->first();
         return "profile/".$myUsr->id;
+    }
+
+    /**
+    *Ajax funkcija za azurno ucitavanje rezultata proizvoda
+    *@return array(data)
+    */
+    public function ajaxProductSearch(){
+        helper(['form', 'url']);
+ 
+        $data = [];
+        $db      = \Config\Database::connect();
+        $builder = $db->table('product');   
+        $request = \Config\Services::request();
+        $query = $builder->like('name', $request->getVar('q'))->select('id, name as text')->limit(10)->get();
+        $data = $query->getResult();
+        echo json_encode($data);
+    }
+
+    /**
+    *Ajax funkcija za promenu stranice na profil odabranog pretrazenog korisnika
+    *@return String
+    */
+    public function ajaxProductLoad(){
+        $name = $_GET['tst'];
+        $myProduct = (new ProductM())->where('name', $name)->first();
+        return "Product/".$myProduct->id;
+    }
+
+    /**
+    *Prikaz stranice za pretragu proizvoda
+    *@return void
+    */
+    public function searchProduct() {
+        $this->show('searchProduct.php');
     }
 }
