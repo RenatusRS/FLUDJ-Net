@@ -363,4 +363,39 @@ class User extends BaseController {
 
         return redirect()->to(site_url("User/Product/{$id}"));
     }
+
+
+    /**
+    *Ajax funkcija za azurno ucitavanje rezultata korisnika
+    *@return array(data)
+    */
+    public function ajaxUserSearch(){
+        helper(['form', 'url']);
+ 
+        $data = [];
+        $db      = \Config\Database::connect();
+        $builder = $db->table('user');   
+        $request = \Config\Services::request();
+        $query = $builder->like('nickname', $request->getVar('q'))->select('id, nickname as text')->limit(10)->get();
+        $data = $query->getResult();
+        echo json_encode($data);
+    }
+
+    /**
+    *Prikaz stranice za pretragu korisnika/proizvoda
+    *@return void
+    */
+    public function search() {
+        $this->show('search.php');
+    }
+
+    /**
+    *Ajax funkcija za promenu stranice na profil odabranog pretrazenog korisnika
+    *@return String
+    */
+    public function ajaxUserLoad(){
+        $nickname = $_GET['tst'];
+        $myUsr = (new UserM())->where('nickname', $nickname)->first();
+        return "profile/".$myUsr->id;
+    }
 }
