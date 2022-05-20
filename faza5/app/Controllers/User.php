@@ -53,10 +53,12 @@ class User extends BaseController {
         $user = $id == null ? $this->session->get('user') : (new UserM())->find($id);
         if ($id == null) {
             $builder = \Config\Database::connect()->table('user');
-            $builder = $builder->set('nickname', $this->request->getVar('nickname'))->set('real_name', $this->request->getVar('real_name'))
-                ->set('country', $this->request->getVar('location'))->set('description', $this->request->getVar('description'))
-                ->/*set('featured_review', $this->request->getVar('review'))*/where('id', $user->id)->update();
-            $this->upload('public/uploads/user/', 'profile_pic', $user->id);
+            if($this->request->getVar('nickname')!=""){
+                $builder = $builder->set('nickname', $this->request->getVar('nickname'))->set('real_name', $this->request->getVar('real_name'))
+                    ->set('country', $this->request->getVar('location'))->set('description', $this->request->getVar('description'))
+                    ->/*set('featured_review', $this->request->getVar('review'))*/where('id', $user->id)->update();
+                $this->upload('public/uploads/user/', 'profile_pic', $user->id);
+            }
         }
 
         $this->show('user.php', ['user_profile' => $user]);
