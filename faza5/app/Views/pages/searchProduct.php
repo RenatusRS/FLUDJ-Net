@@ -51,13 +51,13 @@ Opis: Stranica za pretragu proizvoda
 
     $('.search').on('change', function() {
       //nakon odabira
-      var nst = $(".search option:selected").text();
+      var proizvod = $(".search option:selected").text();
 
       $.ajax({
         type: 'GET',
         url: '<?php echo base_url('User/ajaxProductLoad'); ?>',
         data: {
-          tst: nst
+          ime: proizvod
         },
         dataType: 'html',
         success: function(response) {

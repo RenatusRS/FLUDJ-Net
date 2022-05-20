@@ -384,21 +384,21 @@ class User extends BaseController {
     }
 
     /**
+    *Ajax funkcija za promenu stranice na profil odabranog pretrazenog korisnika
+    *@return String
+    */
+    public function ajaxUserLoad(){
+        $nickname = $_GET['nadimak'];
+        $myUsr = (new UserM())->where('nickname', $nickname)->first();
+        return "profile/".$myUsr->id;
+    }
+
+    /**
     *Prikaz stranice za pretragu korisnika
     *@return void
     */
     public function searchUser() {
         $this->show('searchUser.php');
-    }
-
-    /**
-    *Ajax funkcija za promenu stranice na profil odabranog pretrazenog korisnika
-    *@return String
-    */
-    public function ajaxUserLoad(){
-        $nickname = $_GET['tst'];
-        $myUsr = (new UserM())->where('nickname', $nickname)->first();
-        return "profile/".$myUsr->id;
     }
 
     /**
@@ -418,11 +418,11 @@ class User extends BaseController {
     }
 
     /**
-    *Ajax funkcija za promenu stranice na profil odabranog pretrazenog korisnika
+    *Ajax funkcija za promenu stranice na odabrani proizvod
     *@return String
     */
     public function ajaxProductLoad(){
-        $name = $_GET['tst'];
+        $name = $_GET['ime'];
         $myProduct = (new ProductM())->where('name', $name)->first();
         return "Product/".$myProduct->id;
     }

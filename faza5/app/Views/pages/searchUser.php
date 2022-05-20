@@ -51,13 +51,13 @@ Opis: Stranica za pretragu korisnika
 
     $('.search').on('change', function() {
       //nakon odabira
-      var nst = $(".search option:selected").text();
+      var korisnik = $(".search option:selected").text();
 
       $.ajax({
         type: 'GET',
         url: '<?php echo base_url('User/ajaxUserLoad'); ?>',
         data: {
-          tst: nst
+          nadimak: korisnik
         },
         dataType: 'html',
         success: function(response) {
