@@ -21,6 +21,8 @@ p.indent {margin-left: 2%; margin-right:2%; }
             print_r($bundledProducts);
         ?></p>
 
+        <h3>Total price:</h3>
+        <p class='indent'><strike>$<?php echo $price['price'] ?></strike> $<?php echo "{$price['final']} with discount of {$price['discount']}%" ?></p>
 
         Banner:
         <img width=20% class=smooth-border src="<?php echo base_url('uploads/bundle/' . $bundle->id . '/banner.jpg')  ?>">
