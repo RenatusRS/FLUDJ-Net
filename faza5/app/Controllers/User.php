@@ -55,10 +55,12 @@ class User extends BaseController {
         $user = $id == null ? $this->session->get('user') : (new UserM())->find($id);
         if ($id == null) {
             $builder = \Config\Database::connect()->table('user');
-            $builder = $builder->set('nickname', $this->request->getVar('nickname'))->set('real_name', $this->request->getVar('real_name'))
-                ->set('country', $this->request->getVar('location'))->set('description', $this->request->getVar('description'))
-                ->/*set('featured_review', $this->request->getVar('review'))*/where('id', $user->id)->update();
-            $this->upload('public/uploads/user/', 'profile_pic', $user->id);
+            if($this->request->getVar('nickname')!=""){
+                $builder = $builder->set('nickname', $this->request->getVar('nickname'))->set('real_name', $this->request->getVar('real_name'))
+                    ->set('country', $this->request->getVar('location'))->set('description', $this->request->getVar('description'))
+                    ->/*set('featured_review', $this->request->getVar('review'))*/where('id', $user->id)->update();
+                $this->upload('public/uploads/user/', 'profile_pic', $user->id);
+            }
         }
 
         $this->show('user.php', ['user_profile' => $user]);
@@ -295,6 +297,73 @@ class User extends BaseController {
         return redirect()->to(site_url("User/Product/{$id}"));
     }
 
+    /**
+    *Ajax funkcija za azurno ucitavanje rezultata korisnika
+    *@return array(data)
+    */
+    public function ajaxUserSearch(){
+        helper(['form', 'url']);
+ 
+        $data = [];
+        $db      = \Config\Database::connect();
+        $builder = $db->table('user');   
+        $request = \Config\Services::request();
+        $query = $builder->like('nickname', $request->getVar('q'))->select('id, nickname as text')->limit(10)->get();
+        $data = $query->getResult();
+        echo json_encode($data);
+    }
+
+    /**
+    *Ajax funkcija za promenu stranice na profil odabranog pretrazenog korisnika
+    *@return String
+    */
+    public function ajaxUserLoad(){
+        $nickname = $_GET['nadimak'];
+        $myUsr = (new UserM())->where('nickname', $nickname)->first();
+        return "profile/".$myUsr->id;
+    }
+
+    /**
+    *Prikaz stranice za pretragu korisnika
+    *@return void
+    */
+    public function searchUser() {
+        $this->show('searchUser.php');
+    }
+
+    /**
+    *Ajax funkcija za azurno ucitavanje rezultata proizvoda
+    *@return array(data)
+    */
+    public function ajaxProductSearch(){
+        helper(['form', 'url']);
+ 
+        $data = [];
+        $db      = \Config\Database::connect();
+        $builder = $db->table('product');   
+        $request = \Config\Services::request();
+        $query = $builder->like('name', $request->getVar('q'))->select('id, name as text')->limit(10)->get();
+        $data = $query->getResult();
+        echo json_encode($data);
+    }
+
+    /**
+    *Ajax funkcija za promenu stranice na odabrani proizvod
+    *@return String
+    */
+    public function ajaxProductLoad(){
+        $name = $_GET['ime'];
+        $myProduct = (new ProductM())->where('name', $name)->first();
+        return "Product/".$myProduct->id;
+    }
+
+    /**
+    *Prikaz stranice za pretragu proizvoda
+    *@return void
+    */
+    public function searchProduct() {
+        $this->show('searchProduct.php');
+      
     public function deleteReviewSubmit($id) {
         $user = $this->session->get('user');
 
