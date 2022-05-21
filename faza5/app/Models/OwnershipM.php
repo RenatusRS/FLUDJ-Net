@@ -47,4 +47,14 @@ class OwnershipM extends Model {
         return true;
     }
 
+    public function getRatingSums() {
+        $this->db = \Config\Database::connect();
+        $res = $this->db->query("SELECT id_product, sum(rating) as s, count(*) as cnt
+                                 FROM $this->table
+                                 GROUP BY id_product; ");
+
+        foreach ($res->getResult('array') as $row) {
+            yield $row;
+        }
+    }
 }
