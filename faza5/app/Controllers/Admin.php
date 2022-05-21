@@ -6,22 +6,18 @@ use App\Models\GenreM;
 use App\Models\ProductM;
 
 class Admin extends BaseController {
-    protected function show($page, $data = []) {
-        $data['controller'] = 'User';
-        $data['user'] = $this->session->get('user');
-        echo view('template/header_user', $data);
-        echo view("pages/$page", $data);
-        echo view('template/footer');
-    }
-
     public function manageProduct($id = null) {
         if ($id != null) {
             $product = (new ProductM())->find($id);
             $genres = implode(' ', (new GenreM())->asArray()->where('id_product', $id)->findAll());
-        } else
-            $product = $genres = null;
 
-        $this->show('manageProduct', ['product' => $product, 'genres' => $genres]);
+            $background = base_url('uploads/product/' . $id . '/background.png');
+            if (!file_exists($background))
+                $background = null;
+        } else
+            $product = $genres = $background = null;
+
+        $this->show('manageProduct', ['product' => $product, 'genres' => $genres, 'background' => $background]);
     }
 
     public function manageProductSubmit() {

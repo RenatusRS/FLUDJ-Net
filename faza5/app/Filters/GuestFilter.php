@@ -11,8 +11,7 @@ class GuestFilter implements FilterInterface {
     public function before(RequestInterface $request, $arguments = null) {
         $session = session();
 
-        if ($session->has('user'))
-            return redirect()->to(site_url('User'));
+        if ($session->has('user')) return redirect()->to(site_url('user'));
     }
 
     public function after(RequestInterface $request, ResponseInterface $reponse, $arguments = null) {

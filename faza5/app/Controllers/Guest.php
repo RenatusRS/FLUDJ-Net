@@ -2,19 +2,41 @@
 
 namespace App\Controllers;
 
+use App\Models\GenreM;
+use App\Models\ProductM;
 use App\Models\UserM;
+use App\Models\OwnershipM;
+use App\Models\RelationshipM;
 
 class Guest extends BaseController {
-
-    protected function show($page, $data = []) {
-        $data['controller'] = 'Guest';
-        echo view('template/header_guest.php');
-        echo view("pages/$page", $data);
-        echo view('template/footer.php');
-    }
-
     public function index() {
-        $this->show('index');
+
+        $productM = new ProductM();
+
+        $heroP = $productM->getHeroProduct();
+        $heroP->description = explode(".", $heroP->description, 2)[0] . ".";
+
+        $highRatingP = $productM->getHighRatingProducts();
+        $topSellerP = $productM->getTopSellersProducts();
+        $discountedP = $productM->getDiscountedProducts();
+        $discoveryP = $productM->getDiscoveryProducts();
+        $couponP = $productM->getCouponProducts();
+        $userLikeP = $productM->getProductsUserLike();
+        $friendsLikeP = $productM->getProductsUserFriendsLike();
+
+        $this->show(
+            'index',
+            [
+                'heroP' => $heroP,
+                'highRatingP' => $highRatingP,
+                'topSellerP' => $topSellerP,
+                'discountedP' => $discountedP,
+                'discoveryP' => $discoveryP,
+                'couponP' => $couponP,
+                'userLikeP' => $userLikeP,
+                'friendsLikeP' => $friendsLikeP
+            ]
+        );
     }
 
     public function login($message = null) {
@@ -25,15 +47,14 @@ class Guest extends BaseController {
         if (!$this->validate(['username' => 'required', 'password' => 'required']))
             return $this->show('login', ['errors' => $this->validator->getErrors()]);
 
-        $userModel = new UserM();
-        $user = $userModel->where('username', $this->request->getVar('username'))->first();
+        $user = (new UserM())->where('username', $this->request->getVar('username'))->first();
 
         if ($user == null || $user->password != $this->request->getVar('password'))
             return $this->login('Wrong username or password!');
 
         $this->session->set('user', $user);
 
-        return redirect()->to(site_url('User'));
+        return redirect()->to(site_url('user'));
     }
 
     public function registration() {
@@ -48,14 +69,11 @@ class Guest extends BaseController {
         $userM->save([
             'username' => $this->request->getVar('username'),
             'password' => $this->request->getVar('password'),
-            'admin_rights' => false,
-            'balance' => 0,
-            'review_ban' => false,
             'nickname' => $this->request->getVar('username')
         ]);
 
         $user = $userM->where('username', $this->request->getVar('username'))->first();
         $this->session->set('user', $user);
-        return redirect()->to(site_url("User/Profile/"));
+        return redirect()->to(site_url("user/profile/"));
     }
 }

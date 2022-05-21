@@ -18,23 +18,36 @@ use App\Models\OwnershipM;
 use App\Models\RelationshipM;
 
 class User extends BaseController {
-
-    /*
-    Prikaz sadrzaja na stranici
-    @return void
-    */
-    protected function show($page, $data = []) {
-        $data['controller'] = 'User';
-        $data['user'] = $this->session->get('user');
-        echo view('template/header_user', $data);
-        echo view("pages/$page", $data);
-        echo view('template/footer');
-    }
-
     public function index() {
-        $this->show('index');
+
+        $productM = new ProductM();
+
+        $heroP = $productM->getHeroProduct();
+        $heroP->description = explode(".", $heroP->description, 2)[0] . ".";
+
+        $highRatingP = $productM->getHighRatingProducts();
+        $topSellerP = $productM->getTopSellersProducts();
+        $discountedP = $productM->getDiscountedProducts();
+        $discoveryP = $productM->getDiscoveryProducts();
+        $couponP = $productM->getCouponProducts();
+        $userLikeP = $productM->getProductsUserLike();
+        $friendsLikeP = $productM->getProductsUserFriendsLike();
+
+        $this->show(
+            'index',
+            [
+                'heroP' => $heroP,
+                'highRatingP' => $highRatingP,
+                'topSellerP' => $topSellerP,
+                'discountedP' => $discountedP,
+                'discoveryP' => $discoveryP,
+                'couponP' => $couponP,
+                'userLikeP' => $userLikeP,
+                'friendsLikeP' => $friendsLikeP
+            ]
+        );
     }
-    
+
     /*
     Odjavljivanje korisnika
     @return void
@@ -50,12 +63,12 @@ class User extends BaseController {
     */
     public function profile($id = null) {
         $user = $id == null ? $this->session->get('user') : (new UserM())->find($id);
-        if($id==null){
+        if ($id == null) {
             $builder = \Config\Database::connect()->table('user');
             $builder = $builder->set('nickname', $this->request->getVar('nickname'))->set('real_name', $this->request->getVar('real_name'))
-            ->set('country', $this->request->getVar('location'))->set('description', $this->request->getVar('description'))
-            ->/*set('featured_review', $this->request->getVar('review'))*/where('id', $user->id)->update();
-            $this->upload('public/uploads/user/','profile_pic', $user->id);
+                ->set('description', $this->request->getVar('description'))
+                ->/*set('featured_review', $this->request->getVar('review'))*/where('id', $user->id)->update();
+            $this->upload('uploads/user/', 'profile_pic', $user->id);
         }
 
         $this->show('user', ['user_profile' => $user]);
@@ -74,7 +87,7 @@ class User extends BaseController {
     public function addFunds() {
         $this->show('addFunds');
     }
-    
+
     /**
      * 
      * Procesiranje uplacivanja novca
@@ -94,21 +107,10 @@ class User extends BaseController {
             'balance' => $user->balance
         ]);
 
-        return redirect()->to(site_url("User/Profile/"));
+        return redirect()->to(site_url("user/profile/"));
     }
 
-    public function product($id) {
-        $productM = new ProductM();
-        $product = $productM->find($id);
 
-        $genres = implode(' ', (new GenreM())->asArray()->where('id_product', $id)->findAll());
-
-        $product_base = $product->base_game != null ? $productM->find($product->base_game) : null;
-
-        $product_dlc = $productM->asArray()->where('base_game', $product->id)->findAll();
-
-        $this->show('product', ['product' => $product, 'genres' => $genres, 'product_base' => $product_base, 'product_dlc' => $product_dlc]);
-    }
 
     /**
      * 
@@ -181,9 +183,9 @@ class User extends BaseController {
             'rating' => null
         ]);
 
-        return redirect()->to(site_url("User/Product/{$product->id}"));
+        return redirect()->to(site_url("user/product/{$product->id}"));
     }
-      
+
     /*
     Prikaz opcija za izmenu/unos podataka
     @return void
@@ -191,5 +193,4 @@ class User extends BaseController {
     public function editProfile() {
         $this->show('editProfile.php');
     }
-
 }
