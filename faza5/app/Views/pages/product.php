@@ -108,6 +108,9 @@
             <form action="<?= site_url("User/DislikeSubmit/{$product->id}/{$name}") ?>" method="POST">
                 <input type="submit" class="btn" name="action" value="Dislike <?php echo $review["negative"] ?>">
             </form>
+            <form action="<?= site_url("User/awardUser/{$review['poster']}") ?>" method="POST">
+                <input type="submit" class="btn" name="action" value="Award user">
+            </form>
             <br>
             <?php if ($admin != 0) { ?>
                 <form action="<?= site_url("Admin/DeleteReviewAdminSubmit/{$product->id}/{$name}") ?>" method="POST">

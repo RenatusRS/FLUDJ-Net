@@ -297,6 +297,17 @@ class User extends BaseController {
         return redirect()->to(site_url("User/Product/{$id}"));
     }
 
+    public function awardUser($idUser) {
+        $user = $this->session->get('user');
+        $awardee = (new UserM())->find($idUser);
+
+        $this->show('awardPoints', ['currentUser' => $user, 'awardee' => $awardee]);
+    }
+
+    public function awardUserSubmit($idUser) {
+        // TODO
+    }
+
     /**
     *Ajax funkcija za azurno ucitavanje rezultata korisnika
     *@return array(data)
@@ -443,13 +454,8 @@ class User extends BaseController {
     public function getTopProducts() {
         $products = iterator_to_array((new OwnershipM())->getRatingSums());
 
-        usort($products, function ($product1, $product2) {
-            $res = ($this->getProductRating($product2) - $this->getProductRating($product1));
-            if ($res < 0) return -1; // ovo mora ovako jer je php glup i zahteva integer da se vrati (cast iz floata u int ne radi)
-            if ($res > 0) return 1;
-            else          return 0;
-        });
-
+        usort($products, fn ($p1, $p2) =>
+                                ($this->getProductRating($p2) <=> $this->getProductRating($p1)));
 
         $ratings = [];
         foreach ($products as $product) {
