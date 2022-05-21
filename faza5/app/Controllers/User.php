@@ -429,6 +429,9 @@ class User extends BaseController {
         }
 
         $user->balance -= $finalPrice;
+        (new UserM())->update($user->id, [
+            'balance' => $user->balance
+        ]);
 
         // TODO redirect
     }
