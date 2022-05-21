@@ -15,8 +15,6 @@ use CodeIgniter\HTTP\IncomingRequest;
 use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
 use Psr\Log\LoggerInterface;
-use App\Models\GenreM;
-use App\Models\ProductM;
 
 use App\Models\BundleM;
 use App\Models\ProductM;
@@ -75,43 +73,17 @@ class BaseController extends Controller {
      * @return void
      *
      */
-    protected function upload($destDir, $file, $name, $overwrite=true) {
+    protected function upload($destDir, $file, $name, $overwrite = true) {
         $file = $this->request->getFile($file);
 
         if ($file != null && $file->isValid() && !$file->hasMoved())
             $file->move($destDir, $name . '.' . $file->getExtension(), $overwrite);
     }
 
-    protected function show($page, $data = []) {}
 
-    /**
-     *
-     * Prikaz stranice proizvoda
-     *
-     * @return void
-     */
-    public function product($id) {
-        $productM = new ProductM();
-        $product = $productM->find($id);
-
-        if (!isset($product))
-            return redirect()->to(site_url());
-
-        $genres = implode(' ', (new GenreM())->getGenres($id));
-
-        $product_base = $product->base_game != null ? $productM->find($product->base_game) : null;
-
-        $product_dlc = $productM->asArray()->where('base_game', $product->id)->findAll();
-
-        $topReviews = $this->getTopReviews($id);
-
-        $userRes = $this->userViewProduct($id);
-        $res = ['product' => $product, 'genres' => $genres, 'product_base' => $product_base, 'product_dlc' => $product_dlc, 'reviews' => $topReviews];
-
-        $this->show('product', array_merge($res, $userRes));
+    protected function userViewProduct($id) {
+        return [];
     }
-
-    protected function userViewProduct($id) { return []; }
 
     /**
      *
@@ -192,7 +164,7 @@ class BaseController extends Controller {
 
         foreach ($products as $product) {
             $owns = (new OwnershipM())
-                            ->owns($user->id, $product->id);
+                ->owns($user->id, $product->id);
 
             if ($owns === true) {
                 $owned++;
@@ -216,15 +188,17 @@ class BaseController extends Controller {
             0 :
             $price - ($price * $discount) / 100;
 
-        return ['price'    => $price,
-                'discount' => $discount,
-                'final'    => $final];
+        return [
+            'price'    => $price,
+            'discount' => $discount,
+            'final'    => $final
+        ];
     }
 
     protected function bundleProducts($bundleId) {
         $iter = (new BundledProductsM())
-                        ->where('id_bundle', $bundleId)
-                        ->findAll();
+            ->where('id_bundle', $bundleId)
+            ->findAll();
 
         foreach ($iter as $bundle) {
             yield ((new ProductM())->find($bundle->id_product));
@@ -247,9 +221,11 @@ class BaseController extends Controller {
 
         $result = $this->bundlePrice($products, $bundle->discount);
 
-        return $this->show('bundle', ['bundle' => $bundle,
-                                      'bundledProducts' => $products,
-                                      'price' => $result]);
+        return $this->show('bundle', [
+            'bundle' => $bundle,
+            'bundledProducts' => $products,
+            'price' => $result
+        ]);
     }
 
     protected function show($page, $data = []) {
@@ -263,16 +239,30 @@ class BaseController extends Controller {
         echo view('template/footer', $data);
     }
 
+    /**
+     *
+     * Prikaz stranice proizvoda
+     *
+     * @return void
+     */
     public function product($id) {
         $productM = new ProductM();
         $product = $productM->find($id);
 
-        $genres = implode(' ', (new GenreM())->asArray()->where('id_product', $id)->findAll());
+        if (!isset($product))
+            return redirect()->to(site_url());
+
+        $genres = implode(' ', (new GenreM())->getGenres($id));
 
         $product_base = $product->base_game != null ? $productM->find($product->base_game) : null;
 
         $product_dlc = $productM->asArray()->where('base_game', $product->id)->findAll();
 
-        $this->show('product', ['product' => $product, 'genres' => $genres, 'product_base' => $product_base, 'product_dlc' => $product_dlc]);
+        $topReviews = $this->getTopReviews($id);
+
+        $userRes = $this->userViewProduct($id);
+        $res = ['product' => $product, 'genres' => $genres, 'product_base' => $product_base, 'product_dlc' => $product_dlc, 'reviews' => $topReviews];
+
+        $this->show('product', array_merge($res, $userRes));
     }
 }
