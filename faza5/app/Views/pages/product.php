@@ -8,10 +8,16 @@
     <div width="30%" style="padding-left: 20px;">
         <img width=100% class=smooth-border src="<?php echo base_url('uploads/product/' . $product->id . '/banner.jpg')  ?>">
         <p class=highlight-text><?php echo $product->description; ?></p>
-        <h4><?php echo $product->name . " " . $product->price; ?></h4>
-        <form action="<?= site_url("User/buyProduct/{$product->id}") ?>" method="POST">
-            <input type="submit" class="btn" value="BUY">
-        </form>
+        <h4><?php echo $product->name . " " . $price; ?>$
+
+    <?php if ($discount) { ?>
+         -<?php echo $product->discount ?>% Discount</h4>
+    <?php
+            }
+    ?>
+    <form action="<?= site_url("User/buyProduct/{$product->id}") ?>" method="POST">
+        <input type="submit" class="btn" value="BUY">
+    </form>
     </div>
 </div>
 <?php if (isset($product_review)) { ?>
@@ -29,7 +35,9 @@
 ?>
 <div style="display:flex;">
     <p style="margin:20px 5px 20px 0px">Manage Product</p>
-    <input type="button" style="margin:20px 5px 20px 5px;" class="btn" value="Add Discount">
+    <form action="<?= site_url("Admin/addDiscount/{$product->id}") ?>" method="POST">
+        <input type="submit" style="margin:20px 5px 20px 5px;" class="btn" value="Add Discount">
+    </form>
     <a href=manage_product.html class="button">Edit Product</a>
     <a href=index.html class="button" style="margin:20px 0px 20px 5px">Delete Product</a>
 </div>
