@@ -131,4 +131,13 @@ class ProductM extends Model {
             $this->find(3)
         );
     }
+
+    protected $validationRules = [
+        'name' => [
+            'rules'  => "required|alpha_numeric_space|is_unique[product.name]",
+            'errors' => [
+                'is_unique' => 'Name of product already exists in database.'
+            ]
+        ]
+    ];
 }

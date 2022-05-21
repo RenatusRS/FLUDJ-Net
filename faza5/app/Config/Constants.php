@@ -77,3 +77,11 @@ defined('EXIT_USER_INPUT')     || define('EXIT_USER_INPUT', 7); // invalid user 
 defined('EXIT_DATABASE')       || define('EXIT_DATABASE', 8); // database error
 defined('EXIT__AUTO_MIN')      || define('EXIT__AUTO_MIN', 9); // lowest automatically-assigned error code
 defined('EXIT__AUTO_MAX')      || define('EXIT__AUTO_MAX', 125); // highest automatically-assigned error code
+
+
+
+// =============================== project constants =====================================
+defined("MAX_BUNDLE_DISCOUNT")  || define("MAX_BUNDLE_DISCOUNT", 15);
+defined("MIN_BUNDLE_DISCOUNT")  || define("MIN_BUNDLE_DISCOUNT", 0);
+defined("MAX_DESCRIPTION_SIZE")  || define("MAX_DESCRIPTION_SIZE", 4000);
+defined("MIN_DESCRIPTION_SIZE")  || define("MIN_DESCRIPTION_SIZE", 10);
