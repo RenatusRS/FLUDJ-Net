@@ -62,7 +62,8 @@ class Admin extends BaseController {
             'ss3' =>     'uploaded[ss3]|ext_in[ss3,jpg]|is_image[ss3]',
         ]) ||
             ($uploadedBackground && !$this->validate([
-                'background' => 'uploaded[background]|ext_in[background,jpg]|is_image[background]'])));
+                'background' => 'uploaded[background]|ext_in[background,jpg]|is_image[background]'
+            ])));
 
         return !$notValid;
     }
@@ -170,7 +171,8 @@ class Admin extends BaseController {
             // TODO dinamička provera fajla koji može da bude uploadovan pod bilo kojim imenom
         ]) ||
             ($uploadedBackground && !$this->validate([
-                'background' =>  'uploaded[background]|ext_in[background,jpg]|is_image[background]'])));
+                'background' =>  'uploaded[background]|ext_in[background,jpg]|is_image[background]'
+            ])));
 
         return !$notValid;
     }
@@ -213,6 +215,10 @@ class Admin extends BaseController {
         return redirect()->to(site_url("User/Bundle/" . $id));
     }
 
+    /** 
+     * Procesiranje brisanja recenzije od strane administratora
+     * @return void
+     */
     public function DeleteReviewAdminSubmit($id, $posterUsername) {
         $poster = (new UserM())->where('username', $posterUsername)->first();
 
@@ -222,6 +228,38 @@ class Admin extends BaseController {
 
         (new ReviewVoteM())->where('id_product', $id)->where("id_poster", $poster->id)->delete();
 
-        return redirect()->to(site_url("User/Product/{$id}"));
+        return redirect()->to(site_url("user/product/{$id}"));
+    }
+
+    /** 
+     * Prikaz stranice za dodavanje popusta
+     * @return void
+     */
+    public function addDiscount($id) {
+        $this->show('addDiscount', ["productId" => $id]);
+    }
+
+    /** 
+     * Procesiranje popusta
+     * @return void
+     */
+    public function addDiscountSubmit($id) {
+
+        if (!$this->validate(['discount' => 'required|greater_than_equal_to[5]|less_than_equal_to[90]|integer']))
+            return $this->show('addDiscount', ['productId' => $id, 'errors' => $this->validator->getErrors()]);
+
+        $expDate = date($_POST['expDate']);
+
+        $future_date = (new ProductM())->future_date($_POST['expDate']);
+
+        if (!($future_date))
+            return $this->show('addDiscount', ['productId' => $id, 'message' => "Wrong date"]);
+
+        (new ProductM())->update($id, [
+            'discount' => $this->request->getVar('discount'),
+            'discount_expire' => $expDate
+        ]);
+
+        return redirect()->to(site_url("user/product/{$id}"));
     }
 }

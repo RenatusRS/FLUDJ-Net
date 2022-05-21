@@ -260,8 +260,20 @@ class BaseController extends Controller {
 
         $topReviews = $this->getTopReviews($id);
 
+        $price = $productM->getDiscountedPrice($id);
+
+        $discount = $product->discount != 0 ? true : false;
+
         $userRes = $this->userViewProduct($id);
-        $res = ['product' => $product, 'genres' => $genres, 'product_base' => $product_base, 'product_dlc' => $product_dlc, 'reviews' => $topReviews];
+        $res = [
+            'product' => $product,
+            'genres' => $genres,
+            'product_base' => $product_base,
+            'product_dlc' => $product_dlc,
+            'reviews' => $topReviews,
+            'price' => $price,
+            'discount' => $discount
+        ];
 
         $this->show('product', array_merge($res, $userRes));
     }
