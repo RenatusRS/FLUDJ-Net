@@ -21,22 +21,36 @@ use App\Models\BundleM;
 use App\Models\BundledProductsM;
 
 class User extends BaseController {
-
-    /**
-     *Prikaz sadrzaja na stranici
-     *@return void
-     */
-    protected function show($page, $data = []) {
-        $data['controller'] = 'User';
-        $data['user'] = $this->session->get('user');
-        echo view('template/header_user', $data);
-        echo view("pages/$page", $data);
-        echo view('template/footer');
-    }
-
     public function index() {
-        $this->show('index');
+        $productM = new ProductM();
+
+        $heroP = $productM->getHeroProduct();
+        $heroP->description = explode(".", $heroP->description, 2)[0] . ".";
+
+        $highRatingP = $productM->getHighRatingProducts();
+        $topSellerP = $productM->getTopSellersProducts();
+        $discountedP = $productM->getDiscountedProducts();
+        $discoveryP = $productM->getDiscoveryProducts();
+        $couponP = $productM->getCouponProducts();
+        $userLikeP = $productM->getProductsUserLike();
+        $friendsLikeP = $productM->getProductsUserFriendsLike();
+
+        $this->show(
+            'index',
+            [
+                'heroP' => $heroP,
+                'highRatingP' => $highRatingP,
+                'topSellerP' => $topSellerP,
+                'discountedP' => $discountedP,
+                'discoveryP' => $discoveryP,
+                'couponP' => $couponP,
+                'userLikeP' => $userLikeP,
+                'friendsLikeP' => $friendsLikeP
+            ]
+        );
     }
+  
+  
 
     /**
      *Odjavljivanje korisnika
@@ -55,6 +69,7 @@ class User extends BaseController {
         $user = $id == null ? $this->session->get('user') : (new UserM())->find($id);
         if ($id == null) {
             $builder = \Config\Database::connect()->table('user');
+          
             if($this->request->getVar('nickname')!=""){
                 $builder = $builder->set('nickname', $this->request->getVar('nickname'))->set('real_name', $this->request->getVar('real_name'))
                     ->set('country', $this->request->getVar('location'))->set('description', $this->request->getVar('description'))
@@ -95,7 +110,7 @@ class User extends BaseController {
             'balance' => $user->balance
         ]);
 
-        return redirect()->to(site_url("User/Profile/"));
+        return redirect()->to(site_url("user/profile/"));
     }
 
     /**
@@ -188,7 +203,7 @@ class User extends BaseController {
             'rating' => null
         ]);
 
-        return redirect()->to(site_url("User/Product/{$product->id}"));
+        return redirect()->to(site_url("user/product/{$product->id}"));
     }
 
     /**

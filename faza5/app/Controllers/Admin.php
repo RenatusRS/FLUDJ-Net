@@ -10,23 +10,19 @@ use App\Models\OwnershipM;
 use App\Models\ReviewVoteM;
 
 class Admin extends BaseController {
-    protected function show($page, $data = []) {
-        $data['controller'] = 'User';
-        $data['user'] = $this->session->get('user');
-        echo view('template/header_user', $data);
-        echo view("pages/$page", $data);
-        echo view('template/footer');
-    }
-
     public function manageProduct($id = null) {
         $data = [];
-        $product = $genres = null;
+        $product = $genres = $background = null;
 
         if ($id != null) {
             $product = (new ProductM())->find($id);
 
+            $background = base_url('uploads/product/' . $id . '/background.png');
+            if (!file_exists($background))
+                $background = null;
+
             if (!is_object($product)) {
-                $data['errors'] = ['product' => "product with id [$id] doesn't exist"];
+                $data['errors'] = ['product' => "Product with ID [$id] doesn't exist"];
             } else {
                 $genres = (new GenreM())->getGenres($id);
             }
@@ -34,6 +30,7 @@ class Admin extends BaseController {
 
         $data['product'] = $product;
         $data['genres']  = $genres;
+        $data['background'] = $background;
 
         $this->show('manageProduct', $data);
     }

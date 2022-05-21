@@ -6,6 +6,7 @@ Autori:
 
 Opis: Bazicni kontroler
 */
+
 namespace App\Controllers;
 
 use CodeIgniter\Controller;
@@ -14,6 +15,8 @@ use CodeIgniter\HTTP\IncomingRequest;
 use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
 use Psr\Log\LoggerInterface;
+use App\Models\GenreM;
+use App\Models\ProductM;
 
 use App\Models\BundleM;
 use App\Models\ProductM;
@@ -61,7 +64,6 @@ class BaseController extends Controller {
 
         $this->session = session();
     }
-
 
     /**
      * upload
@@ -248,5 +250,29 @@ class BaseController extends Controller {
         return $this->show('bundle', ['bundle' => $bundle,
                                       'bundledProducts' => $products,
                                       'price' => $result]);
+    }
+
+    protected function show($page, $data = []) {
+        $data['user'] = $this->session->get('user');
+        if (!isset($data['background']) || $data['background'] == null)
+            $data['background'] = base_url('assets/background.png');
+
+        echo view('template/essential', $data);
+        echo view('template/header', $data);
+        echo view("pages/$page", $data);
+        echo view('template/footer', $data);
+    }
+
+    public function product($id) {
+        $productM = new ProductM();
+        $product = $productM->find($id);
+
+        $genres = implode(' ', (new GenreM())->asArray()->where('id_product', $id)->findAll());
+
+        $product_base = $product->base_game != null ? $productM->find($product->base_game) : null;
+
+        $product_dlc = $productM->asArray()->where('base_game', $product->id)->findAll();
+
+        $this->show('product', ['product' => $product, 'genres' => $genres, 'product_base' => $product_base, 'product_dlc' => $product_dlc]);
     }
 }
