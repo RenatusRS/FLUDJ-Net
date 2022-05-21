@@ -256,7 +256,7 @@ class User extends BaseController {
      * 
      * @return void   
      */
-    public function LikeSubmit($id, $posterUsername) {
+    public function LikeDislikeSubmit($id, $posterUsername) {
         $poster = (new UserM())->where('username', $posterUsername)->first();
         $user = $this->session->get('user');
 
@@ -266,54 +266,23 @@ class User extends BaseController {
 
         $vote = $review_voteM->where("id_user", $user->id)->where("id_poster", $poster->id)->where("id_product", $id)->first();
 
+        $like = $this->request->getVar('like');
+
         if ($vote) {
-            if ($vote->like == 0)
-                $review_voteM->where('id_product', $id)->where('id_user', $user->id)->where("id_poster", $poster->id)->set(['like' => 1])->update();
-            else
+            if ($vote->like == $like)
                 $review_voteM->where('id_product', $id)->where('id_user', $user->id)->where("id_poster", $poster->id)->delete();
+            else
+                $review_voteM->where('id_product', $id)->where('id_user', $user->id)->where("id_poster", $poster->id)->set(['like' => $like])->update();
         } else {
             $review_voteM->insert([
                 'id_user' => $user->id,
                 'id_poster' => $poster->id,
                 'id_product' => $id,
-                'like' => 1
+                'like' => $like
             ]);
         }
 
-        return redirect()->to(site_url("User/Product/{$id}"));
-    }
-
-    /**
-     * 
-     * Procesiranje dislajkovanja recenzija
-     * 
-     * @return void   
-     */
-    public function DislikeSubmit($id, $posterUsername) {
-        $poster = (new UserM())->where('username', $posterUsername)->first();
-        $user = $this->session->get('user');
-
-        if ($poster->id == $user->id) return redirect()->to(site_url("User/Product/{$id}"));
-
-        $review_voteM = new ReviewVoteM();
-        $vote = $review_voteM->where("id_user", $user->id)->where("id_poster", $poster->id)->where("id_product", $id)->first();
-
-        //user 1 poster 2 prod 1
-        if ($vote) {
-            if ($vote->like == 1)
-                $review_voteM->where('id_product', $id)->where('id_user', $user->id)->where("id_poster", $poster->id)->set(['like' => 0])->update();
-            else
-                $review_voteM->where('id_product', $id)->where('id_user', $user->id)->where("id_poster", $poster->id)->delete();
-        } else {
-            $review_voteM->insert([
-                'id_user' => $user->id,
-                'id_poster' => $poster->id,
-                'id_product' => $id,
-                'like' => 0
-            ]);
-        }
-
-        return redirect()->to(site_url("User/Product/{$id}"));
+        return redirect()->to(site_url("user/product/{$id}"));
     }
 
     /**

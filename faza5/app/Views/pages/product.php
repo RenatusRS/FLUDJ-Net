@@ -101,7 +101,7 @@
 </div>
 
 <div>
-    <h1>Top 5 Reviews</h1>
+    <h1>Top Reviews</h1>
     <?php
     if (isset($reviews)) {
         foreach ($reviews as $name => $review) {
@@ -110,11 +110,13 @@
             <h1><?php echo $name ?></h1>
             <p><?php echo $review["review"]->text ?></p>
             <h2><?php echo $review["review"]->rating ?></h2>
-            <form action="<?= site_url("User/LikeSubmit/{$product->id}/{$name}") ?>" method="POST">
+            <form action="<?= site_url("User/LikeDislikeSubmit/{$product->id}/{$name}") ?>" method="POST">
                 <input type="submit" class="btn" name="action" value="Like <?php echo $review["positive"] ?>">
+                <input type="hidden" name="like" value="1">
             </form>
-            <form action="<?= site_url("User/DislikeSubmit/{$product->id}/{$name}") ?>" method="POST">
+            <form action="<?= site_url("User/LikeDislikeSubmit/{$product->id}/{$name}") ?>" method="POST">
                 <input type="submit" class="btn" name="action" value="Dislike <?php echo $review["negative"] ?>">
+                <input type="hidden" name="like" value="0">
             </form>
             <br>
             <?php if ($admin != 0) { ?>
