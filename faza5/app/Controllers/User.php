@@ -305,6 +305,39 @@ class User extends BaseController {
     }
 
     public function awardUserSubmit($idUser) {
+        $user = $this->session->get('user');
+        $receiver = (new UserM())->find($idUser);
+        $sender = (new UserM())->find($user->id);
+
+        $pointsAwarded = $this->request->getVar('points');
+
+        $user->points = $sender->points - $pointsAwarded;
+
+        $receiverPoints = $receiver->overflow + $pointsAwarded;
+        $overflow = ($receiverPoints % COUPON_POINTS);
+
+        (new UserM())->update($user->id, [
+            'points' => $user->points
+        ]);
+        (new UserM())->update($receiver->id, [
+            'overflow' => $overflow
+        ]);
+
+        $data = [
+            'currentPoints' => $sender->points - $pointsAwarded,
+            'pointsAwarded' => $pointsAwarded,
+            'awardeePoints' => $overflow
+        ];
+
+        while ($receiverPoints >= COUPON_POINTS) {
+            $this->awardCoupon($idUser);
+            $receiverPoints -= COUPON_POINTS;
+        }
+
+        $this->show('awardedSuccess', $data);
+    }
+
+    public function awardCoupon($idUser) {
         // TODO
     }
 

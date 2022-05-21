@@ -85,3 +85,4 @@ defined("MAX_BUNDLE_DISCOUNT")  || define("MAX_BUNDLE_DISCOUNT", 15);
 defined("MIN_BUNDLE_DISCOUNT")  || define("MIN_BUNDLE_DISCOUNT", 0);
 defined("MAX_DESCRIPTION_SIZE")  || define("MAX_DESCRIPTION_SIZE", 4000);
 defined("MIN_DESCRIPTION_SIZE")  || define("MIN_DESCRIPTION_SIZE", 10);
+defined("COUPON_POINTS")         || define("COUPON_POINTS", 1500);
