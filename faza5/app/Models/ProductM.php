@@ -54,8 +54,37 @@ class ProductM extends Model {
             $results :
             array_slice($results, ($offset * $limit), $limit);
     }
-    public function getTopSellersProducts() {
-        // TODO
+    /**
+     * uzima najprodavanije proizvode
+     * u slučaju da niko nije ulogovan, prikazuje ih tako kakve jesu, ako je neko ulogovan
+     * prikazuje samo one koje korisnik ne poseduje
+     *
+     * $limit označava koliko dugačak povratni niz se traži.
+     *
+     * ako se pretražuje više stranica (npr na svakoj stranici ima 10 proizvoda),
+     * $offset uvek označava koja stranica se prikazuje, npr sa $limit = 5 i $offset = 2,
+     * prikazivali bi se proizvodi od 11-15 po poretku (najviše prodanih kopija)
+     *
+     * @param  integer $idUser id trenutnog korisnika (NULL za gosta)
+     * @param  integer $offset objašnjeno u opisu funkcije
+     * @param  integer $limit objašnjeno u opisu funkcije
+     * @return array vraća niz objekta proizvoda poređanih količini prodanih kopija
+     */
+    public function getTopSellersProducts($idUser = null, $offset = 0, $limit = 5) {
+        $results = iterator_to_array((new OwnershipM())->ownedSum());
+
+        if (isset($idUser)) {
+            $results = array_filter($results, function ($productId) use (&$idUser) {
+                return !((new OwnershipM())->owns($idUser, $productId));
+            });
+        }
+
+        array_walk($results, fn ($id) =>
+                                    (new ProductM())->find($id));
+
+        return ($limit <= 0) ?
+            $results :
+            array_slice($results, ($offset * $limit), $limit);
     }
     public function getDiscountedProducts() {
         // TODO

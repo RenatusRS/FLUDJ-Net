@@ -58,6 +58,33 @@ class OwnershipM extends Model {
         }
     }
 
+    /**
+     * nalazi sve id_product koje se pojavljuju najviše puta, odnosno proizvodi
+     * koje najviše ljudi ima
+     *
+     * $limit ograničava koliko će biti proizvoda u povratnoj vrednosti, po podrazumevanom
+     * je "beskonačno" (konačno je ali nedostižan broj) jer ne može drugačije sa mysql
+     *
+     * ako se pretražuje više stranica (npr na svakoj stranici ima 5 proizvoda),
+     * $offset uvek označava koja stranica se prikazuje, npr sa $limit = 5 i $offset = 2,
+     * bili bi vraćeni id_product 11-15
+     *
+     * @param  integer $limit
+     * @param  integer $offset
+     */
+    public function ownedSum($limit = 1000000, $offset = 0) { // limit koristi magičan broj 1000000 jer nema oznaka za beskonačno
+        $this->db = \Config\Database::connect();
+        $res = $this->db->query("SELECT id_product, count(*) as cnt
+                                 FROM $this->table
+                                 GROUP BY id_product
+                                 ORDER BY cnt DESC
+                                 LIMIT $limit, $offset; ");
+
+        foreach ($res->getResult('array') as $row) {
+            yield $row;
+        }
+    }
+
     public static function getProductRating($product) {
         $average = (float)($product['s'] / (5 * $product['cnt']));
         $score = $average - ($average - 0.5) * 2 ** -log10( $product['cnt'] + 1);
