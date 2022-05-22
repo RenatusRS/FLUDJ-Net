@@ -57,4 +57,20 @@ class OwnershipM extends Model {
             yield $row;
         }
     }
+
+    public static function getProductRating($product) {
+        $average = (float)($product['s'] / (5 * $product['cnt']));
+        $score = $average - ($average - 0.5) * 2 ** -log10( $product['cnt'] + 1);
+        // malo je previše pristrasna formula u regresiji ka proseku
+        return $score * 5;
+    }
+
+    public static function getTopProducts() {
+        $products = iterator_to_array((new OwnershipM())->getRatingSums());
+
+        usort($products, fn ($p1, $p2) =>
+                   ($this->getProductRating($p2) <=> $this->getProductRating($p1)));
+
+        return $products;
+    }
 }

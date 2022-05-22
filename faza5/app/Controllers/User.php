@@ -433,32 +433,16 @@ class User extends BaseController {
         // TODO redirect
     }
 
-    private function getProductRating($product) {
-        $average = (float)($product['s'] / (5 * $product['cnt']));
-        $score = $average - ($average - 0.5) * 2 ** -log10( $product['cnt'] + 1);
-        // malo je previše pristrasna formula u regresiji ka proseku
-        return $score * 5;
-    }
-
     public function getTopProducts() {
-        $products = iterator_to_array((new OwnershipM())->getRatingSums());
-
-        usort($products, function ($product1, $product2) {
-            $res = ($this->getProductRating($product2) - $this->getProductRating($product1));
-            if ($res < 0) return -1; // ovo mora ovako jer je php glup i zahteva integer da se vrati (cast iz floata u int ne radi)
-            if ($res > 0) return 1;
-            else          return 0;
-        });
-
+        $products = OwnershipM::getTopProducts();
 
         $ratings = [];
         foreach ($products as $product) {
-            $ratings[$product['id_product']] = $this->getProductRating($product);
+            $ratings[$product['id_product']] = OwnershipM::getProductRating($product);
         }
 
         usort($ratings, fn ($r1, $r2) => (int)($r1-$r2));
 
         $this->show('topProductsTest', ['res' => $products, 'ratings' => $ratings]);
     }
-
 }
