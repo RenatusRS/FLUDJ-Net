@@ -43,9 +43,12 @@ class ProductM extends Model {
      */
     public function getHighRatingProducts($idUser = null, $offset = 0, $limit = 5) {
         $results = OwnershipM::getTopProducts();
-        $results = array_filter($results, function ($product) use(&$idUser) {
-            return !isset($idUser) || !((new OwnershipM())->owns($idUser, $product->id));
-        }); // lambda za filtriranje niza kaže: "ako je idUser = null (niko nije ulogovan) ili ako ulogovan korisnik ne poseduje proizvod, ubaci ga u niz"
+
+        if (isset($idUser)) { // ako korisnik nije ulogovan prikazuju mu se svi proizvodi jer ni jedan ne poseduje
+            $results = array_filter($results, function ($product) use (&$idUser) {
+                return !((new OwnershipM())->owns($idUser, $product->id));
+            }); // lambda za filtriranje niza kaže: "ako ulogovan korisnik ne poseduje proizvod, ubaci proizvod u niz"
+        }
 
         return ($limit <= 0) ?
             $results :
