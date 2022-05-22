@@ -20,11 +20,36 @@ class ProductM extends Model {
             ]
         ]
     ];
+
+
     public function getHeroProduct() {
         // TODO
     }
-    public function getHighRatingProducts() {
-        // TODO
+    /**
+     * uzima najbolje ocenjene proizvode po formuli datoj u OwnershipM::getRating(...).
+     * u slučaju da niko nije ulogovan, prikazuje ih tako kakve jesu, ako je neko ulogovan
+     * prikazuje samo one koje korisnik ne poseduje
+     *
+     * $limit označava koliko dugačak povratni niz se traži.
+     *
+     * ako se pretražuje više stranica (npr na svakoj stranici ima 10 proizvoda),
+     * $offset uvek označava koja stranica se prikazuje, npr sa $limit = 5 i $offset = 2,
+     * prikazivali bi se proizvodi od 11-15 po poretku (najvećih korisničkih ocena)
+     *
+     * @param  integer $idUser id trenutnog korisnika (NULL za gosta)
+     * @param  integer $offset objašnjeno u opisu funkcije
+     * @param  integer $limit objašnjeno u opisu funkcije
+     * @return array vraća niz objekta proizvoda poređanih po ocenama
+     */
+    public function getHighRatingProducts($idUser = null, $offset = 0, $limit = 5) {
+        $results = OwnershipM::getTopProducts();
+        $results = array_filter($results, function ($product) use(&$idUser) {
+            return !isset($idUser) || !((new OwnershipM())->owns($idUser, $product->id));
+        }); // lambda za filtriranje niza kaže: "ako je idUser = null (niko nije ulogovan) ili ako ulogovan korisnik ne poseduje proizvod, ubaci ga u niz"
+
+        return ($limit <= 0) ?
+            $results :
+            array_slice($results, ($offset * $limit), $limit);
     }
     public function getTopSellersProducts() {
         // TODO
