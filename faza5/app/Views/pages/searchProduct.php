@@ -37,7 +37,7 @@ Opis: Stranica za pretragu proizvoda
     $('.search').select2({
       placeholder: 'Search for a product: ',
       ajax: {
-        url: '<?php echo base_url('User/ajaxProductSearch'); ?>',
+        url: '<?php echo base_url('user/ajaxProductSearch'); ?>',
         dataType: 'json',
         delay: 250,
         processResults: function(data) {
@@ -55,7 +55,7 @@ Opis: Stranica za pretragu proizvoda
 
       $.ajax({
         type: 'GET',
-        url: '<?php echo base_url('User/ajaxProductLoad'); ?>',
+        url: '<?php echo base_url('user/ajaxProductLoad'); ?>',
         data: {
           ime: proizvod
         },

@@ -8,8 +8,9 @@
         <?php } else { ?>
             <li><a href="http://localhost:8080/user/profile/"> <?php echo $user->username  ?></a></li>
             <li style="float:right"><a href="http://localhost:8080/user/logout/">LOG OUT</a></li>
+            <li style="float:right"><a href="http://localhost:8080/user/friendrequests/"><i class="bi bi-person-plus-fill"> </i></a></li>
             <li style="float:right"><a href="http://localhost:8080/user/coupons/"><?php echo $user->points ?>P</a></li>
-            <li style="float:right"><a href="http://localhost:8080/user/addfunds/">$<?php echo number_format($user->balance, 2); ?></a></li>
+            <li style="float:right"><a href="http://localhost:8080/user/addfunds/">$<?php echo number_format($user->balance, 2) ?></a></li>
         <?php } ?>
     </ul>
 
@@ -24,6 +25,9 @@
             <?php if (isset($product)) { ?>
                 <a href="http://localhost:8080/admin/manageproduct/">
                     <div><i class="bi bi-pencil"></i><br />Edit Product</div>
+                </a>
+                <a href="http://localhost:8080/admin/setdiscount/">
+                    <div><i class="bi bi-cash-coin"></i><br />Set Discount</div>
                 </a>
             <?php } ?>
             <?php if (isset($bundle)) { ?>

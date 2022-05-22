@@ -36,10 +36,10 @@ foreach ($requesters as $requester) {
 ?>
 
     <div id="<?php echo $requester->id . "requester" ?>>" style="margin: 100px auto; width: 325px; padding: 15px; border-radius: 9px;">
-        <form name='fr_accept_btn' action="<?= site_url("User/FriendRequests"); ?>" method="POST">
+        <form name='fr_accept_btn' action="<?= site_url("user/friendrequests"); ?>" method="POST">
             <input type="submit" name=<?= $requester->id . "ACCEPT" ?> class="btn" value=<?= "ACCEPT" ?>>
         </form>
-        <form name='fr_reject_btn' action="<?= site_url("User/FriendRequests"); ?>" method="POST">
+        <form name='fr_reject_btn' action="<?= site_url("user/friendrequests"); ?>" method="POST">
             <input type="submit" name=<?= $requester->id . "REJECT" ?> class="btn" value=<?= "REJECT" ?>>
         </form>
     </div>
@@ -61,7 +61,7 @@ foreach ($requestedTo as $requestedToUser) {
 
 ?>
     <div id="<?php echo $requestedToUser->id ?>>" style="margin: 100px auto; width: 325px; padding: 15px; border-radius: 9px;">
-        <form name='fr_cancel_btn' action="<?= site_url("User/FriendRequests"); ?>" method="POST">
+        <form name='fr_cancel_btn' action="<?= site_url("user/friendrequests"); ?>" method="POST">
             <input type="submit" name=<?= $requestedToUser->id . "CANCEL" ?> class="btn" value=<?= "CANCEL" ?>>
         </form>
     </div>

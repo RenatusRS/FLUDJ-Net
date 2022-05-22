@@ -10,7 +10,6 @@ use App\Models\RelationshipM;
 
 class Guest extends BaseController {
     public function index() {
-
         $productM = new ProductM();
 
         $heroP = $productM->getHeroProduct();
@@ -52,7 +51,7 @@ class Guest extends BaseController {
         if ($user == null || $user->password != $this->request->getVar('password'))
             return $this->login('Wrong username or password!');
 
-        $this->session->set('user', $user);
+        $this->session->set('user_id', $user->id);
 
         return redirect()->to(site_url('user'));
     }
@@ -73,11 +72,13 @@ class Guest extends BaseController {
         ]);
 
         $user = $userM->where('username', $this->request->getVar('username'))->first();
-        $this->session->set('user', $user);
+        $this->session->set('user_id', $user->id);
         return redirect()->to(site_url("user/profile/"));
     }
 
-    protected function userViewProduct($id) { return []; }
+    protected function userViewProduct($id) {
+        return [];
+    }
 
     protected function bundlePrice($products, $discount) {
         $price = 0.0;
@@ -85,7 +86,9 @@ class Guest extends BaseController {
             $price += $product->price;
         }
 
-        return ['price' => $price,
-                'discount' => $discount];
+        return [
+            'price' => $price,
+            'discount' => $discount
+        ];
     }
 }

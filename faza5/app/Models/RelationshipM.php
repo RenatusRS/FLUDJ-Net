@@ -10,6 +10,7 @@ Opis: Model za vezu (prijateljski zahtev) izmedju korisnika
 @return object RelationshipM
 
 */
+
 namespace App\Models;
 
 use CodeIgniter\Model;
@@ -36,18 +37,16 @@ class RelationshipM extends Model {
      */
     public function getFriends($user) {
         $userM = new UserM();
+        $friendRows = (new RelationshipM())->where("status", 1)->groupStart()->where("id_user1", $user->id)->orWhere("id_user2", $user->id)->groupEnd()->findAll();
 
-        $RelationshipM = new RelationshipM();
-        $friendRows = $RelationshipM->where("status", 1)->groupStart()->where("id_user1", $user->id)->orWhere("id_user2", $user->id)->groupEnd()->findAll();
         $friends = [];
         foreach ($friendRows as $friendRow) {
-            if ($friendRow->id_user1 == $user->id) {
-                $friend = $userM->find($friendRow->id_user2);
-            } else {
-                $friend = $userM->find($friendRow->id_user1);
-            }
+            if ($friendRow->id_user1 == $user->id) $friend = $userM->find($friendRow->id_user2);
+            else $friend = $userM->find($friendRow->id_user1);
+
             array_push($friends, $friend);
         }
+
         return $friends;
     }
 
@@ -66,7 +65,7 @@ class RelationshipM extends Model {
 
         $requesters = [];
         foreach ($requestersRows as $requestersRow) {
-            $sender=$userM->find($requestersRow->id_user1);
+            $sender = $userM->find($requestersRow->id_user1);
             array_push($requesters, $sender);
         }
 
@@ -87,14 +86,10 @@ class RelationshipM extends Model {
 
         $requestedTo = [];
         foreach ($requestedToRows as $requestToRow) {
-            $recipient=$userM->find($requestToRow->id_user2);
+            $recipient = $userM->find($requestToRow->id_user2);
             array_push($requestedTo, $recipient);
         }
 
         return $requestedTo;
     }
-
-
-
-
 }

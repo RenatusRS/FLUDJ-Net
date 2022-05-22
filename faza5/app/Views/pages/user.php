@@ -9,68 +9,101 @@ Ako je tudji profil - mogucnost dodavanja, uklanjanja, odbijanja i prihvatanja z
 -->
 
 <title><?php echo $user_profile->nickname ?></title>
-<h3>Profile</h3>
 
 <?php
 ob_start();
 
-use App\Models\UserM;
 use App\Models\RelationshipM;
-?>
+use App\Models\UserM;
 
-<h2>Friends</h2>
-<?php
-$id = $user_profile->id;
-$r = (new RelationshipM())->asArray()->where('id_user1', $id)->where('status', true)->orWhere('id_user2', $id)->where('status', true)->findAll();
-foreach ($r as $row) {
-    $friend = $row['id_user1'] == $id ? $row['id_user2'] :  $row['id_user1'];
-    $usM = (new UserM())->where('id', $friend)->first();
-    echo '<h5>' . $usM->nickname . '</h5>';
-}
+$userM = new UserM();
+$relationshipM = new RelationshipM();
 
-if ($user->id == $user_profile->id)
-    echo "Your profile.";
-else {
-    echo "Profile of $user_profile->nickname";
-    $buttonName = "ADD_FRIEND";
-    $cory = (new RelationshipM())->asArray()->where('id_user1', $user->id)->where('id_user2', $user_profile->id)->where('status', 1)->orWhere('id_user1', $user_profile->id)->where('id_user2', $user->id)->where('status', 1)->findAll();
-    //"SELECT * FROM `relationships` WHERE (id_user1=$user->id AND id_user2=$user_profile->id AND status=true) OR (id_user1=$user_profile->id AND id_user2=$user->id AND status=true)"
-    if (sizeof($cory) > 0) $buttonName = "REMOVE_FRIEND";
-    $cory = (new RelationshipM())->asArray()->where('id_user1', $user->id)->where('id_user2', $user_profile->id)->where('status', 0)->Orwhere('id_user1', $user_profile->id)->where('id_user2', $user->id)->where('status', 0)->findAll();
-    //"SELECT `id_user1` FROM `relationships` WHERE (id_user1=$user->id AND id_user2=$user_profile->id AND status=false) OR (id_user1=$user_profile->id AND id_user2=$user->id AND status=false)"
+if ($user->id != $user_profile->id) {
+    $buttonName = "Add Friend";
+    $cory = $relationshipM->asArray()->where('id_user1', $user->id)->where('id_user2', $user_profile->id)->where('status', 1)->orWhere('id_user1', $user_profile->id)->where('id_user2', $user->id)->where('status', 1)->findAll();
+
+    if (sizeof($cory) > 0) $buttonName = "Remove Friend";
+    $cory = $relationshipM->asArray()->where('id_user1', $user->id)->where('id_user2', $user_profile->id)->where('status', 0)->Orwhere('id_user1', $user_profile->id)->where('id_user2', $user->id)->where('status', 0)->findAll();
+
     if (sizeof($cory) > 0) {
         $value = $cory[0];
-        if ($value['id_user1'] == $user->id) {
-            $buttonName = "CANCEL_REQUEST";
-        } else {
-            $buttonName = "ACCEPT_REQUEST";
-        }
+        if ($value['id_user1'] == $user->id) $buttonName = "Cancel Request";
+        else $buttonName = "Accept Request";
     }
-?>
-    <?php
+
     if (isset($_POST['frnd_btn'])) {
-        $builder = \Config\Database::connect()->table('relationship');
-        if ($buttonName == "ADD_FRIEND") {
-            $data = ['id_user1' => $user->id, 'id_user2' => $user_profile->id, 'status' => 0,];
-            $builder->insert($data);
-        } else if ($buttonName == "CANCEL_REQUEST") {
-            $builder->where('id_user1', $user->id)->where('id_user2', $user_profile->id)->delete();
-        } else if ($buttonName == "ACCEPT_REQUEST") {
-            $builder->set('status', 1)->where('id_user1', $user_profile->id)->where('id_user2', $user->id)->update();
-        } else if ($buttonName == "REMOVE_FRIEND") {
-            $builder->where('id_user1', $user->id)->where('id_user2', $user_profile->id)->OrWhere('id_user1', $user_profile->id)->where('id_user2', $user->id)->delete();
+        switch ($buttonName) {
+            case "Add Friend":
+                $relationshipM->insert([
+                    'id_user1' => $user->id,
+                    'id_user2' => $user_profile->id,
+                    'status' => 0
+                ]);
+                break;
+
+            case "Remove Friend":
+                $relationshipM->where('id_user1', $user->id)->where('id_user2', $user_profile->id)->OrWhere('id_user1', $user_profile->id)->where('id_user2', $user->id)->delete();
+                break;
+
+            case "Accept Request":
+                $relationshipM->set('status', 1)->where('id_user1', $user_profile->id)->where('id_user2', $user->id)->update();
+                break;
+
+            case "Cancel Request":
+                $relationshipM->where('id_user1', $user->id)->where('id_user2', $user_profile->id)->delete();
+                break;
         }
+
         unset($_POST['frnd_btn']);
         header("Refresh:0");
     }
-    ?>
+} ?>
 
-    <div id="main" style="margin: 100px auto; width: 325px; padding: 15px; border-radius: 9px;">
-        <form name='friend_button' action="<?= site_url("User/Profile/" . $user_profile->id); ?>" method="POST">
-            <input type="submit" name="frnd_btn" class="btn" value=<?= $buttonName ?>>
-        </form>
+<div id=main>
+    <div id=profile-head style="display:flex;background-color: black;border-radius: 5px; max-height: 250px;   min-width: 770px; margin: 0 0 15px 0">
+        <div style="width:25%;float:left; min-width: 150px; position: relative;">
+            <img width=100% class=smooth-border style="padding-right: 13px" src="<?php echo $avatar ?>">
+        </div>
+        <div style="width:120%;float:left;align-content: left; justify-content: left;  min-width: 620px">
+            <h3 style="margin: 7px 0px"><?php echo $user_profile->nickname ?></h3>
+            <i><?php echo $user_profile->real_name ?></i>
+            <br><br>
+            <?php echo $user_profile->description ?>
+        </div>
+        <div style="width:25%;float:right">
+            <?php if ($user_profile == $user) { ?>
+                <a href="http://localhost:8080/user/editprofile/"><input type="button" class="btn" value="Edit Profile" style="margin:0px;border-radius: 0 5px 0 0;max-height: 100%;height: 100%;max-width: 250px;"></a>
+            <?php } else { ?>
+                <form name='friend_button' action="<?= site_url("user/profile/" . $user_profile->id); ?>" method="POST" style="margin: 0">
+                    <input type="submit" name="frnd_btn" class="btn" value="<?= $buttonName ?>" style="margin:0px;border-radius: 0 5px 0 0;max-height: 50%;height: 50%;max-width: 250px;">
+                </form>
+                <a href="http://localhost:8080/user/reward/<?php echo $user_profile->id ?>"><input type="button" class="btn" value="Reward User" style="margin:0px;border-radius: 0 0 5px 0;max-height: 50%;height: 50%;max-width: 250px;"></a>
+            <?php } ?>
+        </div>
     </div>
+    <div style="min-width: 770px;">
+        <div style="background-color: black;border-radius: 5px;float:left;">
+            <div>
+                <h2>Products</h2>
+            </div>
+            <div>
+                <h2>
+                    Featured Review
+                </h2>
+            </div>
+        </div>
+        <div style="background-color: black;border-radius: 5px;float:right; width: 15%; padding: 10px">
+            <h2>Friends</h2>
 
-<?php
-} //end else - drugi profil
-?>
+            <?php foreach ($friends as $friend) { ?>
+                <a href="http://localhost:8080/user/profile/<?php echo $friend->id ?>">
+                    <div style="margin:5px">
+                        <img style=" width:25%;vertical-align: middle" src="<?php echo $userM->getAvatar($friend->id) ?>">
+                        <span style="vertical-align: middle"><?php echo $friend->nickname ?></span>
+                    </div>
+                </a>
+            <?php } ?>
+        </div>
+    </div>
+</div>

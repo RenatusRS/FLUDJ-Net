@@ -23,5 +23,11 @@ class BundleM extends Model {
             ]
         ]
     ];
-}
 
+    public function getBackground($id) {
+        $background = $this->getAsset('uploads/bundle/' . $id . '/background.png');
+
+        if ($background == null) return base_url('assets/background.png');
+        return $background;
+    }
+}

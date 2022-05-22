@@ -15,11 +15,10 @@ class Admin extends BaseController {
         $product = $genres = $background = null;
 
         if ($id != null) {
-            $product = (new ProductM())->find($id);
+            $productM = new ProductM();
+            $product = $productM->find($id);
 
-            $background = base_url('uploads/product/' . $id . '/background.png');
-            if (!file_exists($background))
-                $background = null;
+            $background = $productM->getBackground($id);
 
             if (!is_object($product)) {
                 $data['errors'] = ['product' => "Product with ID [$id] doesn't exist"];
@@ -129,7 +128,7 @@ class Admin extends BaseController {
         if ($uploaded)
             $this->upload($targetDir, 'background', 'background');
 
-        return redirect()->to(site_url("User/Product/" . $id));
+        return redirect()->to(site_url("user/product/" . $id));
     }
 
     public function addBundle() {
@@ -212,7 +211,7 @@ class Admin extends BaseController {
         if ($uploaded)
             $this->upload($targetDir, 'background', 'background');
 
-        return redirect()->to(site_url("User/Bundle/" . $id));
+        return redirect()->to(site_url("user/bundle/" . $id));
     }
 
     /** 
@@ -221,8 +220,6 @@ class Admin extends BaseController {
      */
     public function DeleteReviewAdminSubmit($id, $posterUsername) {
         $poster = (new UserM())->where('username', $posterUsername)->first();
-
-        $user = $this->session->get('user');
 
         (new OwnershipM())->where('id_product', $id)->where('id_user', $poster->id)->set(['rating' => NULL, 'text' => NULL])->update();
 

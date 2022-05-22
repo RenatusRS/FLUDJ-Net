@@ -61,26 +61,6 @@ class User extends BaseController {
         return redirect()->to(site_url('/'));
     }
 
-    /** 
-     *Prikaz svog ili tudjeg profila
-     *@return void
-     */
-    public function profile($id = null) {
-        $user = $id == null ? $this->session->get('user') : (new UserM())->find($id);
-        if ($id == null) {
-            $builder = \Config\Database::connect()->table('user');
-
-            if ($this->request->getVar('nickname') != "") {
-                $builder = $builder->set('nickname', $this->request->getVar('nickname'))->set('real_name', $this->request->getVar('real_name'))
-                    ->set('country', $this->request->getVar('location'))->set('description', $this->request->getVar('description'))
-                    ->/*set('featured_review', $this->request->getVar('review'))*/where('id', $user->id)->update();
-                $this->upload('public/uploads/user/', 'profile_pic', $user->id);
-            }
-        }
-
-        $this->show('user.php', ['user_profile' => $user]);
-    }
-
     /**
      * 
      * Prikaz stranice za uplacivanje novca
@@ -101,7 +81,7 @@ class User extends BaseController {
         if (!$this->validate(['funds' => 'required|numeric|greater_than[0]']))
             return $this->show('addFunds', ['errors' => $this->validator->getErrors()]);
 
-        $user = $this->session->get('user');
+        $user = $this->getUser();
 
         $user->balance += $this->request->getVar('funds');
 
@@ -120,7 +100,7 @@ class User extends BaseController {
      * @return void   
      */
     public function buyProduct($id) {
-        $user = $this->session->get('user');
+        $user = $this->getUser();
 
         $friends =  (new RelationshipM())->getFriends($user);
 
@@ -138,7 +118,7 @@ class User extends BaseController {
      * @return array array containing user-specific info such as if user has review of product, and if user has admin privileges
      */
     protected function userViewProduct($id) {
-        $user = $this->session->get('user');
+        $user = $this->getUser();
 
         $product_review = (new OwnershipM())->where('id_product', $id)->where('id_user', $user->id)->first();
 
@@ -156,7 +136,7 @@ class User extends BaseController {
      * @return void   
      */
     public function buyProductSubmit($id) {
-        $userFrom = $this->session->get('user');
+        $userFrom = $this->getUser();
 
         $friends = (new RelationshipM())->getFriends($userFrom);
 
@@ -223,7 +203,7 @@ class User extends BaseController {
      *@return void
      */
     public function friendRequests() {
-        $user = $this->session->get('user');
+        $user = $this->getUser();
         $relationshipM = new RelationshipM();
 
         $requesters = $relationshipM->getIncoming($user);
@@ -241,13 +221,13 @@ class User extends BaseController {
     public function makeReviewSubmit($id) {
         $text = $this->request->getVar('text');
         $rating = $this->request->getVar('rating');
-        $user = $this->session->get('user');
+        $user = $this->getUser();
 
         (new OwnershipM())->where('id_product', $id)->where('id_user', $user->id)->set(['rating' => $rating, 'text' => $text])->update();
 
         $product = (new ProductM())->find($id);
 
-        return redirect()->to(site_url("User/Product/{$product->id}"));
+        return redirect()->to(site_url("user/product/{$product->id}"));
     }
 
     /**
@@ -258,7 +238,7 @@ class User extends BaseController {
      */
     public function LikeDislikeSubmit($id, $posterUsername) {
         $poster = (new UserM())->where('username', $posterUsername)->first();
-        $user = $this->session->get('user');
+        $user = $this->getUser();
 
         if ($poster->id == $user->id) return redirect()->to(site_url("User/Product/{$id}"));
 
@@ -358,7 +338,7 @@ class User extends BaseController {
      * @return void
      */
     public function deleteReviewSubmit($id) {
-        $user = $this->session->get('user');
+        $user = $this->getUser();
 
         (new OwnershipM())->where('id_product', $id)->where('id_user', $user->id)->set(['rating' => NULL, 'text' => NULL])->update();
 
@@ -374,7 +354,7 @@ class User extends BaseController {
      * @return void
      */
     public function buyBundle($id = null) {
-        $user = $this->session->get('user');
+        $user = $this->getUser();
         $bundle = (new BundleM())->find($id);
 
         if (!isset($bundle)) {
@@ -393,7 +373,7 @@ class User extends BaseController {
 
     public function buyBundleSubmit($id) {
         $finalPrice = $this->request->getVar('final');
-        $user = $this->session->get('user');
+        $user = $this->getUser();
 
         if ($user->balance < $finalPrice) {
             return;

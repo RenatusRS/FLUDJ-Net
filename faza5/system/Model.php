@@ -772,4 +772,9 @@ class Model extends BaseModel {
 
         return $properties;
     }
+
+    protected function getAsset($path) {
+        if (!file_exists($path)) return null;
+        return base_url($path);
+    }
 }

@@ -101,8 +101,6 @@ header li a:not(#logo) {
     transition: 0.2s;
 }
 
-
-
 #logo {
     display: block;
     margin: 9px 20px;
@@ -131,7 +129,6 @@ footer span {
 footer img {
     vertical-align: middle;
 }
-
 
 .video-container {
     width: 100%;
@@ -217,7 +214,8 @@ footer img {
 .price-original {
     color: gray;
     text-decoration: line-through;
-    font-size: 1.2vw;;
+    font-size: 1.2vw;
+    ;
 }
 
 .price {
@@ -228,7 +226,6 @@ footer img {
 .product-name {
     font-size: 1.9vw;
 }
-
 
 .button {
     color: black;

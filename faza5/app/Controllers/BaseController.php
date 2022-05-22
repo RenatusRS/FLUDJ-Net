@@ -23,6 +23,7 @@ use App\Models\ReviewVoteM;
 use App\Models\UserM;
 use App\Models\BundledProductsM;
 use App\Models\GenreM;
+use App\Models\RelationshipM;
 
 /**
  * Class BaseController
@@ -159,7 +160,7 @@ class BaseController extends Controller {
     protected function bundlePrice($products, $discount) {
         $price = 0.0;
         $owned = 0;
-        $user = $this->session->get('user');
+        $user = $this->getUser();
         $cnt = count($products);
 
         foreach ($products as $product) {
@@ -229,7 +230,8 @@ class BaseController extends Controller {
     }
 
     protected function show($page, $data = []) {
-        $data['user'] = $this->session->get('user');
+        $data['user'] = $this->getUser();
+
         if (!isset($data['background']) || $data['background'] == null)
             $data['background'] = base_url('assets/background.png');
 
@@ -237,6 +239,11 @@ class BaseController extends Controller {
         echo view('template/header', $data);
         echo view("pages/$page", $data);
         echo view('template/footer', $data);
+    }
+
+    protected function getUser() {
+        if (!session()->has('user_id')) return null;
+        return (new UserM())->find($this->session->get('user_id'));
     }
 
     /**
@@ -276,5 +283,36 @@ class BaseController extends Controller {
         ];
 
         $this->show('product', array_merge($res, $userRes));
+    }
+
+    /** 
+     *Prikaz svog ili tudjeg profila
+     *@return void
+     */
+    public function profile($id = null) {
+        $userM = new UserM();
+        $user = $id == null ? $this->getUser() : $userM->find($id);
+
+        if ($user == null) return $this->show('registration');
+
+        if ($id == null) {
+            $builder = \Config\Database::connect()->table('user');
+
+            if ($this->request->getVar('nickname') != "") {
+                $builder = $builder
+                    ->set('nickname', $this->request->getVar('nickname'))
+                    ->set('real_name', $this->request->getVar('real_name'))
+                    ->set('description', $this->request->getVar('description'))
+                    ->/*set('featured_review', $this->request->getVar('review'))*/where('id', $user->id)->update();
+
+                $this->upload('public/uploads/user/', 'profile_pic', $user->id);
+            }
+        }
+
+        $friends = (new RelationshipM())->getFriends($user);
+
+        $avatar = $userM->getAvatar($user->id);
+
+        $this->show('user', ['user_profile' => $user, 'friends' => $friends, 'avatar' => $avatar]);
     }
 }
