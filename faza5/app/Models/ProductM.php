@@ -20,4 +20,32 @@ class ProductM extends Model {
             ]
         ]
     ];
+    public function getHeroProduct() {
+        // TODO
+    }
+    public function getHighRatingProducts() {
+        // TODO
+    }
+    public function getTopSellersProducts() {
+        // TODO
+    }
+    public function getDiscountedProducts() {
+        // TODO
+    }
+    public function getDiscoveryProducts() {
+        // TODO
+    }
+    public function getCouponProducts() {
+        // TODO
+    }
+    public function getProductsUserLike() {
+        // TODO
+    }
+    public function getProducsUserFriendsLike() {
+        // TODO
+    }
+    public function getSimilarProducts($productId) {
+        // TODO
+    }
+
 }
