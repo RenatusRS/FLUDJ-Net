@@ -14,6 +14,8 @@ Ako je tudji profil - mogucnost dodavanja, uklanjanja, odbijanja i prihvatanja z
 <?php
 ob_start();
 
+use App\Models\OwnershipM;
+use App\Models\ProductM;
 use App\Models\UserM;
 use App\Models\RelationshipM;
 ?>
@@ -73,4 +75,16 @@ else {
 
 <?php
 } //end else - drugi profil
+
+    //review
+    if($user_profile->featured_review!=NULL){
+        $myReview=(new OwnershipM())->where('id_user', $user_profile->id)->where('id_product', $user_profile->featured_review)->first();
+        $revProduct=(new ProductM())->where('id', $user_profile->featured_review)->first();
+
+    ?>  
+        <h3>Featured review</h3>
+        <?php echo $revProduct->name." review from ".$user_profile->nickname; echo " ".$myReview->rating."/5" ?>
+        <textarea readonly name="prof_desc" cols="40" rows="10"> <?php echo $myReview->text; ?> </textarea>
+    <?php
+    }
 ?>
