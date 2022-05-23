@@ -91,11 +91,17 @@ class OwnershipM extends Model {
         // malo je previše pristrasna formula u regresiji ka proseku
         return $score * 5;
     }
-    public static function getDiscountRating($product) {
-        $rate = OwnershipM::getProductRating($product);
-        $score = $rate * $product->discount ** (log10($rate));
+    public static function getDiscountRating($product, $couponDiscount = null) {
+        $discount = ($couponDiscount == null) ?
+            $product->discount :
+            $couponDiscount;
+        $rating = OwnershipM::getProductRating($product);
+        $score = $rating * $discount ** (log10($rating));
 
         return $score;
+    }
+    public static function getCouponRating($product, $coupon) {
+        return OwnershipM::getDiscountRating($product, $coupon);
     }
 
     public static function getTopProducts() {

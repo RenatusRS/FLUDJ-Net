@@ -99,8 +99,27 @@ class ProductM extends Model {
     public function getDiscoveryProducts() {
         // TODO
     }
-    public function getCouponProducts() {
-        // TODO
+    public function getCouponProducts($idUser = null, $offset = 0, $limit = 0) {
+        if ($idUser == null)
+            return [];
+
+        $coupons = (new CouponM())->getAllCoupons($idUser);
+        $products = [];
+        foreach ($coupons as $coupon) {
+            $id = $coupon->id;
+            array_push($products, (new ProductM())->find($id));
+            $products[$id]['coupon'] = $coupon->discount;
+        }
+
+        usort($products, function ($p1, $p2) {
+            $c1 = $p1['coupon'];
+            $c2 = $p2['coupon'];
+            return OwnershipM::getCouponRating($p2, $c2) <=> OwnershipM::getCouponRating($p1, $c1);
+        });
+
+        return ($limit <= 0) ?
+            $products :
+            array_slice($products, ($offset * $limit), $limit);
     }
     public function getProductsUserLike() {
         // TODO
