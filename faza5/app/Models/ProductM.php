@@ -79,9 +79,6 @@ class ProductM extends Model {
             });
         }
 
-        array_walk($results, fn ($id) =>
-                                    (new ProductM())->find($id));
-
         return ($limit <= 0) ?
             $results :
             array_slice($results, ($offset * $limit), $limit);

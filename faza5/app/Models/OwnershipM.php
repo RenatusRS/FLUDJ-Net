@@ -49,7 +49,7 @@ class OwnershipM extends Model {
 
     public function getRatingSums() {
         $this->db = \Config\Database::connect();
-        $res = $this->db->query("SELECT id_product, sum(rating) as s, count(*) as cnt
+        $res = $this->db->query("SELECT *, sum(rating) as s, count(*) as cnt
                                  FROM $this->table
                                  GROUP BY id_product; ");
 
@@ -59,7 +59,7 @@ class OwnershipM extends Model {
     }
 
     /**
-     * nalazi sve id_product koje se pojavljuju najviše puta, odnosno proizvodi
+     * nalazi sve proizvode koje se pojavljuju najviše puta, odnosno proizvodi
      * koje najviše ljudi ima
      *
      * $limit ograničava koliko će biti proizvoda u povratnoj vrednosti, po podrazumevanom
@@ -74,7 +74,7 @@ class OwnershipM extends Model {
      */
     public function ownedSum($limit = 1000000, $offset = 0) { // limit koristi magičan broj 1000000 jer nema oznaka za beskonačno
         $this->db = \Config\Database::connect();
-        $res = $this->db->query("SELECT id_product, count(*) as cnt
+        $res = $this->db->query("SELECT *, count(*) as cnt
                                  FROM $this->table
                                  GROUP BY id_product
                                  ORDER BY cnt DESC
