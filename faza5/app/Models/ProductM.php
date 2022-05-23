@@ -83,8 +83,18 @@ class ProductM extends Model {
             $results :
             array_slice($results, ($offset * $limit), $limit);
     }
-    public function getDiscountedProducts() {
-        // TODO
+    public function getDiscountedProducts($idUser = null, $offset = 0, $limit = 0) {
+        $results = iterator_to_array((new OwnerShipM())->getRatingSums());
+
+        $results = array_filter($results, function($product) use (&$idUser) {
+            return ($product->discount > 0) &&
+                   (!isset($idUser) || !((new OwnershipM())->owns($idUser, $product->id)));
+        }); // lambda kaže "ako je proizvod na sniženju + ako korisnik nije ulogovan, ili ako ulogovan ne poseduje proizvod, ostavi ga u nizu"
+
+        usort($results, fn($p1, $p2) =>
+                    OwnershipM::getDiscountRating($p2) <=> OwnershipM::getDiscountRating($p1));
+
+        return $results;
     }
     public function getDiscoveryProducts() {
         // TODO
