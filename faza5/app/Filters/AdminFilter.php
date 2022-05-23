@@ -16,7 +16,7 @@ class AdminFilter implements FilterInterface {
         if (!$session->has('user_id')) return redirect()->to(site_url('guest/registration'));
 
 
-        if ((new UserM())->find($this->session->get('user_id'))->admin_rights != 1) return redirect()->to(site_url('user'));
+        if ((new UserM())->find($session->get('user_id'))->admin_rights != 1) return redirect()->to(site_url('user'));
     }
 
     public function after(RequestInterface $request, ResponseInterface $reponse, $arguments = null) {

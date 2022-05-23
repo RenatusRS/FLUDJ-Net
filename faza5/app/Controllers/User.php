@@ -292,14 +292,6 @@ class User extends BaseController {
     }
 
     /**
-     *Prikaz stranice za pretragu korisnika
-     *@return void
-     */
-    public function searchUser() {
-        $this->show('searchUser.php');
-    }
-
-    /**
      *Ajax funkcija za azurno ucitavanje rezultata proizvoda
      *@return array(data)
      */

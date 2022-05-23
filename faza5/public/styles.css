@@ -56,7 +56,7 @@ body {
 .sidenav div {
     padding: 10px;
     border-right: black 2px solid;
-    transition: 0.2s;
+    transition: 0.3s;
 }
 
 .sidenav div:hover {
@@ -98,12 +98,17 @@ header li a:not(#logo) {
     padding: 18px 16px;
     text-decoration: none;
     border-bottom: 2px solid rgb(0, 0, 0);
-    transition: 0.2s;
+    transition: 0.3s;
 }
 
 #logo {
     display: block;
     margin: 9px 20px;
+    transition: 0.25s;
+}
+
+#logo:hover {
+    transform:rotate(90deg);
 }
 
 header li a:hover:not(#logo),
@@ -283,7 +288,6 @@ footer img {
     width: 100%;
     border-radius: 5px;
     box-shadow: 0px 0px 15px black;
-
 }
 
 .smooth-border {
@@ -336,6 +340,16 @@ input[type=password].full {
     border-radius: 3px;
 }
 
+textarea {
+    border: solid gray 1px;
+    background-color: rgba(0, 0, 0, 0);
+    color: rgb(255, 196, 0);
+    font-size: 15px;
+    border-radius: 3px;
+    margin: 5px 0 20px 0;
+    padding: 15px 15px;
+}
+
 .grid-container {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -374,4 +388,8 @@ h6 {
 
 p {
     margin: 5px 0;
+}
+
+form {
+    margin:0;
 }

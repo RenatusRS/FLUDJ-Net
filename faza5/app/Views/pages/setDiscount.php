@@ -1,7 +1,7 @@
-<title>Add Discount</title>
+<title>Set Discount</title>
 
 <div id=short-main>
-  <form name='addDiscountForm' action="<?= site_url("Admin/addDiscountSubmit/{$productId}") ?>" method="POST">
+  <form name='setDiscountForm' action="<?= site_url("Admin/setDiscountSubmit/{$productId}") ?>" method="POST">
     <span class="input-label">Add Discount</span>
     <input type="text" name="discount" class="full" required />
     <?php

@@ -232,25 +232,25 @@ class Admin extends BaseController {
      * Prikaz stranice za dodavanje popusta
      * @return void
      */
-    public function addDiscount($id) {
-        $this->show('addDiscount', ["productId" => $id]);
+    public function setDiscount($id) {
+        $this->show('setDiscount', ["productId" => $id]);
     }
 
     /** 
      * Procesiranje popusta
      * @return void
      */
-    public function addDiscountSubmit($id) {
+    public function setDiscountSubmit($id) {
 
         if (!$this->validate(['discount' => 'required|greater_than_equal_to[5]|less_than_equal_to[90]|integer']))
-            return $this->show('addDiscount', ['productId' => $id, 'errors' => $this->validator->getErrors()]);
+            return $this->show('setDiscount', ['productId' => $id, 'errors' => $this->validator->getErrors()]);
 
         $expDate = date($_POST['expDate']);
 
         $future_date = (new ProductM())->future_date($_POST['expDate']);
 
         if (!($future_date))
-            return $this->show('addDiscount', ['productId' => $id, 'message' => "Wrong date"]);
+            return $this->show('setDiscount', ['productId' => $id, 'message' => "Wrong date"]);
 
         (new ProductM())->update($id, [
             'discount' => $this->request->getVar('discount'),

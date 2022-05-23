@@ -121,9 +121,11 @@ if (!isset($product)) {
             Banner
             <input type="file" name="banner" accept="image/x-jpg">
 
+            Capsule
+            <input type="file" name="capsule" accept="image/x-jpg">
+
             Background
             <input type="file" name="background" accept="image/x-png">
-
 
             Video
             <input type="file" name="video" accept="video/webm">

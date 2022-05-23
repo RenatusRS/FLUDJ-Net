@@ -9,63 +9,106 @@ i ponistenja od poslatog zahteva
 
 <title>Friend Requests</title>
 
-<h3>Friend Requests</h3>
 
+<?= link_tag('search.css') ?>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
 
-<h4>Incoming:</h4>
 <?php
 
 use App\Models\RelationshipM;
+use App\Models\UserM;
 
 $relationshipM = new RelationshipM();
-
-foreach ($requesters as $requester) {
-
-    echo $requester->username;
-
-    if (isset($_POST[$requester->id . "ACCEPT"])) {
-        $relationshipM->set('status', 1)->where('id_user2', $user->id)->where('id_user1', $requester->id)->update();
-        header("Refresh:0");
-    }
-
-    if (isset($_POST[$requester->id . "REJECT"])) {
-        $relationshipM->where('id_user1', $requester->id)->where('id_user2', $user->id)->delete();
-        header("Refresh:0");
-    }
+$userM = new UserM();
 
 ?>
 
-    <div id="<?php echo $requester->id . "requester" ?>>" style="margin: 100px auto; width: 325px; padding: 15px; border-radius: 9px;">
-        <form name='fr_accept_btn' action="<?= site_url("user/friendrequests"); ?>" method="POST">
-            <input type="submit" name=<?= $requester->id . "ACCEPT" ?> class="btn" value=<?= "ACCEPT" ?>>
-        </form>
-        <form name='fr_reject_btn' action="<?= site_url("user/friendrequests"); ?>" method="POST">
-            <input type="submit" name=<?= $requester->id . "REJECT" ?> class="btn" value=<?= "REJECT" ?>>
-        </form>
+<div id=main>
+    <div>
+        <select class="search" name="search" style="width: 300px; color: black;"></select>
     </div>
+    <div>
+        <div style="float:left; width: 50%">
+            <h2>INCOMING REQUESTS</h2>
+            <?php foreach ($requesters as $requester) {
+                if (isset($_POST[$requester->id . "ACCEPT"])) {
+                    $relationshipM->set('status', 1)->where('id_user2', $user->id)->where('id_user1', $requester->id)->update();
+                    header("Refresh:0");
+                }
 
-<?php
-}
-?>
-
-<h4>Outgoing:</h4>
-<?php
-foreach ($requestedTo as $requestedToUser) {
-
-    echo $requestedToUser->username;
-
-    if (isset($_POST[$requestedToUser->id . "CANCEL"])) {
-        $relationshipM->where('id_user1', $user->id)->where('id_user2', $requestedToUser->id)->delete();
-        header("Refresh:0");
-    }
-
-?>
-    <div id="<?php echo $requestedToUser->id ?>>" style="margin: 100px auto; width: 325px; padding: 15px; border-radius: 9px;">
-        <form name='fr_cancel_btn' action="<?= site_url("user/friendrequests"); ?>" method="POST">
-            <input type="submit" name=<?= $requestedToUser->id . "CANCEL" ?> class="btn" value=<?= "CANCEL" ?>>
-        </form>
+                if (isset($_POST[$requester->id . "REJECT"])) {
+                    $relationshipM->where('id_user1', $requester->id)->where('id_user2', $user->id)->delete();
+                    header("Refresh:0");
+                } ?>
+                <div style="margin: 15px 15px 100px 0; min-width: 330px;">
+                    <div style="width:75%; float:left;background-color: black;border-radius: 5px 0 0 5px">
+                        <img src=" <?php echo $userM->getAvatar($requester->id) ?>" style="width:70px; vertical-align: middle;border-radius: 5px 0 0 5px" /> <span style=" vertical-align: middle; font-size: 22px;"><?php echo $requester->username ?></span>
+                    </div>
+                    <div style="width:25%;float:left;">
+                        <form name='fr_accept_btn' action="<?= site_url("user/friendrequests"); ?>" method="POST" style="float:left">
+                            <input type="submit" name=<?= $requester->id . "ACCEPT" ?> class="btn" value="✔" style="border-radius:0; height: 70px; margin: 0">
+                        </form>
+                        <form name='fr_reject_btn' action="<?= site_url("user/friendrequests"); ?>" method="POST" style="float:left">
+                            <input type="submit" name=<?= $requester->id . "REJECT" ?> class="btn" value="✘" style="border-radius:0 5px 5px 0; height: 70px; margin: 0">
+                        </form>
+                    </div>
+                </div>
+            <?php } ?>
+        </div>
+        <div style="float:left; width: 50%">
+            <h2>OUTGOING REQUESTS</h2>
+            <?php foreach ($requestedTo as $requestedToUser) {
+                if (isset($_POST[$requestedToUser->id . "CANCEL"])) {
+                    $relationshipM->where('id_user1', $user->id)->where('id_user2', $requestedToUser->id)->delete();
+                    header("Refresh:0");
+                } ?>
+                <div style="margin: 15px 15px 100px 0; min-width: 330px;">
+                    <div style="width:87%; float:left;background-color: black;border-radius: 5px 0 0 5px">
+                        <img src="<?php echo $userM->getAvatar($requestedToUser->id) ?>" style="width:70px; vertical-align: middle;border-radius: 5px 0 0 5px" /> <span style="vertical-align: middle; font-size: 22px;"><?php echo $requestedToUser->username ?></span>
+                    </div>
+                    <div style="width:13%;float:left;">
+                        <form name='fr_cancel_btn' action="<?= site_url("user/friendrequests"); ?>" method="POST" style="float:left;">
+                            <input type="submit" name=<?= $requestedToUser->id . "CANCEL" ?> class="btn" value="✘" style="border-radius:0 5px 5px 0;height: 70px; margin: 0">
+                        </form>
+                    </div>
+                </div>
+            <?php } ?>
+        </div>
     </div>
+</div>
 
-<?php
-}
-?>
+<script>
+    $(function() {
+        $('.search').select2({
+            placeholder: 'Search for a user',
+            ajax: {
+                url: '<?php echo base_url('user/ajaxUserSearch'); ?>',
+                dataType: 'json',
+                delay: 250,
+                processResults: function(data) {
+                    return {
+                        results: data
+                    };
+                },
+                cache: true
+            }
+        });
+
+        $('.search').on('change', function() {
+            //nakon odabira
+            var korisnik = $(".search option:selected").text();
+
+            $.ajax({
+                type: 'GET',
+                url: '<?php echo base_url('user/ajaxUserLoad'); ?>',
+                data: {
+                    nadimak: korisnik
+                },
+                dataType: 'html',
+                success: function(response) {
+                    window.location.href = response;
+                }
+            });
+        })
+    });
+</script>

@@ -1,11 +1,14 @@
 <style>
-p.indent {margin-left: 2%; margin-right:2%; }
+    p.indent {
+        margin-left: 2%;
+        margin-right: 2%;
+    }
 </style>
 
 
 <div id=main style="display:flex;flex-wrap: wrap;">
     <div style="flex:50%; padding: 0 16px">
-        <h3>Bundle name:</h3>
+        <h3>Bundle Name:</h3>
         <p class='indent'><?php echo $bundle->name ?></p>
 
         <h3>Discount:</h3>
@@ -16,8 +19,8 @@ p.indent {margin-left: 2%; margin-right:2%; }
 
         <h3>Games in bundle IDs:</h3>
         <p class='indent'><?php
-            print_r($bundledProducts);
-        ?></p>
+                            print_r($bundledProducts);
+                            ?></p>
 
         <h3>Total price:</h3>
         <p class='indent'><strike>$<?php echo $price['price'] ?></strike> $<?php echo "{$price['final']} with discount of {$price['discount']}%" ?></p>
@@ -27,12 +30,12 @@ p.indent {margin-left: 2%; margin-right:2%; }
         Background:
         <img width=20% class=smooth-border src="<?php echo base_url('uploads/bundle/' . $bundle->id . '/background.jpg')  ?>">
 
-    <form action="<?= site_url("User/buyBundle/{$bundle->id}") ?>" method="POST">
-        <input type="hidden" name="price" value="<?php echo $price['price'] ?>" />
-        <input type="hidden" name="discount" value="<?php echo $price['discount'] ?>" />
-        <input type="hidden" name="final" value="<?php echo $price['final'] ?>" />
-        <input type="submit" class="btn" value="BUY">
-    </form>
+        <form action="<?= site_url("User/buyBundle/{$bundle->id}") ?>" method="POST">
+            <input type="hidden" name="price" value="<?php echo $price['price'] ?>" />
+            <input type="hidden" name="discount" value="<?php echo $price['discount'] ?>" />
+            <input type="hidden" name="final" value="<?php echo $price['final'] ?>" />
+            <input type="submit" class="btn" value="BUY">
+        </form>
 
     </div>
 </div>

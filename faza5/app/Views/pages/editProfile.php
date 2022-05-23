@@ -22,26 +22,19 @@ $us = (new UserM())->where('id', $user->id)->first();
     <form name='friend_button' action="<?= site_url("User/Profile/") ?>" method="POST" enctype="multipart/form-data">
 
         <h3>Avatar</h3>
-        <input type="file" name="profile_pic" required accept="image/x-jpg">
+        <input type="file" name="profile_pic" required accept="image/x-png">
         <?php if (!empty($errors['profile_pic'])) echo $errors['profile_pic'] ?>
 
         <h3>Nickname</h3>
-        <input type="text" name="nickname" class="full" value="<?=
-
-                                                                set_value('nickname', $us->nickname);
-                                                                ?>" />
+        <input type="text" name="nickname" class="full" value="<?= set_value('nickname', $us->nickname); ?>" />
         <?php if (!empty($errors['nickname'])) echo $errors['nickname'] ?>
 
         <h3>Real Name</h3>
-        <input type="text" name="real_name" class="full" value="<?=
-                                                                set_value('real_name', $us->real_name);
-                                                                ?>" />
+        <input type="text" name="real_name" class="full" value="<?= set_value('real_name', $us->real_name); ?>" />
         <?php if (!empty($errors['real_name'])) echo $errors['real_name'] ?>
 
         <h3>Description</h3>
-        <input type="text" name="description" class="full" value="<?=
-                                                                    set_value('description', $us->description);
-                                                                    ?>" />
+        <input type="text" name="description" class="full" value="<?= set_value('description', $us->description); ?>" />
         <?php if (!empty($errors['description'])) echo $errors['description'] ?>
 
         <!-- <h3>Featured review</h3>

@@ -35,7 +35,7 @@
 ?>
 <div style="display:flex;">
     <p style="margin:20px 5px 20px 0px">Manage Product</p>
-    <form action="<?= site_url("Admin/addDiscount/{$product->id}") ?>" method="POST">
+    <form action="<?= site_url("admin/setdiscount/{$product->id}") ?>" method="POST">
         <input type="submit" style="margin:20px 5px 20px 5px;" class="btn" value="Add Discount">
     </form>
     <a href=manage_product.html class="button">Edit Product</a>
