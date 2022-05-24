@@ -73,7 +73,8 @@ class User extends BaseController {
             if ($this->request->getVar('nickname') != "") {
                 $builder = $builder->set('nickname', $this->request->getVar('nickname'))->set('real_name', $this->request->getVar('real_name'))
                     ->set('country', $this->request->getVar('location'))->set('description', $this->request->getVar('description'))
-                    ->/*set('featured_review', $this->request->getVar('review'))*/where('id', $user->id)->update();
+                    ->set('featured_review', $this->request->getVar('f_review'))->where('id', $user->id)->update();
+
                 $this->upload('public/uploads/user/', 'profile_pic', $user->id);
             }
         }
