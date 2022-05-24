@@ -10,7 +10,7 @@ class ProductM extends Model {
 
     protected $returnType = 'object';
 
-    protected $allowedFields = ['name', 'price', 'base_game', 'discount', 'discount_expire', 'description', 'developer', 'publisher', 'release_date', 'os_min', 'ram_min', 'gpu_min', 'cpu_min', 'mem_min', 'os_rec', 'ram_rec', 'gpu_rec', 'cpu_rec', 'mem_rec'];
+    protected $allowedFields = ['name', 'price', 'base_game', 'discount', 'discount_expire', 'description', 'developer', 'publisher', 'release_date', 'os_min', 'ram_min', 'gpu_min', 'cpu_min', 'mem_min', 'os_rec', 'ram_rec', 'gpu_rec', 'cpu_rec', 'mem_rec', 'rev_cnt', 'rev_sum'];
 
     protected $validationRules = [
         'name' => [
@@ -20,6 +20,17 @@ class ProductM extends Model {
             ]
         ]
     ];
+
+    public function getAllProducts() {
+        $this->db = \Config\Database::connect();
+        $res = $this->db->query("SELECT *
+                                 FROM $this->table;"
+        );
+
+        foreach ($res->getResult('array') as $product) {
+            yield $product;
+        }
+    }
 
 
     public function getHeroProduct() {
@@ -84,7 +95,7 @@ class ProductM extends Model {
             array_slice($results, ($offset * $limit), $limit);
     }
     public function getDiscountedProducts($idUser = null, $offset = 0, $limit = 0) {
-        $results = iterator_to_array((new OwnerShipM())->getRatingSums());
+        $results = iterator_to_array($this->getAllProducts());
 
         $results = array_filter($results, function($product) use (&$idUser) {
             return ($product->discount > 0) &&

@@ -47,17 +47,6 @@ class OwnershipM extends Model {
         return true;
     }
 
-    public function getRatingSums() {
-        $this->db = \Config\Database::connect();
-        $res = $this->db->query("SELECT *, sum(rating) as s, count(*) as cnt
-                                 FROM $this->table
-                                 GROUP BY id_product; ");
-
-        foreach ($res->getResult('array') as $row) {
-            yield $row;
-        }
-    }
-
     /**
      * nalazi sve proizvode koje se pojavljuju najviše puta, odnosno proizvodi
      * koje najviše ljudi ima
@@ -86,8 +75,8 @@ class OwnershipM extends Model {
     }
 
     public static function getProductRating($product) {
-        $average = (float)($product['s'] / (5 * $product['cnt']));
-        $score = $average - ($average - 0.5) * 2 ** -log10( $product['cnt'] + 1);
+        $average = (float)($product['rev_sum'] / (5 * $product['rev_cnt']));
+        $score = $average - ($average - 0.5) * 2 ** -log10( $product['rev_cnt'] + 1);
         // malo je previše pristrasna formula u regresiji ka proseku
         return $score * 5;
     }
@@ -105,7 +94,7 @@ class OwnershipM extends Model {
     }
 
     public static function getTopProducts() {
-        $products = iterator_to_array((new OwnershipM())->getRatingSums());
+        $products = iterator_to_array((new ProductM())->getAllProducts());
 
         usort($products, fn ($p1, $p2) =>
                    ($this->getProductRating($p2) <=> $this->getProductRating($p1)));

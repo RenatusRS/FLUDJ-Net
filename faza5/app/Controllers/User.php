@@ -227,6 +227,10 @@ class User extends BaseController {
         (new OwnershipM())->where('id_product', $id)->where('id_user', $user->id)->set(['rating' => $rating, 'text' => $text])->update();
 
         $product = (new ProductM())->find($id);
+        (new ProductM())->update($id, [
+            'rev_cnt' => $product->rev_cnt + 1,
+            'rev_sum' => $product->rev_sum + $rating
+        ]);
 
         return redirect()->to(site_url("User/Product/{$product->id}"));
     }
@@ -368,7 +372,17 @@ class User extends BaseController {
     public function deleteReviewSubmit($id) {
         $user = $this->session->get('user');
 
+        $rating = (new OwnershipM())->where('id_product', $id)
+                                    ->where('id_user', $user->id)
+                                    ->rating;
+
         (new OwnershipM())->where('id_product', $id)->where('id_user', $user->id)->set(['rating' => NULL, 'text' => NULL])->update();
+
+        $product = (new ProductM())->find($id);
+        (new ProductM())->update($id, [
+            'rev_cnt' => $product->rev_cnt - 1,
+            'rev_sum' => $product->rev_sum - $rating
+        ]);
 
         (new ReviewVoteM())->where('id_product', $id)->where("id_poster", $user->id)->delete();
 
