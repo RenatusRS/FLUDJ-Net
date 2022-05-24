@@ -52,7 +52,7 @@ class ProductM extends Model {
      * @param  integer $limit objašnjeno u opisu funkcije
      * @return array vraća niz objekta proizvoda poređanih po ocenama
      */
-    public function getHighRatingProducts($idUser = null, $offset = 0, $limit = 5) {
+    public function getHighRatingProducts($idUser = null, $offset = 0, $limit = 0) {
         $results = OwnershipM::getTopProducts();
 
         if (isset($idUser)) { // ako korisnik nije ulogovan prikazuju mu se svi proizvodi jer ni jedan ne poseduje
@@ -81,7 +81,7 @@ class ProductM extends Model {
      * @param  integer $limit objašnjeno u opisu funkcije
      * @return array vraća niz objekta proizvoda poređanih količini prodanih kopija
      */
-    public function getTopSellersProducts($idUser = null, $offset = 0, $limit = 5) {
+    public function getTopSellersProducts($idUser = null, $offset = 0, $limit = 0) {
         $results = iterator_to_array((new OwnershipM())->ownedSum());
 
         if (isset($idUser)) {
@@ -105,7 +105,9 @@ class ProductM extends Model {
         usort($results, fn($p1, $p2) =>
                     OwnershipM::getDiscountRating($p2) <=> OwnershipM::getDiscountRating($p1));
 
-        return $results;
+        return ($limit <= 0) ?
+            $results :
+            array_slice($results, ($offset * $limit), $limit);
     }
     public function getDiscoveryProducts() {
         // TODO
@@ -118,8 +120,9 @@ class ProductM extends Model {
         $products = [];
         foreach ($coupons as $coupon) {
             $id = $coupon->id;
-            array_push($products, (new ProductM())->find($id));
-            $products[$id]['coupon'] = $coupon->discount;
+            $newProduct = (new ProductM())->find($id);
+            $newProduct['coupon'] = $coupon->discount;
+            array_push($products, $newProduct);
         }
 
         usort($products, function ($p1, $p2) {
