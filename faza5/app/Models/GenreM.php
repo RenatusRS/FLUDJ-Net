@@ -38,8 +38,7 @@ class GenreM extends Model {
             "SELECT t1.id_product, count(*) as match_count
              FROM (SELECT id_product, genre_name FROM $this->table WHERE id_product <> $productId) AS t1
              JOIN (SELECT genre_name             FROM $this->table WHERE id_product =  $productId) AS t2 ON t1.genre_name = t2.genre_name
-             GROUP BY t1.id_product;
-        --   ORDER BY match_count DESC;"
+             GROUP BY t1.id_product;"
         );
 
         foreach ($res->getResult('array') as $row) {

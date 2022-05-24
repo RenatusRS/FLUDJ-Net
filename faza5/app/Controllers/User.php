@@ -448,11 +448,11 @@ class User extends BaseController {
     }
 
     public function getTopProducts() {
-        $products = OwnershipM::getTopProducts();
+        $products = ProductM::getTopProducts();
 
         $ratings = [];
         foreach ($products as $product) {
-            $ratings[$product['id_product']] = OwnershipM::getProductRating($product);
+            $ratings[$product['id_product']] = ProductM::getProductRating($product);
         }
 
         usort($ratings, fn ($r1, $r2) => (int)($r1-$r2));

@@ -31,7 +31,36 @@ class ProductM extends Model {
             yield $product;
         }
     }
+    public static function getProductRating($product) {
+        if ($product['rev_cnt'] == 0)
+            return 0;
+        $average = (float)($product['rev_sum'] / (5 * $product['rev_cnt']));
+        $score = $average - ($average - 0.5) * 2 ** -log10( $product['rev_cnt'] + 1);
+        // malo je previše pristrasna formula u regresiji ka proseku
+        return $score * 5;
+    }
+    public static function getDiscountRating($product, $couponDiscount = null) {
+        $discount = ($couponDiscount == null) ?
+            $product->discount :
+            $couponDiscount;
+        $rating = ProductM::getProductRating($product);
+        $score = $rating * $discount ** (log10($rating));
 
+        return $score;
+    }
+    public static function getCouponRating($product, $coupon) {
+        return ProductM::getDiscountRating($product, $coupon);
+    }
+    public static function getTopProducts() {
+        $products = iterator_to_array((new ProductM())->getAllProducts());
+
+        usort($products, fn ($p1, $p2) =>
+                   (ProductM::getProductRating($p2) <=> ProductM::getProductRating($p1)));
+
+        return $products;
+    }
+
+    // ====================== front page algoritmi ==================
 
     public function getHeroProduct() {
         // TODO
@@ -53,7 +82,7 @@ class ProductM extends Model {
      * @return array vraća niz objekta proizvoda poređanih po ocenama
      */
     public function getHighRatingProducts($idUser = null, $offset = 0, $limit = 0) {
-        $results = OwnershipM::getTopProducts();
+        $results = $this->getTopProducts();
 
         if (isset($idUser)) { // ako korisnik nije ulogovan prikazuju mu se svi proizvodi jer ni jedan ne poseduje
             $results = array_filter($results, function ($product) use (&$idUser) {
@@ -103,7 +132,7 @@ class ProductM extends Model {
         }); // lambda kaže "ako je proizvod na sniženju + ako korisnik nije ulogovan, ili ako ulogovan ne poseduje proizvod, ostavi ga u nizu"
 
         usort($results, fn($p1, $p2) =>
-                    OwnershipM::getDiscountRating($p2) <=> OwnershipM::getDiscountRating($p1));
+                    ProductM::getDiscountRating($p2) <=> ProductM::getDiscountRating($p1));
 
         return ($limit <= 0) ?
             $results :
@@ -128,7 +157,7 @@ class ProductM extends Model {
         usort($products, function ($p1, $p2) {
             $c1 = $p1['coupon'];
             $c2 = $p2['coupon'];
-            return OwnershipM::getCouponRating($p2, $c2) <=> OwnershipM::getCouponRating($p1, $c1);
+            return ProductM::getCouponRating($p2, $c2) <=> ProductM::getCouponRating($p1, $c1);
         });
 
         return ($limit <= 0) ?

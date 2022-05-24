@@ -73,32 +73,4 @@ class OwnershipM extends Model {
             yield $row;
         }
     }
-
-    public static function getProductRating($product) {
-        $average = (float)($product['rev_sum'] / (5 * $product['rev_cnt']));
-        $score = $average - ($average - 0.5) * 2 ** -log10( $product['rev_cnt'] + 1);
-        // malo je previše pristrasna formula u regresiji ka proseku
-        return $score * 5;
-    }
-    public static function getDiscountRating($product, $couponDiscount = null) {
-        $discount = ($couponDiscount == null) ?
-            $product->discount :
-            $couponDiscount;
-        $rating = OwnershipM::getProductRating($product);
-        $score = $rating * $discount ** (log10($rating));
-
-        return $score;
-    }
-    public static function getCouponRating($product, $coupon) {
-        return OwnershipM::getDiscountRating($product, $coupon);
-    }
-
-    public static function getTopProducts() {
-        $products = iterator_to_array((new ProductM())->getAllProducts());
-
-        usort($products, fn ($p1, $p2) =>
-                   ($this->getProductRating($p2) <=> $this->getProductRating($p1)));
-
-        return $products;
-    }
 }
