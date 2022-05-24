@@ -124,11 +124,37 @@ class ProductM extends Model {
     public function getProductsUserLike() {
         // TODO
     }
-    public function getProducsUserFriendsLike() {
-        // TODO
-    }
-    public function getSimilarProducts($productId) {
-        // TODO
+    /**
+     * uzima najsličnije proizvode proizvodu sa id-jem $productId
+     *
+     * $limit označava koliko dugačak povratni niz se traži.
+     *
+     * ako se pretražuje više stranica (npr na svakoj stranici ima 10 proizvoda),
+     * $offset uvek označava koja stranica se prikazuje, npr sa $limit = 5 i $offset = 2,
+     * prikazivali bi se proizvodi od 11-15 po poretku (najviše prodanih kopija)
+     *
+     * @param  integer $productId id proizvoda za koje se traže slični
+     * @param  integer $offset objašnjeno u opisu funkcije
+     * @param  integer $limit objašnjeno u opisu funkcije
+     * @return array vraća niz objekta proizvoda poređanih po sličnosti opadajuće
+     */
+    public function getSimilarProducts($productId, $offset = 0, $limit = 0) {
+        $similar = (new GenreM())->getSimilarProducts($productId);
+
+        $products = [];
+        foreach ($similar as $product) {
+            $id = $product['id_product'];
+            $newProduct = (new ProductM())->find($id);
+            $newProduct['match_count'] = $product['match_count'];
+            array_push($products, $newProduct);
+        }
+
+        usort($products, fn ($p1, $p2) =>  // za sada usort samo radi po tome ko se više puta pojavljuje, TODO
+                                $p2['match_count'] <=> $p1['match_count']);
+
+        return ($limit <= 0) ?
+            $products :
+            array_slice($products, ($offset * $limit), $limit);
     }
 
 }

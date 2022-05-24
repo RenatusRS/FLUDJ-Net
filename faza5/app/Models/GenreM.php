@@ -25,6 +25,27 @@ class GenreM extends Model {
 
         return $genres;
     }
+    /**
+     * vraća generator sortiranog niza uređenih parova [id_product, match_count] gde id_product označava
+     * id nekog proizvoda a match_count (po kome je niz sortiran opadajuće) označava koliko
+     * ima istih žanrova sa proizvodom za koji se traže slični proizvodi.
+     *
+     * @param  integer $productId
+     */
+    public function getSimilarProducts($productId) {
+        $this->db = \Config\Database::connect();
+        $res = $this->db->query(
+            "SELECT t1.id_product, count(*) as match_count
+             FROM (SELECT id_product, genre_name FROM $this->table WHERE id_product <> $productId) AS t1
+             JOIN (SELECT genre_name             FROM $this->table WHERE id_product =  $productId) AS t2 ON t1.genre_name = t2.genre_name
+             GROUP BY t1.id_product;
+        --   ORDER BY match_count DESC;"
+        );
+
+        foreach ($res->getResult('array') as $row) {
+            yield $row;
+        }
+    }
 
     /**
      * compositeExists checks if composite key of productId-genreName exists
