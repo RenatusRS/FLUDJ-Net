@@ -181,19 +181,25 @@ class ProductM extends Model {
      * @param  integer $limit objašnjeno u opisu funkcije
      * @return array vraća niz objekta proizvoda poređanih po sličnosti opadajuće
      */
-    public function getSimilarProducts($productId, $offset = 0, $limit = 0) {
+    public function getSimilarProducts($productId, $idUser = null, $offset = 0, $limit = 0) {
         $similar = (new GenreM())->getSimilarProducts($productId);
 
         $products = [];
+        $counts = [];
         foreach ($similar as $product) {
             $id = $product['id_product'];
+            if ($idUser != null && ((new OwnershipM())->owns($idUser, $id)))
+                continue;
+
             $newProduct = (new ProductM())->find($id);
-            $newProduct['match_count'] = $product['match_count'];
             array_push($products, $newProduct);
+
+            $counts[$id] = $product['match_count'];
         }
 
-        usort($products, fn ($p1, $p2) =>  // za sada usort samo radi po tome ko se više puta pojavljuje, TODO
-                                $p2['match_count'] <=> $p1['match_count']);
+        usort($products, function ($p1, $p2) use (&$counts) { // za sada usort samo radi po tome ko se više puta pojavljuje, TODO
+            return $counts[$p2->id] <=> $counts[$p1->id];
+        });
 
         return ($limit <= 0) ?
             $products :
