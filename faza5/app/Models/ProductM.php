@@ -164,7 +164,42 @@ class ProductM extends Model {
             $products :
             array_slice($products, ($offset * $limit), $limit);
     }
-    public function getProductsUserLike() {
+    /**
+     * dohvata proizvode poređane po tome koliko su slični (po broju žanrova) sa proizvodima
+     * koje korisnik ($idUser) već poseduje
+     *
+     * $limit označava koliko dugačak povratni niz se traži.
+     *
+     * ako se pretražuje više stranica (npr na svakoj stranici ima 10 proizvoda),
+     * $offset uvek označava koja stranica se prikazuje, npr sa $limit = 5 i $offset = 2,
+     * prikazivali bi se proizvodi od 11-15 po poretku (najviše sličnih proizvoda)
+     *
+     * @param  mixed $idUser
+     * @param  mixed $offset
+     * @param  mixed $limit
+     * @return void
+     */
+    public function getProductsUserLike($idUser = null, $offset = 0, $limit = 0) {
+        if ($idUser == null)
+            return [];
+
+        $products = [];
+        $ownM = (new OwnershipM());
+        foreach ($ownM->matchingGenres($idUser) as $product) {
+            if ($ownM->owns($idUser, $product['id']))
+                continue;
+
+            array_push($products, $product);
+        }
+
+        usort($products, fn ($p1, $p2) => // TODO za sada je jedini kriterijum sortiranja koliko žanrova se matchuje
+                                $p2['matching'] <=> $p1['matching']);
+
+        return ($limit <= 0) ?
+            $products :
+            array_slice($products, ($offset * $limit), $limit);
+    }
+    public function getProductsUserFriendsLike() {
         // TODO
     }
     /**

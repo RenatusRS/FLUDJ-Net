@@ -73,4 +73,34 @@ class OwnershipM extends Model {
             yield $row;
         }
     }
+    /**
+     * vraća proizvode sa dodatom kolonom "matching" koja označava
+     * koliko žanrova koje taj proizvod sadrži korisnik ($idUser) već ima
+     *
+     *
+     * @param  mixed $idUser
+     */
+    public function matchingGenres($idUser) {
+        $this->db = \Config\Database::connect();
+        $res = $this->db->query(
+                "SELECT sum(cnt) AS matching, p.*
+                 FROM (
+                     SELECT genre_name, count(genre_name) AS cnt
+                     FROM $this->table
+                     JOIN genre ON genre.id_product = ownership.id_product
+                     WHERE id_user = $idUser
+                     GROUP BY genre_name
+                     -- ORDER BY cnt DESC
+                 ) AS z
+                     JOIN (
+                     SELECT genre_name, product.*
+                     FROM product
+                     JOIN genre ON product.id = genre.id_product
+                 ) AS p ON z.genre_name = p.genre_name
+                 GROUP BY id; ");
+
+        foreach ($res->getResult('array') as $row) {
+            yield $row;
+        }
+    }
 }
