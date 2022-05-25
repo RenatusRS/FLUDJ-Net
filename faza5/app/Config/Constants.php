@@ -83,5 +83,6 @@ defined('EXIT__AUTO_MAX')      || define('EXIT__AUTO_MAX', 125); // highest auto
 // =============================== project constants =====================================
 defined("MAX_BUNDLE_DISCOUNT")  || define("MAX_BUNDLE_DISCOUNT", 15);
 defined("MIN_BUNDLE_DISCOUNT")  || define("MIN_BUNDLE_DISCOUNT", 0);
-defined("MAX_DESCRIPTION_SIZE")  || define("MAX_DESCRIPTION_SIZE", 4000);
-defined("MIN_DESCRIPTION_SIZE")  || define("MIN_DESCRIPTION_SIZE", 10);
+defined("MAX_DESCRIPTION_SIZE") || define("MAX_DESCRIPTION_SIZE", 4000);
+defined("MIN_DESCRIPTION_SIZE") || define("MIN_DESCRIPTION_SIZE", 10);
+defined("DISCOVERY_LENGTH")     || define("DISCOVERY_LENGTH", 20);

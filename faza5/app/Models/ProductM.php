@@ -149,8 +149,34 @@ class ProductM extends Model {
             $results :
             array_slice($results, ($offset * $limit), $limit);
     }
-    public function getDiscoveryProducts() {
-        // TODO
+    /**
+     * dohvata proizvode iz najbolje ocenjenih, sličnih kategorija korisnika i kategorija koje
+     * prijatelji korisnika vole.
+     *
+     * @param  integer $idUser
+     * @return array
+     */
+    public function getDiscoveryProducts($idUser = null) {
+        if ($idUser == null)
+            return [];
+
+        $res1 = $this->getHighRatingProducts($idUser, 0, DISCOVERY_LENGTH);
+        $res2 = $this->getProductsUserLike($idUser, 0, DISCOVERY_LENGTH);
+        $res3 = $this->getProductsUserFriendsLike($idUser, 0, DISCOVERY_LENGTH);
+
+        function interleave_arrays() {
+            $output = array();
+            for ($args = func_get_args(); count($args); $args = array_filter($args)) {
+                foreach ($args as &$arg) { // BUGFIX moguće je da ovde postoji bug jer se pojavljuju neki indeksi u povratnom nizu niotkuda
+                    $output[] = array_shift($arg);
+                }
+            }
+            return $output;
+        }
+
+        $result = interleave_arrays($res1, $res2, $res3);
+
+        return array_slice($result, 0, DISCOVERY_LENGTH);
     }
     public function getCouponProducts($idUser = null, $offset = 0, $limit = 0) {
         if ($idUser == null)
@@ -210,8 +236,9 @@ class ProductM extends Model {
             $products :
             array_slice($products, ($offset * $limit), $limit);
     }
-    public function getProductsUserFriendsLike() {
+    public function getProductsUserFriendsLike($idUser = null, $offset = 0, $limit = 0) {
         // TODO
+        return [];
     }
     /**
      * uzima najsličnije proizvode proizvodu sa id-jem $productId
