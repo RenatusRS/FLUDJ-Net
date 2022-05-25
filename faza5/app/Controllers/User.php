@@ -227,6 +227,10 @@ class User extends BaseController {
         (new OwnershipM())->where('id_product', $id)->where('id_user', $user->id)->set(['rating' => $rating, 'text' => $text])->update();
 
         $product = (new ProductM())->find($id);
+        (new ProductM())->update($id, [
+            'rev_cnt' => $product->rev_cnt + 1,
+            'rev_sum' => $product->rev_sum + $rating
+        ]);
 
         return redirect()->to(site_url("User/Product/{$product->id}"));
     }
@@ -412,7 +416,17 @@ class User extends BaseController {
     public function deleteReviewSubmit($id) {
         $user = $this->session->get('user');
 
+        $rating = (new OwnershipM())->where('id_product', $id)
+                                    ->where('id_user', $user->id)
+                                    ->rating;
+
         (new OwnershipM())->where('id_product', $id)->where('id_user', $user->id)->set(['rating' => NULL, 'text' => NULL])->update();
+
+        $product = (new ProductM())->find($id);
+        (new ProductM())->update($id, [
+            'rev_cnt' => $product->rev_cnt - 1,
+            'rev_sum' => $product->rev_sum - $rating
+        ]);
 
         (new ReviewVoteM())->where('id_product', $id)->where("id_poster", $user->id)->delete();
 
@@ -477,27 +491,16 @@ class User extends BaseController {
         // TODO redirect
     }
 
-    private function getProductRating($product) {
-        $average = (float)($product['s'] / (5 * $product['cnt']));
-        $score = $average - ($average - 0.5) * 2 ** -log10( $product['cnt'] + 1);
-        // malo je previše pristrasna formula u regresiji ka proseku
-        return $score * 5;
-    }
-
     public function getTopProducts() {
-        $products = iterator_to_array((new OwnershipM())->getRatingSums());
-
-        usort($products, fn ($p1, $p2) =>
-                                ($this->getProductRating($p2) <=> $this->getProductRating($p1)));
+        $products = ProductM::getTopProducts();
 
         $ratings = [];
         foreach ($products as $product) {
-            $ratings[$product['id_product']] = $this->getProductRating($product);
+            $ratings[$product['id_product']] = ProductM::getProductRating($product);
         }
 
         usort($ratings, fn ($r1, $r2) => (int)($r1-$r2));
 
         $this->show('topProductsTest', ['res' => $products, 'ratings' => $ratings]);
     }
-
 }
