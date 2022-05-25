@@ -115,7 +115,7 @@ class ProductM extends Model {
 
         if (isset($idUser)) { // ako korisnik nije ulogovan prikazuju mu se svi proizvodi jer ni jedan ne poseduje
             $results = array_filter($results, function ($product) use (&$idUser) {
-                return !((new OwnershipM())->owns($idUser, $product->id));
+                return !((new OwnershipM())->owns($idUser, $product['id']));
             }); // lambda za filtriranje niza kaže: "ako ulogovan korisnik ne poseduje proizvod, ubaci proizvod u niz"
         }
 
@@ -143,8 +143,8 @@ class ProductM extends Model {
         $results = iterator_to_array((new OwnershipM())->ownedSum());
 
         if (isset($idUser)) {
-            $results = array_filter($results, function ($productId) use (&$idUser) {
-                return !((new OwnershipM())->owns($idUser, $productId));
+            $results = array_filter($results, function ($temp) use (&$idUser) {
+                return !((new OwnershipM())->owns($idUser, $temp['id_product']));
             });
         }
 
@@ -171,8 +171,8 @@ class ProductM extends Model {
         $results = iterator_to_array($this->getAllProducts());
 
         $results = array_filter($results, function($product) use (&$idUser) {
-            return ($product->discount > 0) &&
-                   (!isset($idUser) || !((new OwnershipM())->owns($idUser, $product->id)));
+            return ($product['discount'] > 0) && // FIXME potrebna provera da li je sniženje isteklo
+                   (!isset($idUser) || !((new OwnershipM())->owns($idUser, $product['id'])));
         }); // lambda kaže "ako je proizvod na sniženju + ako korisnik nije ulogovan, ili ako ulogovan ne poseduje proizvod, ostavi ga u nizu"
 
         usort($results, fn($p1, $p2) =>
@@ -193,9 +193,29 @@ class ProductM extends Model {
         if ($idUser == null)
             return [];
 
+        $matching = array();
+        $fun = function (&$p) use (&$matching) {
+            $id = $p['id'];
+            if (array_key_exists($id, $matching))
+                return 0;
+
+            $matching[$id] = 1;
+            return 1;
+        };
+
         $res1 = $this->getHighRatingProducts($idUser, 0, DISCOVERY_LENGTH);
+        foreach ($res1 as $p)
+            $matching[$p['id']] = 1;
+
         $res2 = $this->getProductsUserLike($idUser, 0, DISCOVERY_LENGTH);
+        $res2 = array_filter($res2, function ($p) use (&$fun) {
+            return $fun($p);
+        });
+
         $res3 = $this->getProductsUserFriendsLike($idUser, 0, DISCOVERY_LENGTH);
+        $res3 = array_filter($res3, function ($p) use (&$fun) {
+            return $fun($p);
+        });
 
         function interleave_arrays() {
             $output = array();
@@ -303,7 +323,13 @@ class ProductM extends Model {
 
         $products = [];
         foreach ($temp as $t) {
-            $product = (new ProductM())->find($t['id_product']);
+            $id = $t['id_product'];
+            if ((new OwnershipM())->owns($idUser, $id))
+                continue;
+
+            $product = (new ProductM())
+                ->asArray()
+                ->find($id);
             array_push($products, $product);
         }
 
