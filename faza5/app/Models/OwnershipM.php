@@ -67,7 +67,8 @@ class OwnershipM extends Model {
                                  FROM $this->table
                                  GROUP BY id_product
                                  ORDER BY cnt DESC
-                                 LIMIT $limit, $offset; ");
+                                 LIMIT $limit
+                                 OFFSET $offset; ");
 
         foreach ($res->getResult('array') as $row) {
             yield $row;
