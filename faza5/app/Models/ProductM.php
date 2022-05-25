@@ -31,6 +31,23 @@ class ProductM extends Model {
             yield $product;
         }
     }
+    /**
+     * vraća rejting nečega sa pristrasnošću ka proseku. veći broj ocena smanjuje težnju ka proseku
+     *
+     * @param  integer $cnt koliko puta je nešto ocenjeno
+     * @param  integer $sum suma svih ocena
+     * @param  mixed $base baza o kojoj se radi. ako je rangiranje binarno (da-ne), baza je 1, ako je rangiranje npr od 1-5, baza je 5 itd.
+     * @return integer rejting, veće = bolje
+     */
+    public static function getRating($cnt, $sum, $base = 1) {
+        if ($cnt == 0)
+            return 0;
+
+        $average = (float)($sum / ($base * $cnt));
+        $score = $average - ($average - 0.5) * 2 ** (-log10( $cnt + 1));
+
+        return $score * $base;
+    }
     public static function getProductRating($product) {
         if ($product['rev_cnt'] == 0)
             return 0;
@@ -237,8 +254,22 @@ class ProductM extends Model {
             array_slice($products, ($offset * $limit), $limit);
     }
     public function getProductsUserFriendsLike($idUser = null, $offset = 0, $limit = 0) {
-        // TODO
-        return [];
+        if ($idUser == null)
+            return [];
+
+        $temp = iterator_to_array((new OwnershipM())->friendsLikes($idUser));
+        usort($temp, fn ($t1, $t2) =>
+                   ProductM::getRating($t2['rev_cnt'], $t2['rev_sum'], 5) <=> ProductM::getRating($t1['rev_cnt'], $t1['rev_sum'], 5));
+
+        $products = [];
+        foreach ($temp as $t) {
+            $product = (new ProductM())->find($t['id_product']);
+            array_push($products, $product);
+        }
+
+        return ($limit <= 0) ?
+            $products :
+            array_slice($products, ($offset * $limit), $limit);
     }
     /**
      * uzima najsličnije proizvode proizvodu sa id-jem $productId

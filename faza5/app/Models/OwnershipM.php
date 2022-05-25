@@ -104,4 +104,38 @@ class OwnershipM extends Model {
             yield $row;
         }
     }
+
+    /**
+     * vraća niz gde su ključevi [id_product, rev_sum, rev_cnt] koji respektivno
+     * označavaju id proizvoda, sumu njegovih ocena i koliko puta je ocenjen.
+     * ove ocene su samo ocene prijatelja.
+     *
+     * @param  mixed $idUser
+     */
+    public function friendsLikes($idUser) {
+        $this->db = \Config\Database::connect();
+        $res = $this->db->query(
+                "SELECT id_product, sum(rating) AS rev_sum, count(*) AS rev_cnt
+
+                 FROM (
+                    SELECT id_user2 AS id
+                    FROM relationship
+                    WHERE id_user1 = $idUser
+
+                    UNION
+
+                    SELECT id_user1 AS id
+                    FROM relationship
+                    WHERE id_user2 = $idUser
+                 ) AS t
+
+                 JOIN ownership ON (ownership.id_user = t.id)
+                 WHERE rating IS NOT NULL
+                 GROUP BY id_product"
+        );
+
+        foreach ($res->getResult('array') as $row) {
+            yield $row;
+        }
+    }
 }
