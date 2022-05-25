@@ -62,8 +62,19 @@ class ProductM extends Model {
 
     // ====================== front page algoritmi ==================
 
-    public function getHeroProduct() {
-        // TODO
+    /**
+     * dohvata proizvod iz najbolje prodavanih ili najbolje ocenjenih, nasumično
+     *
+     * @param  mixed $idUser
+     */
+    public function getHeroProduct($idUser = null) {
+        $res = (rand() % 2 == 0) ?
+            $this->getHighRatingProducts($idUser, 0, 5) :
+            $this->getTopSellersProducts($idUser, 0, 5);
+
+        return (count($res) > 0) ?
+            $res[rand(0, count($res) - 1)] :
+            [];
     }
     /**
      * uzima najbolje ocenjene proizvode po formuli datoj u OwnershipM::getRating(...).
