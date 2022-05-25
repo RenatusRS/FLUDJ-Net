@@ -36,7 +36,7 @@ class ProductM extends Model {
      *
      * @param  integer $cnt koliko puta je nešto ocenjeno
      * @param  integer $sum suma svih ocena
-     * @param  mixed $base baza o kojoj se radi. ako je rangiranje binarno (da-ne), baza je 1, ako je rangiranje npr od 1-5, baza je 5 itd.
+     * @param  integer $base baza o kojoj se radi. ako je rangiranje binarno (da-ne), baza je 1, ako je rangiranje npr od 1-5, baza je 5 itd.
      * @return integer rejting, veće = bolje
      */
     public static function getRating($cnt, $sum, $base = 1) {
@@ -82,7 +82,8 @@ class ProductM extends Model {
     /**
      * dohvata proizvod iz najbolje prodavanih ili najbolje ocenjenih, nasumično
      *
-     * @param  mixed $idUser
+     * @param  integer $idUser
+     * @return object proizvod
      */
     public function getHeroProduct($idUser = null) {
         $res = (rand() % 2 == 0) ?
@@ -151,6 +152,21 @@ class ProductM extends Model {
             $results :
             array_slice($results, ($offset * $limit), $limit);
     }
+    /**
+     * dohvata niz proizvoda na sniženju. bolja sniženja i bolje ocenjeni proizvodi će biti
+     * više pri početku.
+     *
+     * $limit označava koliko dugačak povratni niz se traži.
+     *
+     * ako se pretražuje više stranica (npr na svakoj stranici ima 10 proizvoda),
+     * $offset uvek označava koja stranica se prikazuje, npr sa $limit = 5 i $offset = 2,
+     * prikazivali bi se proizvodi od 11-15 po poretku
+     *
+     * @param  integer $idUser
+     * @param  integer $offset
+     * @param  integer $limit
+     * @return array
+     */
     public function getDiscountedProducts($idUser = null, $offset = 0, $limit = 0) {
         $results = iterator_to_array($this->getAllProducts());
 
@@ -195,6 +211,16 @@ class ProductM extends Model {
 
         return array_slice($result, 0, DISCOVERY_LENGTH);
     }
+    /**
+     * dohvata niz proizvoda za koje korisnik $idUser ima kupone.
+     * rangirani su, npr jaki kuponi za bolju igricu vrede više nego jaki kuponi
+     * za lošiju igricu itd.
+     *
+     * @param  integer $idUser
+     * @param  integer $offset
+     * @param  integer $limit
+     * @return array
+     */
     public function getCouponProducts($idUser = null, $offset = 0, $limit = 0) {
         if ($idUser == null)
             return [];
@@ -228,10 +254,10 @@ class ProductM extends Model {
      * $offset uvek označava koja stranica se prikazuje, npr sa $limit = 5 i $offset = 2,
      * prikazivali bi se proizvodi od 11-15 po poretku (najviše sličnih proizvoda)
      *
-     * @param  mixed $idUser
-     * @param  mixed $offset
-     * @param  mixed $limit
-     * @return void
+     * @param  integer $idUser
+     * @param  integer $offset
+     * @param  integer $limit
+     * @return array
      */
     public function getProductsUserLike($idUser = null, $offset = 0, $limit = 0) {
         if ($idUser == null)
@@ -253,6 +279,20 @@ class ProductM extends Model {
             $products :
             array_slice($products, ($offset * $limit), $limit);
     }
+    /**
+     * dohvata proizvode koje su prijatelji najbolje ocenili
+     *
+     * $limit označava koliko dugačak povratni niz se traži.
+     *
+     * ako se pretražuje više stranica (npr na svakoj stranici ima 10 proizvoda),
+     * $offset uvek označava koja stranica se prikazuje, npr sa $limit = 5 i $offset = 2,
+     * prikazivali bi se proizvodi od 11-15 po poretku
+     *
+     * @param  integer $idUser
+     * @param  integer $offset
+     * @param  integer $limit
+     * @return array
+     */
     public function getProductsUserFriendsLike($idUser = null, $offset = 0, $limit = 0) {
         if ($idUser == null)
             return [];
@@ -278,7 +318,7 @@ class ProductM extends Model {
      *
      * ako se pretražuje više stranica (npr na svakoj stranici ima 10 proizvoda),
      * $offset uvek označava koja stranica se prikazuje, npr sa $limit = 5 i $offset = 2,
-     * prikazivali bi se proizvodi od 11-15 po poretku (najviše prodanih kopija)
+     * prikazivali bi se proizvodi od 11-15 po poretku
      *
      * @param  integer $productId id proizvoda za koje se traže slični
      * @param  integer $offset objašnjeno u opisu funkcije
