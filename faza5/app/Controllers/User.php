@@ -188,6 +188,8 @@ class User extends BaseController {
             'rating' => null
         ]);
 
+        $this->awardPoints($userFrom->id, $product->price);
+
         return redirect()->to(site_url("User/Product/{$product->id}"));
     }
 
@@ -344,6 +346,21 @@ class User extends BaseController {
     public function awardCoupon($idUser) {
         // TODO
     }
+    private function awardPoints($idUser, $spent) {
+        $points = (int)($spent * POINTS_PRODUCT);
+
+        $userM = new UserM();
+        $currentPoints = $userM->points + $points;
+
+        while ($currentPoints >= COUPON_POINTS) {
+            $this->awardCoupon($idUser);
+            $currentPoints -= COUPON_POINTS;
+        }
+
+        $userM->update($idUser, [
+            'points' => $currentPoints
+        ]);
+    }
 
     /**
     *Ajax funkcija za azurno ucitavanje rezultata korisnika
@@ -487,6 +504,8 @@ class User extends BaseController {
         }
 
         $user->balance -= $finalPrice;
+
+        $this->awardPoints($user->id, $finalPrice);
 
         // TODO redirect
     }
