@@ -139,7 +139,7 @@ class Admin extends BaseController {
 
     public function manageBundle($id = null) {
         $data = [];
-        $bundle = null;
+        $bundle = $inBundle = $notInBundle = null;
 
         if ($id != null) {
             $bundle = (new BundleM())->find($id);
@@ -147,9 +147,14 @@ class Admin extends BaseController {
             if (!is_object($bundle)) {
                 $data['errors'] = ['bundle' => "bundle doesn't exist, redirected to adding new bundle"];
             }
+
+            $inBundle    = iterator_to_array((new BundledProductsM())->productsInBundle($id));
+            $notInBundle = iterator_to_array((new BundledProductsM())->productsNotInBundle($id));
         }
 
         $data['bundle'] = $bundle;
+        $data['inBundle'] = $inBundle;
+        $data['notInBundle'] = $notInBundle;
 
         $this->show('manageBundle', $data);
     }
@@ -265,23 +270,22 @@ class Admin extends BaseController {
     }
 
     /**
-     * dodaje proizvod sa id-jem $idProduct u kolekciju sa id-jem $idBundle
-     * ako već nije. vraća bul vrednost u zavisnosti od toga da li je proizvod već postojao
-     * u toj kolekciji
+     * poziva se iz forme iz manageBundle.php.
+     * svi proizvodi koji su štiklirani u sekciji za dodavanje bivaju dodati u kolekciju,
+     * a svi koji su štiklirani u sekciji za otklanjanje se otklanjaju iz kolekcije
      *
-     * @param  integer $idBundle
-     * @param  integer $idProduct
-     * @return boolean
      */
-    public function addProductToBundle($idBundle, $idProduct) {
-        $model = new BundledProductsM();
-        if ($model->inBundle($idBundle, $idProduct))
-            return false;
+    public function updateBundleProducts() {
+        $idBundle = $this->request->getVar('id');
 
-        $model->insert([
-            'id_bundle'  => $idBundle,
-            'id_product' => $idProduct
-        ]);
-        return true;
+        $in =  $this->request->getVar('inBundle')    ?? [];
+        $out = $this->request->getVar('notInBundle') ?? [];
+
+        foreach ($in as $idProduct)
+            BundledProductsM::removeFromBundle($idBundle, $idProduct);
+        foreach ($out as $idProduct)
+            BundledProductsM::addToBundle($idBundle, $idProduct);
+
+        return redirect()->to(site_url("Admin/manageBundle/" . $idBundle));
     }
 }
