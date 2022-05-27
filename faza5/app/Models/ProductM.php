@@ -247,7 +247,7 @@ class ProductM extends Model {
 
         $matching = array();
         $fun = function (&$p) use (&$matching) {
-            $id = $p['id'];
+            $id = $p->id;
             if (array_key_exists($id, $matching))
                 return false;
 
@@ -257,7 +257,7 @@ class ProductM extends Model {
 
         $res1 = $this->getHighRatingProducts($idUser, 0, DISCOVERY_LENGTH);
         foreach ($res1 as $p)
-            $matching[$p['id']] = 1;
+            $matching[$p->id] = 1;
 
         $res2 = $this->getProductsUserLike($idUser, 0, DISCOVERY_LENGTH);
         $res2 = array_filter($res2, function ($p) use (&$fun) {
@@ -370,7 +370,6 @@ class ProductM extends Model {
                 continue;
 
             $product = (new ProductM())
-                ->asArray()
                 ->find($id);
             array_push($products, $product);
         }
