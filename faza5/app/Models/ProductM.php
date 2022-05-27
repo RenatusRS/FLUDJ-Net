@@ -142,8 +142,9 @@ class ProductM extends Model {
             $this->getHighRatingProducts($idUser, 0, 5) :
             $this->getTopSellersProducts($idUser, 0, 5);
 
-        return (count($res) > 0) ?
-            $res[rand(0, count($res) - 1)] :
+        $cnt = count($res);
+        return ($cnt > 0) ?
+            $res[rand(0, $cnt - 1)] :
             [];
     }
     /**
@@ -171,9 +172,9 @@ class ProductM extends Model {
             }); // lambda za filtriranje niza kaže: "ako ulogovan korisnik ne poseduje proizvod, ubaci proizvod u niz"
         }
 
-        return ($limit <= 0) ?
+        return array_values(($limit <= 0) ?
             $results :
-            array_slice($results, ($offset * $limit), $limit);
+            array_slice($results, ($offset * $limit), $limit));
     }
     /**
      * uzima najprodavanije proizvode
@@ -200,9 +201,9 @@ class ProductM extends Model {
             });
         }
 
-        return ($limit <= 0) ?
+        return array_values(($limit <= 0) ?
             $results :
-            array_slice($results, ($offset * $limit), $limit);
+            array_slice($results, ($offset * $limit), $limit));
     }
     /**
      * dohvata niz proizvoda na sniženju. bolja sniženja i bolje ocenjeni proizvodi će biti
@@ -230,9 +231,9 @@ class ProductM extends Model {
         usort($results, fn($p1, $p2) =>
                     ProductM::getDiscountRating($p2) <=> ProductM::getDiscountRating($p1));
 
-        return ($limit <= 0) ?
+        return array_values(($limit <= 0) ?
             $results :
-            array_slice($results, ($offset * $limit), $limit);
+            array_slice($results, ($offset * $limit), $limit));
     }
     /**
      * dohvata proizvode iz najbolje ocenjenih, sličnih kategorija korisnika i kategorija koje
@@ -271,7 +272,7 @@ class ProductM extends Model {
 
         $result = interleave_arrays($res1, $res2, $res3);
 
-        return array_slice($result, 0, DISCOVERY_LENGTH);
+        return array_values(array_slice($result, 0, DISCOVERY_LENGTH));
     }
     /**
      * dohvata niz proizvoda za koje korisnik $idUser ima kupone.
@@ -295,9 +296,9 @@ class ProductM extends Model {
             return ProductM::getCouponRating($p2, $c2) <=> ProductM::getCouponRating($p1, $c1);
         });
 
-        return ($limit <= 0) ?
+        return array_values(($limit <= 0) ?
             $products :
-            array_slice($products, ($offset * $limit), $limit);
+            array_slice($products, ($offset * $limit), $limit));
     }
     /**
      * dohvata proizvode poređane po tome koliko su slični (po broju žanrova) sa proizvodima
@@ -330,9 +331,9 @@ class ProductM extends Model {
         usort($products, fn ($p1, $p2) => // TODO za sada je jedini kriterijum sortiranja koliko žanrova se matchuje
                                 $p2->matching <=> $p1->matching);
 
-        return ($limit <= 0) ?
+        return array_values(($limit <= 0) ?
             $products :
-            array_slice($products, ($offset * $limit), $limit);
+            array_slice($products, ($offset * $limit), $limit));
     }
     /**
      * dohvata proizvode koje su prijatelji najbolje ocenili
@@ -367,9 +368,9 @@ class ProductM extends Model {
             array_push($products, $product);
         }
 
-        return ($limit <= 0) ?
+        return array_values(($limit <= 0) ?
             $products :
-            array_slice($products, ($offset * $limit), $limit);
+            array_slice($products, ($offset * $limit), $limit));
     }
     /**
      * uzima najsličnije proizvode proizvodu sa id-jem $productId
@@ -405,9 +406,9 @@ class ProductM extends Model {
             return $counts[$p2->id] <=> $counts[$p1->id];
         });
 
-        return ($limit <= 0) ?
+        return array_values(($limit <= 0) ?
             $products :
-            array_slice($products, ($offset * $limit), $limit);
+            array_slice($products, ($offset * $limit), $limit));
     }
 
 }
