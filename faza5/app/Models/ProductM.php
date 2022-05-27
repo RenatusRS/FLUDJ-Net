@@ -79,7 +79,7 @@ class ProductM extends Model {
                                  FROM $this->table;"
         );
 
-        foreach ($res->getResult('array') as $product) {
+        foreach ($res->getResult('object') as $product) {
             yield $product;
         }
     }
@@ -101,10 +101,10 @@ class ProductM extends Model {
         return $score * $base;
     }
     public static function getProductRating($product) {
-        if ($product['rev_cnt'] == 0)
+        if ($product->rev_cnt == 0)
             return 0;
-        $average = (float)($product['rev_sum'] / (5 * $product['rev_cnt']));
-        $score = $average - ($average - 0.5) * 2 ** -log10( $product['rev_cnt'] + 1);
+        $average = (float)($product->rev_sum / (5 * $product->rev_cnt));
+        $score = $average - ($average - 0.5) * 2 ** -log10( $product->rev_cnt + 1);
         // malo je previše pristrasna formula u regresiji ka proseku
         return $score * 5;
     }
@@ -196,7 +196,7 @@ class ProductM extends Model {
 
         if (isset($idUser)) {
             $results = array_filter($results, function ($temp) use (&$idUser) {
-                return !((new OwnershipM())->owns($idUser, $temp['id_product']));
+                return !((new OwnershipM())->owns($idUser, $temp->id_product));
             });
         }
 
@@ -223,8 +223,8 @@ class ProductM extends Model {
         $results = iterator_to_array($this->getAllProducts());
 
         $results = array_filter($results, function($product) use (&$idUser) {
-            return ($product['discount'] > 0) && // FIXME potrebna provera da li je sniženje isteklo
-                   (!isset($idUser) || !((new OwnershipM())->owns($idUser, $product['id'])));
+            return ($product->discount > 0) && // FIXME potrebna provera da li je sniženje isteklo
+                   (!isset($idUser) || !((new OwnershipM())->owns($idUser, $product->id)));
         }); // lambda kaže "ako je proizvod na sniženju + ako korisnik nije ulogovan, ili ako ulogovan ne poseduje proizvod, ostavi ga u nizu"
 
         usort($results, fn($p1, $p2) =>
@@ -328,14 +328,14 @@ class ProductM extends Model {
         $products = [];
         $ownM = (new OwnershipM());
         foreach ($ownM->matchingGenres($idUser) as $product) {
-            if ($ownM->owns($idUser, $product['id']))
+            if ($ownM->owns($idUser, $product->id))
                 continue;
 
             array_push($products, $product);
         }
 
         usort($products, fn ($p1, $p2) => // TODO za sada je jedini kriterijum sortiranja koliko žanrova se matchuje
-                                $p2['matching'] <=> $p1['matching']);
+                                $p2->matching <=> $p1->matching);
 
         return ($limit <= 0) ?
             $products :
@@ -361,11 +361,11 @@ class ProductM extends Model {
 
         $temp = iterator_to_array((new OwnershipM())->friendsLikes($idUser));
         usort($temp, fn ($t1, $t2) =>
-                   ProductM::getRating($t2['rev_cnt'], $t2['rev_sum'], 5) <=> ProductM::getRating($t1['rev_cnt'], $t1['rev_sum'], 5));
+                   ProductM::getRating($t2->rev_cnt, $t2->rev_sum, 5) <=> ProductM::getRating($t1->rev_cnt, $t1->rev_sum, 5));
 
         $products = [];
         foreach ($temp as $t) {
-            $id = $t['id_product'];
+            $id = $t->id_product;
             if ((new OwnershipM())->owns($idUser, $id))
                 continue;
 
@@ -399,14 +399,14 @@ class ProductM extends Model {
         $products = [];
         $counts = [];
         foreach ($similar as $product) {
-            $id = $product['id_product'];
+            $id = $product->id_product;
             if ($idUser != null && ((new OwnershipM())->owns($idUser, $id)))
                 continue;
 
             $newProduct = (new ProductM())->find($id);
             array_push($products, $newProduct);
 
-            $counts[$id] = $product['match_count'];
+            $counts[$id] = $product->match_count;
         }
 
         usort($products, function ($p1, $p2) use (&$counts) { // za sada usort samo radi po tome ko se više puta pojavljuje, TODO

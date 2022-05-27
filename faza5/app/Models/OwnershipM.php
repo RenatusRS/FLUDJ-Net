@@ -70,7 +70,7 @@ class OwnershipM extends Model {
                                  LIMIT $limit
                                  OFFSET $offset; ");
 
-        foreach ($res->getResult('array') as $row) {
+        foreach ($res->getResult('object') as $row) {
             yield $row;
         }
     }
@@ -100,7 +100,7 @@ class OwnershipM extends Model {
                  ) AS p ON z.genre_name = p.genre_name
                  GROUP BY id; ");
 
-        foreach ($res->getResult('array') as $row) {
+        foreach ($res->getResult('object') as $row) {
             yield $row;
         }
     }
@@ -134,7 +134,7 @@ class OwnershipM extends Model {
                  GROUP BY id_product"
         );
 
-        foreach ($res->getResult('array') as $row) {
+        foreach ($res->getResult('object') as $row) {
             yield $row;
         }
     }
