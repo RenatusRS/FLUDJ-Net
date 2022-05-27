@@ -88,3 +88,5 @@ defined("MIN_DESCRIPTION_SIZE") || define("MIN_DESCRIPTION_SIZE", 10);
 defined("DISCOVERY_LENGTH")     || define("DISCOVERY_LENGTH", 20);
 defined("COUPON_POINTS")        || define("COUPON_POINTS", 1500);
 defined("POINTS_PRODUCT")       || define("POINTS_PRODUCT", 15);
+defined("MAX_COUPON_DISCOUNT")  || define("MAX_COUPON_DISCOUNT", 50);
+defined("COUPON_INCREMENT")     || define("COUPON_INCREMENT", 10);
