@@ -32,4 +32,20 @@ class BundledProductsM extends Model {
 
         return $result;
     }
+
+    /**
+     * proverava da li je proizvod sa id-jem $productId u kolekciji
+     * sa id-jem $bundleId
+     *
+     * @param  integer $bundleId
+     * @param  integer $productId
+     * @return bool
+     */
+    public function inBundle($idBundle, $idProduct) {
+        $query = $this->where('id_product', $idProduct)
+                      ->where('id_bundle', $idBundle)
+                      ->first();
+
+        return (isset($query));
+    }
 }

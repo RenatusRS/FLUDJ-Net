@@ -8,6 +8,7 @@ use App\Models\BundleM;
 use App\Models\UserM;
 use App\Models\OwnershipM;
 use App\Models\ReviewVoteM;
+use App\Models\BundledProductsM;
 
 class Admin extends BaseController {
     protected function show($page, $data = []) {
@@ -226,5 +227,26 @@ class Admin extends BaseController {
         (new ReviewVoteM())->where('id_product', $id)->where("id_poster", $poster->id)->delete();
 
         return redirect()->to(site_url("User/Product/{$id}"));
+    }
+
+    /**
+     * dodaje proizvod sa id-jem $idProduct u kolekciju sa id-jem $idBundle
+     * ako već nije. vraća bul vrednost u zavisnosti od toga da li je proizvod već postojao
+     * u toj kolekciji
+     *
+     * @param  integer $idBundle
+     * @param  integer $idProduct
+     * @return boolean
+     */
+    public function addProductToBundle($idBundle, $idProduct) {
+        $model = new BundledProductsM();
+        if ($model->inBundle($idBundle, $idProduct))
+            return false;
+
+        $model->insert([
+            'id_bundle'  => $idBundle,
+            'id_product' => $idProduct
+        ]);
+        return true;
     }
 }
