@@ -41,7 +41,7 @@ class GenreM extends Model {
              GROUP BY t1.id_product;"
         );
 
-        foreach ($res->getResult('array') as $row) {
+        foreach ($res->getResult('object') as $row) {
             yield $row;
         }
     }

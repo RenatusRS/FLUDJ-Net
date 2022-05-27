@@ -6,6 +6,7 @@ Autori:
 
 Opis: Bazicni kontroler
 */
+
 namespace App\Controllers;
 
 use CodeIgniter\Controller;
@@ -62,7 +63,6 @@ class BaseController extends Controller {
         $this->session = session();
     }
 
-
     /**
      * upload
      *
@@ -73,43 +73,17 @@ class BaseController extends Controller {
      * @return void
      *
      */
-    protected function upload($destDir, $file, $name, $overwrite=true) {
+    protected function upload($destDir, $file, $name, $overwrite = true) {
         $file = $this->request->getFile($file);
 
         if ($file != null && $file->isValid() && !$file->hasMoved())
             $file->move($destDir, $name . '.' . $file->getExtension(), $overwrite);
     }
 
-    protected function show($page, $data = []) {}
 
-    /**
-     *
-     * Prikaz stranice proizvoda
-     *
-     * @return void
-     */
-    public function product($id) {
-        $productM = new ProductM();
-        $product = $productM->find($id);
-
-        if (!isset($product))
-            return redirect()->to(site_url());
-
-        $genres = implode(' ', (new GenreM())->getGenres($id));
-
-        $product_base = $product->base_game != null ? $productM->find($product->base_game) : null;
-
-        $product_dlc = $productM->asArray()->where('base_game', $product->id)->findAll();
-
-        $topReviews = $this->getTopReviews($id);
-
-        $userRes = $this->userViewProduct($id);
-        $res = ['product' => $product, 'genres' => $genres, 'product_base' => $product_base, 'product_dlc' => $product_dlc, 'reviews' => $topReviews];
-
-        $this->show('product', array_merge($res, $userRes));
+    protected function userViewProduct($id) {
+        return [];
     }
-
-    protected function userViewProduct($id) { return []; }
 
     /**
      *
@@ -190,7 +164,7 @@ class BaseController extends Controller {
 
         foreach ($products as $product) {
             $owns = (new OwnershipM())
-                            ->owns($user->id, $product->id);
+                ->owns($user->id, $product->id);
 
             if ($owns === true) {
                 $owned++;
@@ -214,15 +188,17 @@ class BaseController extends Controller {
             0 :
             $price - ($price * $discount) / 100;
 
-        return ['price'    => $price,
-                'discount' => $discount,
-                'final'    => $final];
+        return [
+            'price'    => $price,
+            'discount' => $discount,
+            'final'    => $final
+        ];
     }
 
     protected function bundleProducts($bundleId) {
         $iter = (new BundledProductsM())
-                        ->where('id_bundle', $bundleId)
-                        ->findAll();
+            ->where('id_bundle', $bundleId)
+            ->findAll();
 
         foreach ($iter as $bundle) {
             yield ((new ProductM())->find($bundle->id_product));
@@ -245,8 +221,89 @@ class BaseController extends Controller {
 
         $result = $this->bundlePrice($products, $bundle->discount);
 
-        return $this->show('bundle', ['bundle' => $bundle,
-                                      'bundledProducts' => $products,
-                                      'price' => $result]);
+        return $this->show('bundle', [
+            'bundle' => $bundle,
+            'bundledProducts' => $products,
+            'price' => $result
+        ]);
+    }
+
+    protected function show($page, $data = []) {
+        $data['user'] = $this->session->get('user');
+        if (!isset($data['background']) || $data['background'] == null)
+            $data['background'] = base_url('assets/background.png');
+
+        echo view('template/essential', $data);
+        echo view('template/header', $data);
+        echo view("pages/$page", $data);
+        echo view('template/footer', $data);
+    }
+
+    /**
+     *
+     * Prikaz stranice proizvoda
+     *
+     * @return void
+     */
+    public function product($id) {
+        $productM = new ProductM();
+        $product = $productM->find($id);
+
+        if (!isset($product))
+            return redirect()->to(site_url());
+
+        $genres = implode(' ', (new GenreM())->getGenres($id));
+
+        $product_base = $product->base_game != null ? $productM->find($product->base_game) : null;
+
+        $product_dlc = $productM->asArray()->where('base_game', $product->id)->findAll();
+
+        $topReviews = $this->getTopReviews($id);
+
+        $price = $productM->getDiscountedPrice($id);
+
+        $discount = $product->discount != 0 ? true : false;
+
+        $userRes = $this->userViewProduct($id);
+        $res = [
+            'product' => $product,
+            'genres' => $genres,
+            'product_base' => $product_base,
+            'product_dlc' => $product_dlc,
+            'reviews' => $topReviews,
+            'price' => $price,
+            'discount' => $discount
+        ];
+
+        $this->show('product', array_merge($res, $userRes));
+    }
+
+    protected function frontpage($idUser = null) {
+        $productM = new ProductM();
+
+        $heroP = $productM->getHeroProduct($idUser);
+        $heroP->description = explode(".", $heroP->description, 2)[0] . ".";
+
+        $highRatingP =  $productM->getHighRatingProducts($idUser);
+        $topSellerP =   $productM->getTopSellersProducts($idUser);
+        $discountedP =  $productM->getDiscountedProducts($idUser);
+        $discoveryP =   $productM->getDiscoveryProducts($idUser);
+        $couponP =      $productM->getCouponProducts($idUser);
+        $userLikeP =    $productM->getProductsUserLike($idUser);
+        $friendsLikeP = $productM->getProductsUserFriendsLike($idUser);
+
+        $this->show(
+            'index',
+            [
+                'heroP' => $heroP,
+                'highRatingP' => $highRatingP,
+                'topSellerP' => $topSellerP,
+                'discountedP' => $discountedP,
+                'discoveryP' => $discoveryP,
+                'couponP' => $couponP,
+                'userLikeP' => $userLikeP,
+                'friendsLikeP' => $friendsLikeP
+            ]
+        );
     }
 }

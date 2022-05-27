@@ -115,10 +115,10 @@ DROP TABLE IF EXISTS `product`;
 CREATE TABLE `product` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(30) NOT NULL,
-  `price` decimal(10,0) NOT NULL,
+  `price` decimal(5,2) NOT NULL,
   `base_game` int DEFAULT NULL,
-  `discount` int DEFAULT NULL,
-  `discount_expire` datetime DEFAULT NULL,
+  `discount` int NOT NULL DEFAULT '0',
+  `discount_expire` date NOT NULL DEFAULT '2000-01-01',
   `description` varchar(4000) NOT NULL,
   `developer` varchar(30) NOT NULL,
   `publisher` varchar(30) NOT NULL,
@@ -138,18 +138,8 @@ CREATE TABLE `product` (
   UNIQUE KEY `name_UNIQUE` (`name`),
   KEY `fk_base_game_idx` (`base_game`),
   CONSTRAINT `fk_base_game` FOREIGN KEY (`base_game`) REFERENCES `product` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `product`
---
-
-LOCK TABLES `product` WRITE;
-/*!40000 ALTER TABLE `product` DISABLE KEYS */;
-INSERT INTO `product` VALUES (1,'Elden Ring',23,NULL,NULL,NULL,'','Dev','Sher','15/07/2015','W6','M1','G1','C1','D1','W66','M2','G2','C2','D2');
-/*!40000 ALTER TABLE `product` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `relationship`
@@ -168,15 +158,6 @@ CREATE TABLE `relationship` (
   CONSTRAINT `fk_id_user2` FOREIGN KEY (`id_user2`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `relationship`
---
-
-LOCK TABLES `relationship` WRITE;
-/*!40000 ALTER TABLE `relationship` DISABLE KEYS */;
-/*!40000 ALTER TABLE `relationship` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `review_vote`
@@ -210,15 +191,15 @@ CREATE TABLE `user` (
   `id` int NOT NULL AUTO_INCREMENT,
   `username` varchar(20) NOT NULL,
   `password` varchar(20) NOT NULL,
-  `admin_rights` tinyint NOT NULL,
-  `balance` decimal(10,0) NOT NULL,
-  `review_ban` tinyint NOT NULL,
-  `description` varchar(150) DEFAULT NULL,
-  `country` varchar(2) DEFAULT NULL,
-  `real_name` varchar(20) DEFAULT NULL,
+  `admin_rights` tinyint NOT NULL DEFAULT '0',
+  `balance` decimal(6,2) NOT NULL DEFAULT '0.00',
+  `review_ban` tinyint NOT NULL DEFAULT '0',
+  `description` varchar(150) NOT NULL DEFAULT 'User has not set a description.',
+  `real_name` varchar(20) NOT NULL DEFAULT '""',
   `nickname` varchar(20) NOT NULL,
   `featured_review` int DEFAULT NULL,
-  `points` int NOT NULL,
+  `points` int NOT NULL DEFAULT '0',
+  `overflow` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`),
   UNIQUE KEY `username_UNIQUE` (`username`),
@@ -226,16 +207,6 @@ CREATE TABLE `user` (
   CONSTRAINT `fk_featured_review` FOREIGN KEY (`featured_review`) REFERENCES `product` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `user`
---
-
-LOCK TABLES `user` WRITE;
-/*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,'a','a',1,0,0,NULL,NULL,NULL,'a',NULL,0);
-/*!40000 ALTER TABLE `user` ENABLE KEYS */;
-UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -246,4 +217,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-05-03 17:48:59
+-- Dump completed on 2022-05-21 21:17:43

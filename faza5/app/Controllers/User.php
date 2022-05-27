@@ -22,22 +22,12 @@ use App\Models\BundledProductsM;
 use App\Models\CouponM;
 
 class User extends BaseController {
-
-    /**
-     *Prikaz sadrzaja na stranici
-     *@return void
-     */
-    protected function show($page, $data = []) {
-        $data['controller'] = 'User';
-        $data['user'] = $this->session->get('user');
-        echo view('template/header_user', $data);
-        echo view("pages/$page", $data);
-        echo view('template/footer');
-    }
-
     public function index() {
-        $this->show('index');
+        $user = $this->session->get('user');
+
+        $this->frontpage($user->id);
     }
+
 
     /**
      *Odjavljivanje korisnika
@@ -56,10 +46,12 @@ class User extends BaseController {
         $user = $id == null ? $this->session->get('user') : (new UserM())->find($id);
         if ($id == null) {
             $builder = \Config\Database::connect()->table('user');
-            if($this->request->getVar('nickname')!=""){
+
+            if ($this->request->getVar('nickname') != "") {
                 $builder = $builder->set('nickname', $this->request->getVar('nickname'))->set('real_name', $this->request->getVar('real_name'))
                     ->set('country', $this->request->getVar('location'))->set('description', $this->request->getVar('description'))
-                    ->/*set('featured_review', $this->request->getVar('review'))*/where('id', $user->id)->update();
+                    ->set('featured_review', $this->request->getVar('f_review'))->where('id', $user->id)->update();
+
                 $this->upload('public/uploads/user/', 'profile_pic', $user->id);
             }
         }
@@ -96,7 +88,7 @@ class User extends BaseController {
             'balance' => $user->balance
         ]);
 
-        return redirect()->to(site_url("User/Profile/"));
+        return redirect()->to(site_url("user/profile/"));
     }
 
     /**
@@ -156,6 +148,8 @@ class User extends BaseController {
         $productM = new ProductM();
         $product = $productM->find($id);
 
+        $productPrice = $productM->getDiscountedPrice($id);
+
         $user = $userFor == null ? $userFrom : $userFor;
 
         $ownershipM = new OwnershipM();
@@ -173,13 +167,15 @@ class User extends BaseController {
                 return  $this->show('buyProduct', ['product' => $product, 'friends' => $friends, 'message' => 'Ima vec!']);
             }
         }
-        if ($userFrom->balance < $product->price) {
+        if ($userFrom->balance <  $productPrice) {
             return  $this->show('buyProduct', ['product' => $product, 'friends' => $friends, 'message' => 'Nema novaca!']);
         }
 
-        $userFrom->balance -= $product->price;
+        $userFrom->balance -=  $productPrice;
+        $userFrom->points += $productPrice * 100;
         $userM->update($userFrom->id, [
-            'balance' => $userFrom->balance
+            'balance' => $userFrom->balance,
+            'points' => $userFrom->points
         ]);
 
         $ownershipM->insert([
@@ -244,7 +240,7 @@ class User extends BaseController {
      * 
      * @return void   
      */
-    public function LikeSubmit($id, $posterUsername) {
+    public function LikeDislikeSubmit($id, $posterUsername) {
         $poster = (new UserM())->where('username', $posterUsername)->first();
         $user = $this->session->get('user');
 
@@ -254,54 +250,23 @@ class User extends BaseController {
 
         $vote = $review_voteM->where("id_user", $user->id)->where("id_poster", $poster->id)->where("id_product", $id)->first();
 
+        $like = $this->request->getVar('like');
+
         if ($vote) {
-            if ($vote->like == 0)
-                $review_voteM->where('id_product', $id)->where('id_user', $user->id)->where("id_poster", $poster->id)->set(['like' => 1])->update();
-            else
+            if ($vote->like == $like)
                 $review_voteM->where('id_product', $id)->where('id_user', $user->id)->where("id_poster", $poster->id)->delete();
+            else
+                $review_voteM->where('id_product', $id)->where('id_user', $user->id)->where("id_poster", $poster->id)->set(['like' => $like])->update();
         } else {
             $review_voteM->insert([
                 'id_user' => $user->id,
                 'id_poster' => $poster->id,
                 'id_product' => $id,
-                'like' => 1
+                'like' => $like
             ]);
         }
 
-        return redirect()->to(site_url("User/Product/{$id}"));
-    }
-
-    /**
-     * 
-     * Procesiranje dislajkovanja recenzija
-     * 
-     * @return void   
-     */
-    public function DislikeSubmit($id, $posterUsername) {
-        $poster = (new UserM())->where('username', $posterUsername)->first();
-        $user = $this->session->get('user');
-
-        if ($poster->id == $user->id) return redirect()->to(site_url("User/Product/{$id}"));
-
-        $review_voteM = new ReviewVoteM();
-        $vote = $review_voteM->where("id_user", $user->id)->where("id_poster", $poster->id)->where("id_product", $id)->first();
-
-        //user 1 poster 2 prod 1
-        if ($vote) {
-            if ($vote->like == 1)
-                $review_voteM->where('id_product', $id)->where('id_user', $user->id)->where("id_poster", $poster->id)->set(['like' => 0])->update();
-            else
-                $review_voteM->where('id_product', $id)->where('id_user', $user->id)->where("id_poster", $poster->id)->delete();
-        } else {
-            $review_voteM->insert([
-                'id_user' => $user->id,
-                'id_poster' => $poster->id,
-                'id_product' => $id,
-                'like' => 0
-            ]);
-        }
-
-        return redirect()->to(site_url("User/Product/{$id}"));
+        return redirect()->to(site_url("user/product/{$id}"));
     }
 
     public function awardUser($idUser) {
@@ -387,10 +352,10 @@ class User extends BaseController {
     */
     public function ajaxUserSearch(){
         helper(['form', 'url']);
- 
+
         $data = [];
         $db      = \Config\Database::connect();
-        $builder = $db->table('user');   
+        $builder = $db->table('user');
         $request = \Config\Services::request();
         $query = $builder->like('nickname', $request->getVar('q'))->select('id, nickname as text')->limit(10)->get();
         $data = $query->getResult();
@@ -398,33 +363,33 @@ class User extends BaseController {
     }
 
     /**
-    *Ajax funkcija za promenu stranice na profil odabranog pretrazenog korisnika
-    *@return String
-    */
-    public function ajaxUserLoad(){
+     *Ajax funkcija za promenu stranice na profil odabranog pretrazenog korisnika
+     *@return String
+     */
+    public function ajaxUserLoad() {
         $nickname = $_GET['nadimak'];
         $myUsr = (new UserM())->where('nickname', $nickname)->first();
-        return "profile/".$myUsr->id;
+        return "profile/" . $myUsr->id;
     }
 
     /**
-    *Prikaz stranice za pretragu korisnika
-    *@return void
-    */
+     *Prikaz stranice za pretragu korisnika
+     *@return void
+     */
     public function searchUser() {
         $this->show('searchUser.php');
     }
 
     /**
-    *Ajax funkcija za azurno ucitavanje rezultata proizvoda
-    *@return array(data)
-    */
-    public function ajaxProductSearch(){
+     *Ajax funkcija za azurno ucitavanje rezultata proizvoda
+     *@return array(data)
+     */
+    public function ajaxProductSearch() {
         helper(['form', 'url']);
- 
+
         $data = [];
         $db      = \Config\Database::connect();
-        $builder = $db->table('product');   
+        $builder = $db->table('product');
         $request = \Config\Services::request();
         $query = $builder->like('name', $request->getVar('q'))->select('id, name as text')->limit(10)->get();
         $data = $query->getResult();
@@ -432,23 +397,27 @@ class User extends BaseController {
     }
 
     /**
-    *Ajax funkcija za promenu stranice na odabrani proizvod
-    *@return String
-    */
-    public function ajaxProductLoad(){
+     *Ajax funkcija za promenu stranice na odabrani proizvod
+     *@return String
+     */
+    public function ajaxProductLoad() {
         $name = $_GET['ime'];
         $myProduct = (new ProductM())->where('name', $name)->first();
-        return "Product/".$myProduct->id;
+        return "Product/" . $myProduct->id;
     }
 
     /**
-    *Prikaz stranice za pretragu proizvoda
-    *@return void
-    */
+     *Prikaz stranice za pretragu proizvoda
+     *@return void
+     */
     public function searchProduct() {
         $this->show('searchProduct.php');
     }
-    
+
+    /** 
+     * Procesiranje brisanja recenzije
+     * @return void
+     */
     public function deleteReviewSubmit($id) {
         $user = $this->session->get('user');
 
@@ -465,21 +434,6 @@ class User extends BaseController {
         ]);
 
         (new ReviewVoteM())->where('id_product', $id)->where("id_poster", $user->id)->delete();
-
-        return redirect()->to(site_url("User/Product/{$id}"));
-    }
-
-    public function DeleteReviewAdminSubmit($id, $posterUsername) {
-        $poster = (new UserM())->where('username', $posterUsername)->first();
-
-        $user = $this->session->get('user');
-
-        if ($user->admin_rights) {
-
-            (new OwnershipM())->where('id_product', $id)->where('id_user', $poster->id)->set(['rating' => NULL, 'text' => NULL])->update();
-
-            (new ReviewVoteM())->where('id_product', $id)->where("id_poster", $poster->id)->delete();
-        }
 
         return redirect()->to(site_url("User/Product/{$id}"));
     }
@@ -519,10 +473,13 @@ class User extends BaseController {
         $products = $this->bundleProducts($id);
         foreach ($products as $product) {
             (new OwnershipM())
-                        ->acquire($user->id, $product->id);
+                ->acquire($user->id, $product->id);
         }
 
         $user->balance -= $finalPrice;
+        (new UserM())->update($user->id, [
+            'balance' => $user->balance
+        ]);
 
         $this->awardPoints($user->id, $finalPrice);
 

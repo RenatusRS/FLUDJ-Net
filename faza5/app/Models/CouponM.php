@@ -30,10 +30,14 @@ class CouponM extends Model {
      * @param  mixed $idOwner
      */
     public function getAllCoupons($idOwner) {
-        $res = $this->where('id_owner', $idOwner)
-                    ->findAll();
+        $query = $this->db->query(
+            "SELECT coupon.discount as coupon, product.*
+             FROM coupon
+             JOIN product ON id_product = id
+             WHERE id_owner = $idOwner;"
+        );
 
-        foreach ($res as $row) {
+        foreach ($query->getResult('object') as $row) {
             yield $row;
         }
     }

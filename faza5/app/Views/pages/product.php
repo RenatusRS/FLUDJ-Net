@@ -8,10 +8,16 @@
     <div width="30%" style="padding-left: 20px;">
         <img width=100% class=smooth-border src="<?php echo base_url('uploads/product/' . $product->id . '/banner.jpg')  ?>">
         <p class=highlight-text><?php echo $product->description; ?></p>
-        <h4><?php echo $product->name . " " . $product->price; ?></h4>
-        <form action="<?= site_url("User/buyProduct/{$product->id}") ?>" method="POST">
-            <input type="submit" class="btn" value="BUY">
-        </form>
+        <h4><?php echo $product->name . " " . $price; ?>$
+
+    <?php if ($discount) { ?>
+         -<?php echo $product->discount ?>% Discount</h4>
+    <?php
+            }
+    ?>
+    <form action="<?= site_url("User/buyProduct/{$product->id}") ?>" method="POST">
+        <input type="submit" class="btn" value="BUY">
+    </form>
     </div>
 </div>
 <?php if (isset($product_review)) { ?>
@@ -29,7 +35,9 @@
 ?>
 <div style="display:flex;">
     <p style="margin:20px 5px 20px 0px">Manage Product</p>
-    <input type="button" style="margin:20px 5px 20px 5px;" class="btn" value="Add Discount">
+    <form action="<?= site_url("Admin/addDiscount/{$product->id}") ?>" method="POST">
+        <input type="submit" style="margin:20px 5px 20px 5px;" class="btn" value="Add Discount">
+    </form>
     <a href=manage_product.html class="button">Edit Product</a>
     <a href=index.html class="button" style="margin:20px 0px 20px 5px">Delete Product</a>
 </div>
@@ -93,7 +101,7 @@
 </div>
 
 <div>
-    <h1>Top 5 Reviews</h1>
+    <h1>Top Reviews</h1>
     <?php
     if (isset($reviews)) {
         foreach ($reviews as $name => $review) {
@@ -102,11 +110,13 @@
             <h1><?php echo $name ?></h1>
             <p><?php echo $review["review"]->text ?></p>
             <h2><?php echo $review["review"]->rating ?></h2>
-            <form action="<?= site_url("User/LikeSubmit/{$product->id}/{$name}") ?>" method="POST">
+            <form action="<?= site_url("User/LikeDislikeSubmit/{$product->id}/{$name}") ?>" method="POST">
                 <input type="submit" class="btn" name="action" value="Like <?php echo $review["positive"] ?>">
+                <input type="hidden" name="like" value="1">
             </form>
-            <form action="<?= site_url("User/DislikeSubmit/{$product->id}/{$name}") ?>" method="POST">
+            <form action="<?= site_url("User/LikeDislikeSubmit/{$product->id}/{$name}") ?>" method="POST">
                 <input type="submit" class="btn" name="action" value="Dislike <?php echo $review["negative"] ?>">
+                <input type="hidden" name="like" value="0">
             </form>
             <form action="<?= site_url("User/awardUser/{$review['poster']}") ?>" method="POST">
                 <input type="submit" class="btn" name="action" value="Award user">
