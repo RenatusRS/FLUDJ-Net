@@ -4,6 +4,16 @@ namespace App\Models;
 
 use CodeIgniter\Model;
 
+function interleave_arrays() {
+    $output = array();
+    for ($args = func_get_args(); count($args); $args = array_filter($args)) {
+        foreach ($args as &$arg) { // BUGFIX moguće je da ovde postoji bug jer se pojavljuju neki indeksi u povratnom nizu niotkuda
+            $output[] = array_shift($arg);
+        }
+    }
+    return array_values(array_filter($output));
+}
+
 class ProductM extends Model {
     protected $table = 'product';
     protected $primaryKey = 'id';
@@ -239,10 +249,10 @@ class ProductM extends Model {
         $fun = function (&$p) use (&$matching) {
             $id = $p['id'];
             if (array_key_exists($id, $matching))
-                return 0;
+                return false;
 
             $matching[$id] = 1;
-            return 1;
+            return true;
         };
 
         $res1 = $this->getHighRatingProducts($idUser, 0, DISCOVERY_LENGTH);
@@ -258,16 +268,6 @@ class ProductM extends Model {
         $res3 = array_filter($res3, function ($p) use (&$fun) {
             return $fun($p);
         });
-
-        function interleave_arrays() {
-            $output = array();
-            for ($args = func_get_args(); count($args); $args = array_filter($args)) {
-                foreach ($args as &$arg) { // BUGFIX moguće je da ovde postoji bug jer se pojavljuju neki indeksi u povratnom nizu niotkuda
-                    $output[] = array_shift($arg);
-                }
-            }
-            return $output;
-        }
 
         $result = interleave_arrays($res1, $res2, $res3);
 
