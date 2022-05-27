@@ -70,9 +70,7 @@ class CouponM extends Model {
         $currentWorth = self::couponWorth($idOwner, $idProduct);
 
         $couponM = new CouponM();
-        $couponM->where('id_product', $idProduct)
-                ->where('id_owner', $idOwner)
-                ->delete();
+        self::removeCoupon($idOwner, $idProduct);
 
         $worth = $currentWorth + COUPON_INCREMENT;
         if ($worth > MAX_COUPON_DISCOUNT)
@@ -83,5 +81,10 @@ class CouponM extends Model {
             'id_owner'   => $idOwner,
             'discount'   => $worth
         ]);
+    }
+    public static function removeCoupon($idOwner, $idProduct) {
+        (new CouponM())->where('id_product', $idProduct)
+                       ->where('id_owner', $idOwner)
+                       ->delete();
     }
 }

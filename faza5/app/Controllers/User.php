@@ -149,6 +149,8 @@ class User extends BaseController {
         $product = $productM->find($id);
 
         $productPrice = $productM->getDiscountedPrice($id);
+        $coupon = CouponM::couponWorth($userFrom->id, $id);
+        $productPrice *= ((100 - $coupon) / 100);
 
         $user = $userFor == null ? $userFrom : $userFor;
 
@@ -172,10 +174,8 @@ class User extends BaseController {
         }
 
         $userFrom->balance -=  $productPrice;
-        $userFrom->points += $productPrice * 100;
         $userM->update($userFrom->id, [
-            'balance' => $userFrom->balance,
-            'points' => $userFrom->points
+            'balance' => $userFrom->balance
         ]);
 
         $ownershipM->insert([
@@ -184,6 +184,8 @@ class User extends BaseController {
             'text' => null,
             'rating' => null
         ]);
+
+        CouponM::removeCoupon($userFrom->id, $product->id);
 
         $this->awardPoints($userFrom->id, $product->price);
 
@@ -452,14 +454,13 @@ class User extends BaseController {
             return redirect()->to(site_url());
         }
 
-        $friends = (new RelationshipM())->getFriends($user);
         $price = [
             'price'    => $this->request->getVar('price'),
             'discount' => $this->request->getVar('discount'),
             'final'    => $this->request->getVar('final'),
         ];
 
-        $this->show('buyBundle', ['bundle' => $bundle, 'friends' => $friends, 'price' => $price]);
+        $this->show('buyBundle', ['bundle' => $bundle, 'price' => $price]);
     }
 
     public function buyBundleSubmit($id) {
@@ -486,16 +487,4 @@ class User extends BaseController {
         // TODO redirect
     }
 
-    public function getTopProducts() {
-        $products = ProductM::getTopProducts();
-
-        $ratings = [];
-        foreach ($products as $product) {
-            $ratings[$product['id_product']] = ProductM::getProductRating($product);
-        }
-
-        usort($ratings, fn ($r1, $r2) => (int)($r1-$r2));
-
-        $this->show('topProductsTest', ['res' => $products, 'ratings' => $ratings]);
-    }
 }
