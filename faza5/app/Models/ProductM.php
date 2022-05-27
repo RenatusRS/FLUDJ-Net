@@ -167,7 +167,7 @@ class ProductM extends Model {
 
         if (isset($idUser)) { // ako korisnik nije ulogovan prikazuju mu se svi proizvodi jer ni jedan ne poseduje
             $results = array_filter($results, function ($product) use (&$idUser) {
-                return !((new OwnershipM())->owns($idUser, $product['id']));
+                return !((new OwnershipM())->owns($idUser, $product->id));
             }); // lambda za filtriranje niza kaže: "ako ulogovan korisnik ne poseduje proizvod, ubaci proizvod u niz"
         }
 
@@ -196,7 +196,7 @@ class ProductM extends Model {
 
         if (isset($idUser)) {
             $results = array_filter($results, function ($temp) use (&$idUser) {
-                return !((new OwnershipM())->owns($idUser, $temp->id_product));
+                return !((new OwnershipM())->owns($idUser, $temp->id));
             });
         }
 
@@ -287,18 +287,11 @@ class ProductM extends Model {
         if ($idUser == null)
             return [];
 
-        $coupons = (new CouponM())->getAllCoupons($idUser);
-        $products = [];
-        foreach ($coupons as $coupon) {
-            $id = $coupon->id;
-            $newProduct = (new ProductM())->find($id);
-            $newProduct['coupon'] = $coupon->discount;
-            array_push($products, $newProduct);
-        }
+        $products = iterator_to_array((new CouponM())->getAllCoupons($idUser));
 
         usort($products, function ($p1, $p2) {
-            $c1 = $p1['coupon'];
-            $c2 = $p2['coupon'];
+            $c1 = $p1->coupon;
+            $c2 = $p2->coupon;
             return ProductM::getCouponRating($p2, $c2) <=> ProductM::getCouponRating($p1, $c1);
         });
 
