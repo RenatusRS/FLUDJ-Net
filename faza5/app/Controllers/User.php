@@ -427,4 +427,17 @@ class User extends BaseController {
 
         // TODO redirect
     }
+
+    public function getTopProducts() {
+        $products = ProductM::getTopProducts();
+
+        $ratings = [];
+        foreach ($products as $product) {
+            $ratings[$product['id_product']] = ProductM::getProductRating($product);
+        }
+
+        usort($ratings, fn ($r1, $r2) => (int)($r1-$r2));
+
+        $this->show('topProductsTest', ['res' => $products, 'ratings' => $ratings]);
+    }
 }
