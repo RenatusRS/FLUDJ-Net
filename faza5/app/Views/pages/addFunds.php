@@ -10,13 +10,13 @@ Autori:
 
 <title>Add Funds</title>
 
-
-<form name='addFundsForm' action="<?= site_url("User/addFundsSubmit/") ?>" method="POST">
-    <br><br>
-    <h3>Add funds:</h3>
+<div id=short-main>
+  <form name='addFundsForm' action="<?= site_url("User/addFundsSubmit/") ?>" method="POST">
+    <span class="input-label">Add Funds</span>
     <input type="text" name="funds" class="full" required />
     <?php
     if (!empty($errors['funds'])) echo $errors['funds'];
     ?>
     <input type="submit" class="btn" value="CONTINUE">
-</form>
+  </form>
+</div>
