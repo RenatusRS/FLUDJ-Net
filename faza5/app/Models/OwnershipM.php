@@ -63,14 +63,21 @@ class OwnershipM extends Model {
      */
     public function ownedSum($limit = 1000000, $offset = 0) { // limit koristi magičan broj 1000000 jer nema oznaka za beskonačno
         $this->db = \Config\Database::connect();
-        $res = $this->db->query("SELECT *, count(*) as cnt
-                                 FROM $this->table
-                                 GROUP BY id_product
-                                 ORDER BY cnt DESC
-                                 LIMIT $limit
-                                 OFFSET $offset; ");
+        $res = $this->db->query(
+            "SELECT t.cnt, product.*
+             FROM
+             (
+                SELECT *, count(id_product) AS cnt
+                FROM $this->table
+                GROUP BY id_product
+             ) AS t
+             JOIN product ON product.id = t.id_product
+             ORDER BY t.cnt DESC
+             LIMIT $limit
+             OFFSET $offset; "
+        );
 
-        foreach ($res->getResult('array') as $row) {
+        foreach ($res->getResult('object') as $row) {
             yield $row;
         }
     }
@@ -100,7 +107,7 @@ class OwnershipM extends Model {
                  ) AS p ON z.genre_name = p.genre_name
                  GROUP BY id; ");
 
-        foreach ($res->getResult('array') as $row) {
+        foreach ($res->getResult('object') as $row) {
             yield $row;
         }
     }
@@ -134,7 +141,7 @@ class OwnershipM extends Model {
                  GROUP BY id_product"
         );
 
-        foreach ($res->getResult('array') as $row) {
+        foreach ($res->getResult('object') as $row) {
             yield $row;
         }
     }
