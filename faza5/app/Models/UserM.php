@@ -10,5 +10,5 @@ class UserM extends Model {
 
     protected $returnType = 'object';
 
-    protected $allowedFields = ['username', 'password', 'admin_rights', 'balance', 'review_ban', 'avatar', 'description', 'country', 'real_name', 'nickname', 'featured_review', 'points', 'overflow'];
+    protected $allowedFields = ['username', 'password', 'admin_rights', 'balance', 'review_ban', 'avatar', 'description', 'real_name', 'nickname', 'featured_review', 'points', 'overflow'];
 }
