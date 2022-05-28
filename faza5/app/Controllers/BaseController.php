@@ -126,7 +126,7 @@ class BaseController extends Controller {
         foreach ($posterScore as $poster => $score) {
             $review = $ownershipM->where('id_product', $id)->where('id_user', $poster)->first();
             $user = $userM->find($poster);
-            $reviews[$user->username] = ["review" => $review, "positive" => $posterPosNeg[$poster]["positive"], "negative" => $posterPosNeg[$poster]["negative"]];
+            $reviews[$user->username] = ["poster" => $poster, "review" => $review, "positive" => $posterPosNeg[$poster]["positive"], "negative" => $posterPosNeg[$poster]["negative"]];
         }
 
         return $reviews;

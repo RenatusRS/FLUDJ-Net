@@ -19,6 +19,7 @@ use App\Models\RelationshipM;
 use App\Models\ReviewVoteM;
 use App\Models\BundleM;
 use App\Models\BundledProductsM;
+use App\Models\CouponM;
 
 class User extends BaseController {
     public function index() {
@@ -148,6 +149,8 @@ class User extends BaseController {
         $product = $productM->find($id);
 
         $productPrice = $productM->getDiscountedPrice($id);
+        $coupon = CouponM::couponWorth($userFrom->id, $id);
+        $productPrice *= ((100 - $coupon) / 100);
 
         $user = $userFor == null ? $userFrom : $userFor;
 
@@ -171,10 +174,8 @@ class User extends BaseController {
         }
 
         $userFrom->balance -=  $productPrice;
-        $userFrom->points += $productPrice * 100;
         $userM->update($userFrom->id, [
-            'balance' => $userFrom->balance,
-            'points' => $userFrom->points
+            'balance' => $userFrom->balance
         ]);
 
         $ownershipM->insert([
@@ -184,7 +185,11 @@ class User extends BaseController {
             'rating' => null
         ]);
 
-        return redirect()->to(site_url("user/product/{$product->id}"));
+        CouponM::removeCoupon($userFrom->id, $product->id);
+
+        $this->awardPoints($userFrom->id, $product->price);
+
+        return redirect()->to(site_url("User/Product/{$product->id}"));
     }
 
     /**
@@ -266,11 +271,88 @@ class User extends BaseController {
         return redirect()->to(site_url("user/product/{$id}"));
     }
 
+    public function awardUser($idUser) {
+        $user = $this->session->get('user');
+        $awardee = (new UserM())->find($idUser);
+
+        $this->show('awardPoints', ['currentUser' => $user, 'awardee' => $awardee]);
+    }
+
+    public function awardUserSubmit($idUser) {
+        $user = $this->session->get('user');
+        $receiver = (new UserM())->find($idUser);
+        $sender = (new UserM())->find($user->id);
+
+        $pointsAwarded = $this->request->getVar('points');
+
+        $user->points = $sender->points - $pointsAwarded;
+
+        $receiverPoints = $receiver->overflow + $pointsAwarded;
+        $overflow = ($receiverPoints % COUPON_POINTS);
+
+        (new UserM())->update($user->id, [
+            'points' => $user->points
+        ]);
+        (new UserM())->update($receiver->id, [
+            'overflow' => $overflow
+        ]);
+
+        $data = [
+            'currentPoints' => $sender->points - $pointsAwarded,
+            'pointsAwarded' => $pointsAwarded,
+            'awardeePoints' => $overflow
+        ];
+
+        while ($receiverPoints >= COUPON_POINTS) {
+            $this->awardCoupon($idUser);
+            $receiverPoints -= COUPON_POINTS;
+        }
+
+        $this->show('awardedSuccess', $data);
+    }
+
     /**
-     *Ajax funkcija za azurno ucitavanje rezultata korisnika
-     *@return array(data)
+     * dodeljuje kupon korisniku sa id-jem $idUser
+     *
+     * @param  integer $idUser
+     * @return boolean da li je uspešno dodeljen kupon
      */
-    public function ajaxUserSearch() {
+    private function awardCoupon($idUser) {
+        $products = (new ProductM())->getDiscoveryProducts($idUser);
+        $products = array_values(array_filter($products, function ($p) use (&$idUser) {
+            $c = CouponM::couponWorth($idUser, $p['id']);
+            return ($c < MAX_COUPON_DISCOUNT);
+        })); // lambda filtrira sve proizvode za koje postoji max kupon, a array values vraća ključeve da kreću od 0
+
+        $cnt = count($products);
+        if ($cnt == 0)
+            return false;
+
+        $choice = $products[rand(0, $cnt-1)];
+        CouponM::upgradeCoupon($idUser, $choice['id']);
+        return true;
+    }
+    private function awardPoints($idUser, $spent) {
+        $points = (int)($spent * POINTS_PRODUCT);
+
+        $userM = new UserM();
+        $currentPoints = $userM->points + $points;
+
+        while ($currentPoints >= COUPON_POINTS) {
+            $this->awardCoupon($idUser);
+            $currentPoints -= COUPON_POINTS;
+        }
+
+        $userM->update($idUser, [
+            'points' => $currentPoints
+        ]);
+    }
+
+    /**
+    *Ajax funkcija za azurno ucitavanje rezultata korisnika
+    *@return array(data)
+    */
+    public function ajaxUserSearch(){
         helper(['form', 'url']);
 
         $data = [];
@@ -372,14 +454,13 @@ class User extends BaseController {
             return redirect()->to(site_url());
         }
 
-        $friends = (new RelationshipM())->getFriends($user);
         $price = [
             'price'    => $this->request->getVar('price'),
             'discount' => $this->request->getVar('discount'),
             'final'    => $this->request->getVar('final'),
         ];
 
-        $this->show('buyBundle', ['bundle' => $bundle, 'friends' => $friends, 'price' => $price]);
+        $this->show('buyBundle', ['bundle' => $bundle, 'price' => $price]);
     }
 
     public function buyBundleSubmit($id) {
@@ -401,19 +482,9 @@ class User extends BaseController {
             'balance' => $user->balance
         ]);
 
+        $this->awardPoints($user->id, $finalPrice);
+
         // TODO redirect
     }
 
-    public function getTopProducts() {
-        $products = ProductM::getTopProducts();
-
-        $ratings = [];
-        foreach ($products as $product) {
-            $ratings[$product['id_product']] = ProductM::getProductRating($product);
-        }
-
-        usort($ratings, fn ($r1, $r2) => (int)($r1-$r2));
-
-        $this->show('topProductsTest', ['res' => $products, 'ratings' => $ratings]);
-    }
 }
