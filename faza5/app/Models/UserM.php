@@ -15,7 +15,12 @@ class UserM extends Model {
     public function getAvatar($id) {
         $avatar = $this->getAsset('uploads/user/' . $id . '.png');
 
-        if ($avatar == null) return base_url('assets/avatar.png');
-        return $avatar;
+        return $avatar ?: base_url('assets/avatar.png');
+    }
+
+    public function getBackground($id) {
+        $product_id = $this->find($id)->featured_review;
+
+        return $product_id != null ? (new ProductM())->getBackground($product_id) : null;
     }
 }
