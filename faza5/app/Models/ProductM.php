@@ -66,7 +66,8 @@ class ProductM extends Model {
 
     public function getAllProducts() {
         $this->db = \Config\Database::connect();
-        $res = $this->db->query("SELECT *
+        $res = $this->db->query(
+            "SELECT *
                                  FROM $this->table;"
         );
 
@@ -74,6 +75,7 @@ class ProductM extends Model {
             yield $product;
         }
     }
+
     /**
      * vraća rejting nečega sa pristrasnošću ka proseku. veći broj ocena smanjuje težnju ka proseku
      *
@@ -87,18 +89,20 @@ class ProductM extends Model {
             return 0;
 
         $average = (float)($sum / ($base * $cnt));
-        $score = $average - ($average - 0.5) * 2 ** (-log10( $cnt + 1));
+        $score = $average - ($average - 0.5) * 2 ** (-log10($cnt + 1));
 
         return $score * $base;
     }
+
     public static function getProductRating($product) {
         if ($product->rev_cnt == 0)
             return 0;
         $average = (float)($product->rev_sum / (5 * $product->rev_cnt));
-        $score = $average - ($average - 0.5) * 2 ** -log10( $product->rev_cnt + 1);
+        $score = $average - ($average - 0.5) * 2 ** -log10($product->rev_cnt + 1);
         // malo je previše pristrasna formula u regresiji ka proseku
         return $score * 5;
     }
+
     public static function getDiscountRating($product, $couponDiscount = null) {
         $discount = ($couponDiscount == null) ?
             $product->discount :
@@ -108,14 +112,15 @@ class ProductM extends Model {
 
         return $score;
     }
+
     public static function getCouponRating($product, $coupon) {
         return ProductM::getDiscountRating($product, $coupon);
     }
+
     public static function getTopProducts() {
         $products = iterator_to_array((new ProductM())->getAllProducts());
 
-        usort($products, fn ($p1, $p2) =>
-                   (ProductM::getProductRating($p2) <=> ProductM::getProductRating($p1)));
+        usort($products, fn ($p1, $p2) => (ProductM::getProductRating($p2) <=> ProductM::getProductRating($p1)));
 
         return $products;
     }
@@ -138,6 +143,7 @@ class ProductM extends Model {
             $res[rand(0, $cnt - 1)] :
             [];
     }
+
     /**
      * uzima najbolje ocenjene proizvode po formuli datoj u OwnershipM::getRating(...).
      * u slučaju da niko nije ulogovan, prikazuje ih tako kakve jesu, ako je neko ulogovan
@@ -167,6 +173,7 @@ class ProductM extends Model {
             $results :
             array_slice($results, ($offset * $limit), $limit));
     }
+
     /**
      * uzima najprodavanije proizvode
      * u slučaju da niko nije ulogovan, prikazuje ih tako kakve jesu, ako je neko ulogovan
@@ -196,6 +203,7 @@ class ProductM extends Model {
             $results :
             array_slice($results, ($offset * $limit), $limit));
     }
+
     /**
      * dohvata niz proizvoda na sniženju. bolja sniženja i bolje ocenjeni proizvodi će biti
      * više pri početku.
@@ -214,18 +222,19 @@ class ProductM extends Model {
     public function getDiscountedProducts($idUser = null, $offset = 0, $limit = 0) {
         $results = iterator_to_array($this->getAllProducts());
 
-        $results = array_filter($results, function($product) use (&$idUser) {
+        $results = array_filter($results, function ($product) use (&$idUser) {
             return ($product->discount > 0) && // FIXME potrebna provera da li je sniženje isteklo
-                   (!isset($idUser) || !((new OwnershipM())->owns($idUser, $product->id)));
+                (!isset($idUser) || !((new OwnershipM())->owns($idUser, $product->id)));
         }); // lambda kaže "ako je proizvod na sniženju + ako korisnik nije ulogovan, ili ako ulogovan ne poseduje proizvod, ostavi ga u nizu"
 
-        usort($results, fn($p1, $p2) =>
-                    ProductM::getDiscountRating($p2) <=> ProductM::getDiscountRating($p1));
+        usort($results, fn ($p1, $p2) =>
+        ProductM::getDiscountRating($p2) <=> ProductM::getDiscountRating($p1));
 
         return array_values(($limit <= 0) ?
             $results :
             array_slice($results, ($offset * $limit), $limit));
     }
+
     /**
      * dohvata proizvode iz najbolje ocenjenih, sličnih kategorija korisnika i kategorija koje
      * prijatelji korisnika vole.
@@ -265,6 +274,7 @@ class ProductM extends Model {
 
         return array_values(array_slice($result, 0, DISCOVERY_LENGTH));
     }
+
     /**
      * dohvata niz proizvoda za koje korisnik $idUser ima kupone.
      * rangirani su, npr jaki kuponi za bolju igricu vrede više nego jaki kuponi
@@ -291,6 +301,7 @@ class ProductM extends Model {
             $products :
             array_slice($products, ($offset * $limit), $limit));
     }
+
     /**
      * dohvata proizvode poređane po tome koliko su slični (po broju žanrova) sa proizvodima
      * koje korisnik ($idUser) već poseduje
@@ -320,12 +331,13 @@ class ProductM extends Model {
         }
 
         usort($products, fn ($p1, $p2) => // TODO za sada je jedini kriterijum sortiranja koliko žanrova se matchuje
-                                $p2->matching <=> $p1->matching);
+        $p2->matching <=> $p1->matching);
 
         return array_values(($limit <= 0) ?
             $products :
             array_slice($products, ($offset * $limit), $limit));
     }
+
     /**
      * dohvata proizvode koje su prijatelji najbolje ocenili
      *
@@ -346,7 +358,7 @@ class ProductM extends Model {
 
         $temp = iterator_to_array((new OwnershipM())->friendsLikes($idUser));
         usort($temp, fn ($t1, $t2) =>
-                   ProductM::getRating($t2->rev_cnt, $t2->rev_sum, 5) <=> ProductM::getRating($t1->rev_cnt, $t1->rev_sum, 5));
+        ProductM::getRating($t2->rev_cnt, $t2->rev_sum, 5) <=> ProductM::getRating($t1->rev_cnt, $t1->rev_sum, 5));
 
         $products = [];
         foreach ($temp as $t) {
@@ -363,6 +375,7 @@ class ProductM extends Model {
             $products :
             array_slice($products, ($offset * $limit), $limit));
     }
+
     /**
      * uzima najsličnije proizvode proizvodu sa id-jem $productId
      *
