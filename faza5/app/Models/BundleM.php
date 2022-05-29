@@ -17,10 +17,7 @@ class BundleM extends Model {
 
     protected $validationRules = [
         'name' => [
-            'rules'  => 'required|alpha_numeric_space|is_unique[bundle.name]',
-            'errors' => [
-                'is_unique' => 'Bundle with that name already exists.'
-            ]
+            'rules'  => 'required|alpha_numeric_space',
         ]
     ];
 
