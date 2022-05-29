@@ -199,8 +199,9 @@ class User extends BaseController {
     }
 
     /**
-     *Prikaz stranice sa listom zahteva prijateljsva (odlazeci i dolazeci)
-     *@return void
+     * Prikaz stranice sa listom zahteva prijateljsva (odlazeci i dolazeci)
+     * 
+     * @return void
      */
     public function friendRequests() {
         $user = $this->getUser();
@@ -371,7 +372,7 @@ class User extends BaseController {
             return;
         }
 
-        $products = $this->bundleProducts($id);
+        $products = (new BundleM())->bundleProducts($id);
         foreach ($products as $product) {
             (new OwnershipM())
                 ->acquire($user->id, $product->id);

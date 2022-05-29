@@ -220,20 +220,20 @@ class BaseController extends Controller {
         $userRes = $this->userViewProduct($id);
         $res = [
             'product' => $product,
-            'genres' => $genres,
-            'product_base' => $product_base,
-            'product_dlc' => $product_dlc,
-            'reviews' => $topReviews,
-            'price' => $price,
-            'discount' => $discount
+            'genres' => (new GenreM())->getGenres($id),
+            'product_base' => $product->base_game != null ? $productM->find($product->base_game) : null,
+            'product_dlc' => $productM->asArray()->where('base_game', $product->id)->findAll(),
+            'reviews' => $this->getTopReviews($id),
+            'price' => $productM->getDiscountedPrice($id),
+            'discount' => $product->discount != 0 ? true : false
         ];
 
         $this->show('product', array_merge($res, $userRes));
     }
 
     /** 
-     *Prikaz svog ili tudjeg profila
-     *@return void
+     * Prikaz svog ili tudjeg profila
+     * @return void
      */
     public function profile($id = null) {
         $userM = new UserM();
@@ -255,7 +255,13 @@ class BaseController extends Controller {
             }
         }
 
-        $friends = (new RelationshipM())->getFriends($user);
+        $this->show('user', [
+            'user_profile' => $user,
+            'friends' => (new RelationshipM())->getFriends($user),
+            'avatar' => $userM->getAvatar($user->id),
+            'background' => $userM->getBackground($user->id),
+        ]);
+    }
 
         $avatar = $userM->getAvatar($user->id);
 
