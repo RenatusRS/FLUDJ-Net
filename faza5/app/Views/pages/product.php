@@ -94,6 +94,11 @@ use App\Models\ProductM;
                     <?php if (isset($product_review)) { ?>
                         <form action="<?= site_url("user/makeReviewSubmit/{$product->id}") ?>" method="POST">
                             <textarea style="width:100%" name="text" id="" cols="30" rows="10"><?php echo $product_review->text ?></textarea>
+                            <div style="text-align: center;">
+                                <?php if (isset($product_review->rating)) : ?>
+                                    Current rating: <?php echo $product_review->rating ?>/5
+                                <?php endif ?>
+                            </div>
                             <input type="range" style="width:100%" name="rating" value="<?php echo $product_review->rating ?>" min="1" max="5">
                             <input type="submit" class="btn" value="Create Review">
                         </form>

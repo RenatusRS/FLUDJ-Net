@@ -202,15 +202,22 @@ class User extends BaseController {
      */
     public function makeReviewSubmit($id) {
         $text = $this->request->getVar('text');
+        if (empty($text)) $text = null;
         $rating = $this->request->getVar('rating');
         $user = $this->getUser();
 
-        (new OwnershipM())->where('id_product', $id)->where('id_user', $user->id)->set(['rating' => $rating, 'text' => $text])->update();
+        $oldRating = (new OwnershipM())->getRating($user->id, $id);
+
+        (new OwnershipM())
+            ->where('id_product', $id)
+            ->where('id_user', $user->id)
+            ->set(['rating' => $rating, 'text' => $text])
+            ->update();
 
         $product = (new ProductM())->find($id);
         (new ProductM())->update($id, [
-            'rev_cnt' => $product->rev_cnt + 1,
-            'rev_sum' => $product->rev_sum + $rating
+            'rev_cnt' => $product->rev_cnt + (($oldRating == 0) ? 1 : 0),
+            'rev_sum' => $product->rev_sum + ($rating - $oldRating)
         ]);
 
         return redirect()->to(site_url("user/product/{$product->id}"));
@@ -339,16 +346,18 @@ class User extends BaseController {
     public function deleteReviewSubmit($id) {
         $user = $this->getUser();
 
-        $rating = (new OwnershipM())->where('id_product', $id)
-            ->where('id_user', $user->id)
-            ->rating;
+        $oldRating = (new OwnershipM())->getRating($user->id, $id);
 
-        (new OwnershipM())->where('id_product', $id)->where('id_user', $user->id)->set(['rating' => NULL, 'text' => NULL])->update();
+        (new OwnershipM())
+            ->where('id_product', $id)
+            ->where('id_user', $user->id)
+            ->set(['rating' => NULL, 'text' => NULL])
+            ->update();
 
         $product = (new ProductM())->find($id);
         (new ProductM())->update($id, [
-            'rev_cnt' => $product->rev_cnt - 1,
-            'rev_sum' => $product->rev_sum - $rating
+            'rev_cnt' => $product->rev_cnt - (($oldRating == 0) ? 0 : 1),
+            'rev_sum' => $product->rev_sum - $oldRating
         ]);
 
         (new ReviewVoteM())->where('id_product', $id)->where("id_poster", $user->id)->delete();

@@ -47,6 +47,17 @@ class OwnershipM extends Model {
         return true;
     }
 
+    public function getRating($idUser, $idProduct) {
+        $query = $this
+            ->where('id_user', $idUser)
+            ->where('id_product', $idProduct)
+            ->first();
+
+        return (isset($query)) ?
+            ($query->rating ?? 0) :
+            0;
+    }
+
     /**
      * nalazi sve proizvode koje se pojavljuju najviše puta, odnosno proizvodi
      * koje najviše ljudi ima
