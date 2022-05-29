@@ -67,7 +67,11 @@ if (!isset($bundle)) {
         <div style="display:flex;flex-wrap: wrap;">
             <div style="flex:50%; padding: 0 200px">
                 <h3>Remove products from bundle:</h3>
-                <?php if (count($inBundle) != 0) : ?>
+                <?php if ($bundle->id == -1): ?>
+                    <div style='color:red;'>
+                        Make bundle first then remove products.
+                    </div>
+                <?php elseif (count($inBundle) != 0) : ?>
                     <?php foreach ($inBundle as $product) : ?>
                         <input type="checkbox" name="inBundle[]" value="<?php echo "{$product->id}" ?>"><?php echo "{$product->id}:\t{$product->name}" ?>
                         </br>
@@ -80,7 +84,11 @@ if (!isset($bundle)) {
             </div>
             <div style="flex:50%; padding: 0 200px">
                 <h3>Add products to bundle:</h3>
-                <?php if (count($notInBundle) != 0) : ?>
+                <?php if ($bundle->id == -1): ?>
+                    <div style='color:red;'>
+                        Make bundle first then add products.
+                    </div>
+                <?php elseif (count($notInBundle) != 0) : ?>
                     <?php foreach ($notInBundle as $product) : ?>
                         <input type="checkbox" name="notInBundle[]" value="<?php echo "{$product->id}" ?>"><?php echo "{$product->id}:\t{$product->name}" ?>
                         </br>
@@ -91,7 +99,7 @@ if (!isset($bundle)) {
                     </div>
                 <?php endif ?>
             </div>
-            <input type="submit" value="Apply bundle content change" class="btn">
+            <input type="submit" value="Apply bundle content change" class="btn" <?php if ($bundle->id == -1) echo "hidden" ?>>
         </div>
     </form>
 
