@@ -50,11 +50,10 @@ class User extends BaseController {
         );
     }
 
-
-
     /**
-     *Odjavljivanje korisnika
-     *@return void
+     * Odjavljivanje korisnika
+     * 
+     * @return void
      */
     public function logout() {
         $this->session->destroy();
@@ -191,8 +190,9 @@ class User extends BaseController {
     }
 
     /**
-     *Prikaz stranice sa opcijama za izmenu/unos podataka
-     *@return void
+     * Prikaz stranice sa opcijama za izmenu/unos podataka
+     * 
+     * @return void
      */
     public function editProfile() {
         $this->show('editProfile.php');
@@ -266,8 +266,8 @@ class User extends BaseController {
     }
 
     /**
-     *Ajax funkcija za azurno ucitavanje rezultata korisnika
-     *@return array(data)
+     * Ajax funkcija za azurno ucitavanje rezultata korisnika
+     * @return array(data)
      */
     public function ajaxUserSearch() {
         helper(['form', 'url']);
@@ -282,8 +282,8 @@ class User extends BaseController {
     }
 
     /**
-     *Ajax funkcija za promenu stranice na profil odabranog pretrazenog korisnika
-     *@return String
+     * Ajax funkcija za promenu stranice na profil odabranog pretrazenog korisnika
+     * @return String
      */
     public function ajaxUserLoad() {
         $nickname = $_GET['nadimak'];
@@ -318,8 +318,8 @@ class User extends BaseController {
     }
 
     /**
-     *Prikaz stranice za pretragu proizvoda
-     *@return void
+     * Prikaz stranice za pretragu proizvoda
+     * @return void
      */
     public function searchProduct() {
         $this->show('searchProduct.php');
