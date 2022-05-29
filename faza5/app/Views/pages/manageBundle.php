@@ -47,10 +47,7 @@ if (!isset($bundle)) {
             <div style="flex:1%; padding: 0 16px">
                 <h3>Assets</h3>
                 Banner
-                <input type="file" name="banner">
-                </br>
-                Background
-                <input type="file" name="background">
+                <input type="file" name="banner" accept="image/jpeg">
             </div>
 
             <div style="flex:60%; padding: 0 16px">

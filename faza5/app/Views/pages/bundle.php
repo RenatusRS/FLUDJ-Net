@@ -27,8 +27,6 @@
 
         Banner:
         <img width=20% class=smooth-border src="<?php echo base_url('uploads/bundle/' . $bundle->id . '/banner.jpg')  ?>">
-        Background:
-        <img width=20% class=smooth-border src="<?php echo base_url('uploads/bundle/' . $bundle->id . '/background.jpg')  ?>">
 
         <form action="<?= site_url("User/buyBundle/{$bundle->id}") ?>" method="POST">
             <input type="hidden" name="price" value="<?php echo $price['price'] ?>" />

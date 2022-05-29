@@ -83,9 +83,14 @@ class BundleM extends Model {
     }
 
     public function getBackground($id) {
-        $background = $this->getAsset('uploads/bundle/' . $id . '/background.png');
+        $products = iterator_to_array($this->bundleProducts($id));
+        $productM = new ProductM();
 
-        if ($background == null) return base_url('assets/background.png');
+        foreach ($products as $product) {
+            $background = $productM->getBackground($product->id);
+            if ($background != null) break;
+        }
+
         return $background;
     }
 }
