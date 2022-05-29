@@ -28,7 +28,7 @@ Opis: Indeksna stranica
 		<div class="popular-products">
 			<h3>Popular Products</h3>
 			<?php for ($i = 0; $i < 5; $i++) { ?>
-				<a href="<?php echo site_url("Product/" . $topSellerP[$i]->id) ?>">
+				<a href="<?php echo site_url($controller . "/product/" . $topSellerP[$i]->id) ?>">
 					<div>
 						<img src=" <?php echo base_url('uploads/product/' . $topSellerP[$i]->id . '/capsule.jpg') ?>">
 						<span><?php echo $topSellerP[$i]->name ?></span>
@@ -44,7 +44,7 @@ Opis: Indeksna stranica
 				<tr>
 					<?php for ($i = 0; $i < 5; $i++) { ?>
 						<td style="width: 16.667%;">
-							<a href="<?php echo site_url("Product/" . $discountedP[$i]->id) ?>">
+							<a href="<?php echo site_url($controller . "/product/" . $discountedP[$i]->id) ?>">
 								<div>
 									<img src=" <?php echo base_url('uploads/product/' . $discountedP[$i]->id . '/banner.jpg') ?>">
 									<p class="product-name"><?php echo $discountedP[$i]->name ?></p>

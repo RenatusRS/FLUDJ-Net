@@ -177,6 +177,7 @@ class BaseController extends Controller {
 
     protected function show($page, $data = []) {
         $data['user'] = $this->getUser();
+        $data['controller'] = $data['user'] != null ? 'user' : 'guest';
 
         if (!isset($data['background']) || $data['background'] == null)
             $data['background'] = base_url('assets/background.png');
