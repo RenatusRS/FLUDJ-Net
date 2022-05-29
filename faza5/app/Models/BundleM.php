@@ -19,7 +19,7 @@ class BundleM extends Model {
         'name' => [
             'rules'  => 'required|alpha_numeric_space|is_unique[bundle.name]',
             'errors' => [
-                'is_unique' => 'Name of bundle already exists in database.'
+                'is_unique' => 'Bundle with that name already exists.'
             ]
         ]
     ];

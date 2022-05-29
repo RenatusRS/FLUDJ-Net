@@ -2,7 +2,7 @@
 <html lang="en">
 
 
-<link rel="stylesheet" href="styles.css">
+<?= link_tag('styles.css') ?>
 
 <head>
 	<meta charset="utf-8">

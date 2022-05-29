@@ -82,7 +82,7 @@ if ($user->id != $user_profile->id) {
             <?php } ?>
         </div>
     </div>
-    <div style="min-width: 770px;">
+    <div style="min-width: 885px;">
         <div style="background-color: black;border-radius: 5px;float:left;">
             <div>
                 <h2>Products</h2>
@@ -93,7 +93,7 @@ if ($user->id != $user_profile->id) {
                 </h2>
             </div>
         </div>
-        <div style="background-color: black;border-radius: 5px;float:right; width: 15%; padding: 10px">
+        <div style="background-color: black;border-radius: 5px;float:right; width: 15%; padding: 0 10px 10px 10px">
             <h2>Friends</h2>
 
             <?php foreach ($friends as $friend) { ?>
