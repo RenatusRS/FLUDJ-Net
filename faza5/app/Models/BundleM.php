@@ -30,15 +30,14 @@ class BundleM extends Model {
      * 'final' => finalna cena kada se primeni sniženje
      *
      */
-    public function bundlePrice($products, $discount) {
+    public function bundlePrice($products, $discount, $user_id) {
         $price = 0.0;
         $owned = 0;
-        $user = $this->getUser();
         $cnt = count($products);
 
         foreach ($products as $product) {
             $owns = (new OwnershipM())
-                ->owns($user->id, $product->id);
+                ->owns($user_id, $product->id);
 
             if ($owns === true) {
                 $owned++;
@@ -83,6 +82,7 @@ class BundleM extends Model {
         $products = iterator_to_array($this->bundleProducts($id));
         $productM = new ProductM();
 
+        $background = null;
         foreach ($products as $product) {
             $background = $productM->getBackground($product->id);
             if ($background != null) break;
