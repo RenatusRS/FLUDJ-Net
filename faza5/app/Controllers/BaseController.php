@@ -277,4 +277,33 @@ class BaseController extends Controller {
         $myProduct = (new ProductM())->where('name', $name)->first();
         return $controller . "/product/" . $myProduct->id;
     }
+
+    protected function frontpage($idUser = null) {
+        $productM = new ProductM();
+
+        $heroP = $productM->getHeroProduct($idUser);
+        $heroP->description = explode(".", $heroP->description, 2)[0] . ".";
+
+        $highRatingP =  $productM->getHighRatingProducts($idUser);
+        $topSellerP =   $productM->getTopSellersProducts($idUser);
+        $discountedP =  $productM->getDiscountedProducts($idUser);
+        $discoveryP =   $productM->getDiscoveryProducts($idUser);
+        $couponP =      $productM->getCouponProducts($idUser);
+        $userLikeP =    $productM->getProductsUserLike($idUser);
+        $friendsLikeP = $productM->getProductsUserFriendsLike($idUser);
+
+        $this->show(
+            'index',
+            [
+                'heroP' => $heroP,
+                'highRatingP' => $highRatingP,
+                'topSellerP' => $topSellerP,
+                'discountedP' => $discountedP,
+                'discoveryP' => $discoveryP,
+                'couponP' => $couponP,
+                'userLikeP' => $userLikeP,
+                'friendsLikeP' => $friendsLikeP
+            ]
+        );
+    }
 }

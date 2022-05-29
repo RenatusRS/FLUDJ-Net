@@ -13,8 +13,10 @@ Ako je tudji profil - mogucnost dodavanja, uklanjanja, odbijanja i prihvatanja z
 <?php
 ob_start();
 
-use App\Models\RelationshipM;
+use App\Models\OwnershipM;
+use App\Models\ProductM;
 use App\Models\UserM;
+use App\Models\RelationshipM;
 
 $userM = new UserM();
 $relationshipM = new RelationshipM();
@@ -95,7 +97,6 @@ if ($user->id != $user_profile->id) {
         </div>
         <div style="background-color: black;border-radius: 5px;float:right; width: 15%; padding: 0 10px 10px 10px">
             <h2>Friends</h2>
-
             <?php foreach ($friends as $friend) { ?>
                 <a href="http://localhost:8080/user/profile/<?php echo $friend->id ?>">
                     <div style="margin:5px">

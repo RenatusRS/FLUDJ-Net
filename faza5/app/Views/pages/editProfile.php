@@ -11,6 +11,8 @@ Opis: Stranica za podesavanje podataka na svom profilu
 
 <?php
 
+use App\Models\OwnershipM;
+use App\Models\ProductM;
 use App\Models\UserM;
 
 $us = (new UserM())->where('id', $user->id)->first();
@@ -32,15 +34,22 @@ $us = (new UserM())->where('id', $user->id)->first();
         <?php if (!empty($errors['real_name'])) echo $errors['real_name'] ?>
 
         <h3>Description</h3>
-        <input type="text" name="description" class="full" value="<?= set_value('description', $us->description); ?>" />
-        <?php if (!empty($errors['description'])) echo $errors['description'] ?>
+        <textarea name="description" cols="40" rows="10"> <?php echo $us->description; ?> </textarea>
 
-        <!-- <h3>Featured review</h3>
-            <input type="text" name="review" class="full" value="<?php
-                                                                    /*
-                set_value('review', $us->featured_review);
-                */
-                                                                    ?>" /> -->
+        <h3>Featured review</h3>
+        <?php
+            $os=(new OwnershipM())->where('id_user', $us->id)->findAll();
+        ?>
+        <select name="f_review" id="feat_reviews"">
+        <?php
+            foreach ($os as $osr) {
+            $pr=(new ProductM())->where('id', $osr->id_product)->first();
+        ?>
+            <option value="<?php echo $pr->id ?>"> <?php echo $pr->name ?> </option>
+        <?php
+        }
+        ?>
+        </select>
 
         <input type="submit" name="editbtn" class="btn" value=<?= "Edit" ?>>
     </form>

@@ -10,32 +10,7 @@ use App\Models\RelationshipM;
 
 class Guest extends BaseController {
     public function index() {
-        $productM = new ProductM();
-
-        $heroP = $productM->getHeroProduct();
-        $heroP->description = explode(".", $heroP->description, 2)[0] . ".";
-
-        $highRatingP = $productM->getHighRatingProducts();
-        $topSellerP = $productM->getTopSellersProducts();
-        $discountedP = $productM->getDiscountedProducts();
-        $discoveryP = $productM->getDiscoveryProducts();
-        $couponP = $productM->getCouponProducts();
-        $userLikeP = $productM->getProductsUserLike();
-        $friendsLikeP = $productM->getProductsUserFriendsLike();
-
-        $this->show(
-            'index',
-            [
-                'heroP' => $heroP,
-                'highRatingP' => $highRatingP,
-                'topSellerP' => $topSellerP,
-                'discountedP' => $discountedP,
-                'discoveryP' => $discoveryP,
-                'couponP' => $couponP,
-                'userLikeP' => $userLikeP,
-                'friendsLikeP' => $friendsLikeP
-            ]
-        );
+        $this->frontpage();
     }
 
     public function login($message = null) {

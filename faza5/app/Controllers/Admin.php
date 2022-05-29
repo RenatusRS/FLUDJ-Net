@@ -8,6 +8,7 @@ use App\Models\BundleM;
 use App\Models\UserM;
 use App\Models\OwnershipM;
 use App\Models\ReviewVoteM;
+use App\Models\BundledProductsM;
 
 class Admin extends BaseController {
     public function manageProduct($id = null) {
@@ -137,7 +138,7 @@ class Admin extends BaseController {
 
     public function manageBundle($id = null) {
         $data = [];
-        $bundle = null;
+        $bundle = $inBundle = $notInBundle = null;
 
         if ($id != null) {
             $bundle = (new BundleM())->find($id);
@@ -145,9 +146,14 @@ class Admin extends BaseController {
             if (!is_object($bundle)) {
                 $data['errors'] = ['bundle' => "bundle doesn't exist, redirected to adding new bundle"];
             }
+
+            $inBundle    = iterator_to_array((new BundledProductsM())->productsInBundle($id));
+            $notInBundle = iterator_to_array((new BundledProductsM())->productsNotInBundle($id));
         }
 
         $data['bundle'] = $bundle;
+        $data['inBundle'] = $inBundle;
+        $data['notInBundle'] = $notInBundle;
 
         $this->show('manageBundle', $data);
     }
@@ -258,5 +264,25 @@ class Admin extends BaseController {
         ]);
 
         return redirect()->to(site_url("user/product/{$id}"));
+    }
+
+    /**
+     * poziva se iz forme iz manageBundle.php.
+     * svi proizvodi koji su štiklirani u sekciji za dodavanje bivaju dodati u kolekciju,
+     * a svi koji su štiklirani u sekciji za otklanjanje se otklanjaju iz kolekcije
+     *
+     */
+    public function updateBundleProducts() {
+        $idBundle = $this->request->getVar('id');
+
+        $in =  $this->request->getVar('inBundle')    ?? [];
+        $out = $this->request->getVar('notInBundle') ?? [];
+
+        foreach ($in as $idProduct)
+            BundledProductsM::removeFromBundle($idBundle, $idProduct);
+        foreach ($out as $idProduct)
+            BundledProductsM::addToBundle($idBundle, $idProduct);
+
+        return redirect()->to(site_url("Admin/manageBundle/" . $idBundle));
     }
 }

@@ -144,7 +144,6 @@ use App\Models\ProductM;
             </div>
         </div>
     </div>
-
     <div>
         <h2>More Like This</h2>
     </div>

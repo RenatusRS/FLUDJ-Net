@@ -35,7 +35,7 @@ use App\Models\ProductM;
 		</div>
 		<div class="popular-products">
 			<h3>Popular Products</h3>
-			<?php for ($i = 0; $i < 5; $i++) { ?>
+			<?php $cnt = min(5, count($topSellerP)); for ($i = 0; $i < $cnt; $i++) { ?>
 				<a href="<?php echo site_url($controller . "/product/" . $topSellerP[$i]->id) ?>">
 					<div>
 						<img src=" <?php echo base_url('uploads/product/' . $topSellerP[$i]->id . '/capsule.jpg') ?>">
@@ -50,7 +50,7 @@ use App\Models\ProductM;
 		<table style="width: 100%; border-collapse: collapse; margin-left: auto; margin-right: auto;" border="0" cellpadding="5px">
 			<tbody>
 				<tr>
-					<?php for ($i = 0; $i < 5; $i++) { ?>
+					<?php $cnt = min(5, count($discountedP)); for ($i = 0; $i < $cnt; $i++)  { ?>
 						<td style="width: 16.667%;">
 							<a href="<?php echo site_url($controller . "/product/" . $discountedP[$i]->id) ?>">
 								<div>
