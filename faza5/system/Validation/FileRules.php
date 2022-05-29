@@ -237,4 +237,44 @@ class FileRules {
 
         return true;
     }
+
+    /**
+     * Checks an uploaded file to verify that the dimensions are within
+     * a specified allowable dimension.
+     */
+    public function min_dims(?string $blank, string $params): bool {
+        // Grab the file name off the top of the $params
+        // after we split it.
+        $params = explode(',', $params);
+        $name   = array_shift($params);
+
+        if (!($files = $this->request->getFileMultiple($name))) {
+            $files = [$this->request->getFile($name)];
+        }
+
+        foreach ($files as $file) {
+            if ($file === null) {
+                return false;
+            }
+
+            if ($file->getError() === UPLOAD_ERR_NO_FILE) {
+                return true;
+            }
+
+            // Get Parameter sizes
+            $allowedWidth  = $params[0] ?? 0;
+            $allowedHeight = $params[1] ?? 0;
+
+            // Get uploaded image size
+            $info       = getimagesize($file->getTempName());
+            $fileWidth  = $info[0];
+            $fileHeight = $info[1];
+
+            if ($fileWidth < $allowedWidth || $fileHeight < $allowedHeight) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }
