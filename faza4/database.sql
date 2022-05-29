@@ -32,7 +32,7 @@ CREATE TABLE `bundle` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`),
   UNIQUE KEY `name_UNIQUE` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -122,7 +122,7 @@ CREATE TABLE `product` (
   `description` varchar(4000) NOT NULL,
   `developer` varchar(30) NOT NULL,
   `publisher` varchar(30) NOT NULL,
-  `release_date` varchar(15) NOT NULL,
+  `release_date` date NOT NULL,
   `os_min` varchar(30) NOT NULL,
   `ram_min` varchar(30) NOT NULL,
   `gpu_min` varchar(30) NOT NULL,
@@ -133,12 +133,14 @@ CREATE TABLE `product` (
   `gpu_rec` varchar(30) NOT NULL,
   `cpu_rec` varchar(30) NOT NULL,
   `mem_rec` varchar(30) NOT NULL,
+  `rev_sum` int NOT NULL DEFAULT '0',
+  `rev_cnt` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`),
   UNIQUE KEY `name_UNIQUE` (`name`),
   KEY `fk_base_game_idx` (`base_game`),
   CONSTRAINT `fk_base_game` FOREIGN KEY (`base_game`) REFERENCES `product` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -205,7 +207,7 @@ CREATE TABLE `user` (
   UNIQUE KEY `username_UNIQUE` (`username`),
   KEY `fk_featured_review_idx` (`featured_review`),
   CONSTRAINT `fk_featured_review` FOREIGN KEY (`featured_review`) REFERENCES `product` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -217,4 +219,4 @@ CREATE TABLE `user` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-05-21 21:17:43
+-- Dump completed on 2022-05-29  2:59:58
