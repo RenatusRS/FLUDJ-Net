@@ -1,10 +1,11 @@
 <html>
+
 <head>
-<title>
-    <?php
-    echo isset($bundle) ? "Edit: " . $bundle->name : "Add New Bundle";
-    ?>
-</title>
+    <title>
+        <?php
+        echo isset($bundle) ? "Edit: " . $bundle->name : "Add New Bundle";
+        ?>
+    </title>
 </head>
 
 <?php
@@ -26,17 +27,17 @@ if (!isset($bundle)) {
 
         <div id=main style="display:flex;flex-wrap: wrap;">
             <div style="flex:50%; padding: 0 16px">
-                <?php if (!empty($errors)): ?>
-                <div style='color:red;'>
-                <?php foreach ($errors as $field => $error) : ?>
-                    <p><?= $error ?></p>
-                <?php endforeach ?>
-                </div>
+                <?php if (!empty($errors)) : ?>
+                    <div style='color:red;'>
+                        <?php foreach ($errors as $field => $error) : ?>
+                            <p><?= $error ?></p>
+                        <?php endforeach ?>
+                    </div>
                 <?php endif ?>
 
                 <h3>Bundle Details</h3>
                 Bundle Name
-                <input type="text" name="name" placeholder="Bundle name" value="<?php echo $bundle->name ?>" class=full>
+                <input type="text" name="name" placeholder="Can't Stop Crying Pack" value="<?php echo $bundle->name ?>" class=full>
 
                 Discount %
                 <input type="text" name="discount" placeholder="15" value="<?php echo $bundle->discount ?>" class=full>
@@ -46,10 +47,7 @@ if (!isset($bundle)) {
             <div style="flex:1%; padding: 0 16px">
                 <h3>Assets</h3>
                 Banner
-                <input type="file" name="banner">
-                </br>
-                Background
-                <input type="file" name="background">
+                <input type="file" name="banner" accept="image/jpeg">
             </div>
 
             <div style="flex:60%; padding: 0 16px">

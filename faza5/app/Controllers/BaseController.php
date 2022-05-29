@@ -23,6 +23,7 @@ use App\Models\ReviewVoteM;
 use App\Models\UserM;
 use App\Models\BundledProductsM;
 use App\Models\GenreM;
+use App\Models\RelationshipM;
 
 /**
  * Class BaseController
@@ -126,7 +127,7 @@ class BaseController extends Controller {
         foreach ($posterScore as $poster => $score) {
             $review = $ownershipM->where('id_product', $id)->where('id_user', $poster)->first();
             $user = $userM->find($poster);
-            $reviews[$user->username] = ["poster" => $poster, "review" => $review, "positive" => $posterPosNeg[$poster]["positive"], "negative" => $posterPosNeg[$poster]["negative"]];
+            array_push($reviews, ["user" => $user, "avatar" => $userM->getAvatar($user->id), "review" => $review, "positive" => $posterPosNeg[$poster]["positive"], "negative" => $posterPosNeg[$poster]["negative"]]);
         }
 
         return $reviews;
@@ -148,88 +149,37 @@ class BaseController extends Controller {
     }
 
     /**
-     * određuje početnu cenu, sniženje i finalnu cenu kolekcije za trenutnog korisnika
-     *
-     * @param  array $products niz modela dohvaćenih iz baze sa ProductM->find($id)
-     * @param  mixed $discount sniženje kolekcije
-     * @return array 'price' => puna cena, 'discount' => sniženje,
-     * 'final' => finalna cena kada se primeni sniženje
-     *
-     */
-    protected function bundlePrice($products, $discount) {
-        $price = 0.0;
-        $owned = 0;
-        $user = $this->session->get('user');
-        $cnt = count($products);
-
-        foreach ($products as $product) {
-            $owns = (new OwnershipM())
-                ->owns($user->id, $product->id);
-
-            if ($owns === true) {
-                $owned++;
-            } else {
-                $price += $product->price;
-            }
-        }
-
-        if ($cnt == $owned) {
-            $price = $discount = 0;
-        } else if (($cnt - $owned) == 1) {
-            $discount = 0;
-        } else {
-            while ($owned > 0) {
-                $discount -= ceil($discount / ($cnt - 1));
-                $owned--;
-            }
-        }
-
-        $final = ($price == 0) ?
-            0 :
-            $price - ($price * $discount) / 100;
-
-        return [
-            'price'    => $price,
-            'discount' => $discount,
-            'final'    => $final
-        ];
-    }
-
-    protected function bundleProducts($bundleId) {
-        $iter = (new BundledProductsM())
-            ->where('id_bundle', $bundleId)
-            ->findAll();
-
-        foreach ($iter as $bundle) {
-            yield ((new ProductM())->find($bundle->id_product));
-        }
-    }
-
-    /**
      * prikaži bundle sa id-jem $id
      *
      * @param  integer $id
      * @return void
      */
     public function bundle($id) {
-        $bundle = (new BundleM())->find($id);
+        $bundleM = new BundleM();
+
+        $bundle = $bundleM->find($id);
 
         if (!isset($bundle))
             return redirect()->to(site_url());
 
-        $products = iterator_to_array($this->bundleProducts($id));
+        $products = iterator_to_array($bundleM->bundleProducts($id));
 
-        $result = $this->bundlePrice($products, $bundle->discount);
+        $background = $bundleM->getBackground($id);
+
+        $result = $bundleM->bundlePrice($products, $bundle->discount);
 
         return $this->show('bundle', [
             'bundle' => $bundle,
             'bundledProducts' => $products,
-            'price' => $result
+            'price' => $result,
+            'background' => $background,
         ]);
     }
 
     protected function show($page, $data = []) {
-        $data['user'] = $this->session->get('user');
+        $data['user'] = $this->getUser();
+        $data['controller'] = $data['user'] != null ? 'user' : 'guest';
+
         if (!isset($data['background']) || $data['background'] == null)
             $data['background'] = base_url('assets/background.png');
 
@@ -237,6 +187,11 @@ class BaseController extends Controller {
         echo view('template/header', $data);
         echo view("pages/$page", $data);
         echo view('template/footer', $data);
+    }
+
+    protected function getUser() {
+        if (!session()->has('user_id')) return null;
+        return (new UserM())->find($this->session->get('user_id'));
     }
 
     /**
@@ -249,33 +204,78 @@ class BaseController extends Controller {
         $productM = new ProductM();
         $product = $productM->find($id);
 
-        if (!isset($product))
-            return redirect()->to(site_url());
-
-        $genres = implode(' ', (new GenreM())->getGenres($id));
-
-        $product_base = $product->base_game != null ? $productM->find($product->base_game) : null;
-
-        $product_dlc = $productM->asArray()->where('base_game', $product->id)->findAll();
-
-        $topReviews = $this->getTopReviews($id);
-
-        $price = $productM->getDiscountedPrice($id);
-
-        $discount = $product->discount != 0 ? true : false;
+        if (!isset($product)) return redirect()->to(site_url());
 
         $userRes = $this->userViewProduct($id);
         $res = [
             'product' => $product,
-            'genres' => $genres,
-            'product_base' => $product_base,
-            'product_dlc' => $product_dlc,
-            'reviews' => $topReviews,
-            'price' => $price,
-            'discount' => $discount
+            'genres' => (new GenreM())->getGenres($id),
+            'product_base' => $product->base_game != null ? $productM->find($product->base_game) : null,
+            'product_dlc' => $productM->asArray()->where('base_game', $product->id)->findAll(),
+            'reviews' => $this->getTopReviews($id),
+            'price' => $productM->getDiscountedPrice($id),
+            'discount' => $product->discount != 0 ? true : false
         ];
 
         $this->show('product', array_merge($res, $userRes));
+    }
+
+    /** 
+     * Prikaz svog ili tudjeg profila
+     * @return void
+     */
+    public function profile($id = null) {
+        $userM = new UserM();
+        $user = $id == null ? $this->getUser() : $userM->find($id);
+
+        if ($user == null) return $this->show('registration');
+
+        if ($id == null) {
+            $builder = \Config\Database::connect()->table('user');
+
+            if ($this->request->getVar('nickname') != "") {
+                $builder = $builder
+                    ->set('nickname', $this->request->getVar('nickname'))
+                    ->set('real_name', $this->request->getVar('real_name'))
+                    ->set('description', $this->request->getVar('description'))
+                    ->/*set('featured_review', $this->request->getVar('review'))*/where('id', $user->id)->update();
+
+                $this->upload('public/uploads/user/', 'profile_pic', $user->id);
+            }
+        }
+
+        $this->show('user', [
+            'user_profile' => $user,
+            'friends' => (new RelationshipM())->getFriends($user),
+            'avatar' => $userM->getAvatar($user->id),
+            'background' => $userM->getBackground($user->id),
+        ]);
+    }
+
+    /**
+     * Ajax funkcija za azurno ucitavanje rezultata proizvoda
+     * @return array(data)
+     */
+    public function ajaxProductSearch() {
+        helper(['form', 'url']);
+
+        $data = [];
+        $db      = \Config\Database::connect();
+        $builder = $db->table('product');
+        $request = \Config\Services::request();
+        $query = $builder->like('name', $request->getVar('q'))->select('id, name as text')->limit(7)->get();
+        $data = $query->getResult();
+        echo json_encode($data);
+    }
+
+    /**
+     * Ajax funkcija za promenu stranice na odabrani proizvod
+     * @return String
+     */
+    public function ajaxProductLoad($controller) {
+        $name = $_GET['ime'];
+        $myProduct = (new ProductM())->where('name', $name)->first();
+        return $controller . "/product/" . $myProduct->id;
     }
 
     protected function frontpage($idUser = null) {

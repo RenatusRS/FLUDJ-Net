@@ -26,19 +26,19 @@ body {
     background-color: rgb(48, 48, 48);
     font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Verdana, sans-serif;
     color: rgb(255, 196, 0);
-    margin: 60px 0 0 0;
+    margin: 60px 0 0 0px;
     display: flex;
     flex-direction: column;
 }
 
 #main {
-    margin: 30px 10%;
+    margin: 30px 10% 100px 10%;
 }
 
 #short-main {
     width: 300px;
-    margin: 30px auto;
-    padding-bottom: 50%;
+    margin: 30px auto 100px auto;
+    padding-bottom: 55%;
 }
 
 .sidenav {
@@ -56,7 +56,7 @@ body {
 .sidenav div {
     padding: 10px;
     border-right: black 2px solid;
-    transition: 0.2s;
+    transition: 0.3s;
 }
 
 .sidenav div:hover {
@@ -98,14 +98,17 @@ header li a:not(#logo) {
     padding: 18px 16px;
     text-decoration: none;
     border-bottom: 2px solid rgb(0, 0, 0);
-    transition: 0.2s;
+    transition: 0.3s;
 }
-
-
 
 #logo {
     display: block;
     margin: 9px 20px;
+    transition: 0.25s;
+}
+
+#logo:hover {
+    transform: rotate(90deg);
 }
 
 header li a:hover:not(#logo),
@@ -131,7 +134,6 @@ footer span {
 footer img {
     vertical-align: middle;
 }
-
 
 .video-container {
     width: 100%;
@@ -217,7 +219,7 @@ footer img {
 .price-original {
     color: gray;
     text-decoration: line-through;
-    font-size: 1.2vw;;
+    font-size: 1.2vw;
 }
 
 .price {
@@ -225,10 +227,52 @@ footer img {
     font-size: 1.5vw;
 }
 
+.discount-solid {
+    background-color: black;
+    color: rgb(255, 196, 0);
+    border-radius: 5px;
+    padding: 5px;
+    font-size: 15px;
+}
+
+.price-original-solid {
+    color: gray;
+    text-decoration: line-through;
+    font-size: 14px;
+}
+
+.price-solid {
+    color: rgb(255, 196, 0);
+    font-size: 20px;
+}
+
 .product-name {
     font-size: 1.9vw;
 }
 
+.product-detail {
+    border-bottom: 1px rgb(255, 196, 0) solid;
+    border-radius: 3px;
+    padding: 15px 8px;
+    text-align: left;
+    font-size: 14px;
+}
+
+.product-detail-center {
+    border-bottom: 1px rgb(255, 196, 0) solid;
+    border-radius: 3px;
+    padding: 8px 8px 14px;
+    text-align: center;
+    font-size: 25px;
+}
+
+.product-detail-left {
+    color: darkgray
+}
+
+.product-detail-right {
+    float: right;
+}
 
 .button {
     color: black;
@@ -276,6 +320,25 @@ footer img {
     margin: 30px 0px
 }
 
+.genre {
+    color: rgb(255, 196, 0);
+    background-color: transparent;
+    border: rgb(255, 196, 0) solid 1px;
+    border-radius: 15px;
+    padding: 8px;
+    margin: 3px;
+    font-size: 12px;
+    display: inline-block;
+}
+
+.dlc {
+    background-color: black;
+}
+
+input[type=range] {
+    background: rgb(255, 196, 0);
+}
+
 .showcase-picture {
     width: 100%;
     margin: 0px 10px;
@@ -286,7 +349,6 @@ footer img {
     width: 100%;
     border-radius: 5px;
     box-shadow: 0px 0px 15px black;
-
 }
 
 .smooth-border {
@@ -298,6 +360,16 @@ a {
     text-decoration: none;
 }
 
+select {
+    background-color: black;
+    color: rgb(255, 196, 0);
+    border: 0;
+    padding: 5px;
+}
+
+option {
+    padding: 5px;
+}
 
 #search {
     display: inline-block;
@@ -339,6 +411,16 @@ input[type=password].full {
     border-radius: 3px;
 }
 
+textarea {
+    border: solid gray 1px;
+    background-color: rgba(0, 0, 0, 0);
+    color: rgb(255, 196, 0);
+    font-size: 15px;
+    border-radius: 3px;
+    margin: 5px 0 20px 0;
+    padding: 15px 15px;
+}
+
 .grid-container {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -377,4 +459,117 @@ h6 {
 
 p {
     margin: 5px 0;
+}
+
+form {
+    margin: 0;
+}
+
+hr {
+    border: solid 1px #747474;
+}
+
+input[type=range] {
+    width: 100%;
+    margin: 5.8px 0;
+    background-color: transparent;
+    -webkit-appearance: none;
+}
+
+input[type=range]:focus {
+    outline: none;
+}
+
+input[type=range]::-webkit-slider-runnable-track {
+    background: #646464;
+    border: 0;
+    border-radius: 25px;
+    width: 100%;
+    height: 8.4px;
+    cursor: pointer;
+}
+
+input[type=range]::-webkit-slider-thumb {
+    margin-top: -5.8px;
+    width: 20px;
+    height: 20px;
+    background: #ffc400;
+    border: 3.8px solid #000000;
+    border-radius: 50px;
+    cursor: pointer;
+    -webkit-appearance: none;
+}
+
+input[type=range]:focus::-webkit-slider-runnable-track {
+    background: #7e7e7e;
+}
+
+input[type=range]::-moz-range-track {
+    background: #646464;
+    border: 0;
+    border-radius: 25px;
+    width: 100%;
+    height: 8.4px;
+    cursor: pointer;
+}
+
+input[type=range]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    background: #ffc400;
+    border: 3.8px solid #000000;
+    border-radius: 50px;
+    cursor: pointer;
+}
+
+input[type=range]::-ms-track {
+    background: transparent;
+    border-color: transparent;
+    border-width: 5.8px 0;
+    color: transparent;
+    width: 100%;
+    height: 8.4px;
+    cursor: pointer;
+}
+
+input[type=range]::-ms-fill-lower {
+    background: #4a4a4a;
+    border: 0;
+    border-radius: 50px;
+}
+
+input[type=range]::-ms-fill-upper {
+    background: #646464;
+    border: 0;
+    border-radius: 50px;
+}
+
+input[type=range]::-ms-thumb {
+    width: 20px;
+    height: 20px;
+    background: #ffc400;
+    border: 3.8px solid #000000;
+    border-radius: 50px;
+    cursor: pointer;
+    margin-top: 0px;
+    /*Needed to keep the Edge thumb centred*/
+}
+
+input[type=range]:focus::-ms-fill-lower {
+    background: #646464;
+}
+
+input[type=range]:focus::-ms-fill-upper {
+    background: #7e7e7e;
+}
+
+/*TODO: Use one of the selectors from https://stackoverflow.com/a/20541859/7077589 and figure out
+  how to remove the virtical space around the range input in IE*/
+@supports (-ms-ime-align:auto) {
+
+    /* Pre-Chromium Edge only styles, selector taken from hhttps://stackoverflow.com/a/32202953/7077589 */
+    input[type=range] {
+        margin: 0;
+        /*Edge starts the margin from the thumb, not the track as other browsers do*/
+    }
 }

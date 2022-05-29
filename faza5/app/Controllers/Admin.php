@@ -16,11 +16,10 @@ class Admin extends BaseController {
         $product = $genres = $background = null;
 
         if ($id != null) {
-            $product = (new ProductM())->find($id);
+            $productM = new ProductM();
+            $product = $productM->find($id);
 
-            $background = base_url('uploads/product/' . $id . '/background.png');
-            if (!file_exists($background))
-                $background = null;
+            $background = $productM->getBackground($id);
 
             if (!is_object($product)) {
                 $data['errors'] = ['product' => "Product with ID [$id] doesn't exist"];
@@ -44,7 +43,7 @@ class Admin extends BaseController {
 
             'developer' =>    'required',
             'publisher' =>    'required',
-            'release_date' => 'required|valid_date[d/m/Y]',
+            'release_date' => 'required|valid_date[Y/m/d]',
 
             'os_min' =>  'required',
             'cpu_min' => 'required',
@@ -63,7 +62,7 @@ class Admin extends BaseController {
             'ss3' =>     'uploaded[ss3]|ext_in[ss3,jpg]|is_image[ss3]',
         ]) ||
             ($uploadedBackground && !$this->validate([
-                'background' => 'uploaded[background]|ext_in[background,jpg]|is_image[background]'
+                'background' => 'uploaded[background]|ext_in[background,png]|is_image[background]'
             ])));
 
         return !$notValid;
@@ -120,8 +119,8 @@ class Admin extends BaseController {
 
         $targetDir = "uploads/product/$id";
 
-        if ($isEditing && file_exists($targetDir . "/background.jpg"))
-            unlink($targetDir . "/background.jpg");
+        if ($isEditing && file_exists($targetDir . "/background.png"))
+            unlink($targetDir . "/background.png");
 
         $this->upload($targetDir, 'banner', 'banner');
         $this->upload($targetDir, 'ss1', 'ss1');
@@ -130,7 +129,7 @@ class Admin extends BaseController {
         if ($uploaded)
             $this->upload($targetDir, 'background', 'background');
 
-        return redirect()->to(site_url("User/Product/" . $id));
+        return redirect()->to(site_url("user/product/" . $id));
     }
 
     public function addBundle() {
@@ -177,7 +176,7 @@ class Admin extends BaseController {
             // TODO dinamička provera fajla koji može da bude uploadovan pod bilo kojim imenom
         ]) ||
             ($uploadedBackground && !$this->validate([
-                'background' =>  'uploaded[background]|ext_in[background,jpg]|is_image[background]'
+                'background' =>  'uploaded[background]|ext_in[background,png]|is_image[background]'
             ])));
 
         return !$notValid;
@@ -211,14 +210,14 @@ class Admin extends BaseController {
         $targetDir = 'uploads/bundle/' . $id;
 
         // ako je postojao background za bundle, prošli se briše
-        if ($isEditing && file_exists($targetDir . "/background.jpg"))
-            unlink($targetDir . "/background.jpg");
+        if ($isEditing && file_exists($targetDir . "/background.png"))
+            unlink($targetDir . "/background.png");
 
         $this->upload($targetDir, 'banner', 'banner');
         if ($uploaded)
             $this->upload($targetDir, 'background', 'background');
 
-        return redirect()->to(site_url("User/Bundle/" . $id));
+        return redirect()->to(site_url("user/bundle/" . $id));
     }
 
     /** 
@@ -227,8 +226,6 @@ class Admin extends BaseController {
      */
     public function DeleteReviewAdminSubmit($id, $posterUsername) {
         $poster = (new UserM())->where('username', $posterUsername)->first();
-
-        $user = $this->session->get('user');
 
         (new OwnershipM())->where('id_product', $id)->where('id_user', $poster->id)->set(['rating' => NULL, 'text' => NULL])->update();
 
@@ -241,25 +238,25 @@ class Admin extends BaseController {
      * Prikaz stranice za dodavanje popusta
      * @return void
      */
-    public function addDiscount($id) {
-        $this->show('addDiscount', ["productId" => $id]);
+    public function setDiscount($id) {
+        $this->show('setDiscount', ["productId" => $id]);
     }
 
     /** 
      * Procesiranje popusta
      * @return void
      */
-    public function addDiscountSubmit($id) {
+    public function setDiscountSubmit($id) {
 
         if (!$this->validate(['discount' => 'required|greater_than_equal_to[5]|less_than_equal_to[90]|integer']))
-            return $this->show('addDiscount', ['productId' => $id, 'errors' => $this->validator->getErrors()]);
+            return $this->show('setDiscount', ['productId' => $id, 'errors' => $this->validator->getErrors()]);
 
         $expDate = date($_POST['expDate']);
 
         $future_date = (new ProductM())->future_date($_POST['expDate']);
 
         if (!($future_date))
-            return $this->show('addDiscount', ['productId' => $id, 'message' => "Wrong date"]);
+            return $this->show('setDiscount', ['productId' => $id, 'message' => "Discount must last at least one day."]);
 
         (new ProductM())->update($id, [
             'discount' => $this->request->getVar('discount'),

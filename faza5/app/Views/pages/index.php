@@ -8,15 +8,23 @@ Opis: Indeksna stranica
 
 <title>FLUDJ Net</title>
 
+<?= link_tag('search.css') ?>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+
+<?php
+
+use App\Models\ProductM;
+
+?>
+
 <div id=main>
+	<div style="margin-bottom: 10px;">
+		<select class="search" name="search" style="width: 300px; color: black;"></select>
+	</div>
 	<div id=hero style="display:flex">
 		<div class="video-container">
 			<video autoplay muted loop>
-				<source src="<?php
-
-								use App\Models\ProductM;
-
-								echo base_url('uploads/product/' . $heroP->id . '/video.webm')  ?>">
+				<source src="<?php echo base_url('uploads/product/' . $heroP->id . '/video.webm')  ?>">
 			</video>
 			<div class="caption">
 				<img src="<?php echo base_url('uploads/product/' . $heroP->id . '/banner.jpg')  ?>">
@@ -28,7 +36,7 @@ Opis: Indeksna stranica
 		<div class="popular-products">
 			<h3>Popular Products</h3>
 			<?php $cnt = min(5, count($topSellerP)); for ($i = 0; $i < $cnt; $i++) { ?>
-				<a href="<?php echo site_url("Product/" . $topSellerP[$i]->id) ?>">
+				<a href="<?php echo site_url($controller . "/product/" . $topSellerP[$i]->id) ?>">
 					<div>
 						<img src=" <?php echo base_url('uploads/product/' . $topSellerP[$i]->id . '/capsule.jpg') ?>">
 						<span><?php echo $topSellerP[$i]->name ?></span>
@@ -44,13 +52,16 @@ Opis: Indeksna stranica
 				<tr>
 					<?php $cnt = min(5, count($discountedP)); for ($i = 0; $i < $cnt; $i++)  { ?>
 						<td style="width: 16.667%;">
-							<a href="<?php echo site_url("Product/" . $discountedP[$i]->id) ?>">
+							<a href="<?php echo site_url($controller . "/product/" . $discountedP[$i]->id) ?>">
 								<div>
 									<img src=" <?php echo base_url('uploads/product/' . $discountedP[$i]->id . '/banner.jpg') ?>">
 									<p class="product-name"><?php echo $discountedP[$i]->name ?></p>
 									<?php
-									$discount = (new ProductM())->getDiscount($discountedP[$i]->id);
-									$discountedPrice = (new ProductM())->getDiscountedPrice($discountedP[$i]->id);
+
+									$productM = new ProductM();
+
+									$discount = $productM->getDiscount($discountedP[$i]->id);
+									$discountedPrice = $productM->getDiscountedPrice($discountedP[$i]->id);
 
 									if ($discount != 0) { ?>
 										<span class="discount"><?php echo $discount ?>%</span> <span class="price-original"><?php echo number_format($discountedP[$i]->price, 2) ?></span>
@@ -66,3 +77,39 @@ Opis: Indeksna stranica
 
 	</div>
 </div>
+
+<script>
+	$(function() {
+		$('.search').select2({
+			placeholder: '🔍 Search for a product',
+			ajax: {
+				url: '<?php echo base_url($controller . "/ajaxProductSearch"); ?>',
+				dataType: 'json',
+				delay: 250,
+				processResults: function(data) {
+					return {
+						results: data
+					};
+				},
+				cache: true
+			}
+		});
+
+		$('.search').on('change', function() {
+			//nakon odabira
+			var proizvod = $(".search option:selected").text();
+
+			$.ajax({
+				type: 'GET',
+				url: '<?php echo base_url($controller . "/ajaxProductLoad/" . $controller); ?>',
+				data: {
+					ime: proizvod
+				},
+				dataType: 'html',
+				success: function(response) {
+					window.location.href = response;
+				}
+			});
+		})
+	});
+</script>

@@ -28,35 +28,14 @@ class User extends BaseController {
         $this->frontpage($user->id);
     }
 
-
     /**
-     *Odjavljivanje korisnika
-     *@return void
+     * Odjavljivanje korisnika
+     * 
+     * @return void
      */
     public function logout() {
         $this->session->destroy();
         return redirect()->to(site_url('/'));
-    }
-
-    /** 
-     *Prikaz svog ili tudjeg profila
-     *@return void
-     */
-    public function profile($id = null) {
-        $user = $id == null ? $this->session->get('user') : (new UserM())->find($id);
-        if ($id == null) {
-            $builder = \Config\Database::connect()->table('user');
-
-            if ($this->request->getVar('nickname') != "") {
-                $builder = $builder->set('nickname', $this->request->getVar('nickname'))->set('real_name', $this->request->getVar('real_name'))
-                    ->set('country', $this->request->getVar('location'))->set('description', $this->request->getVar('description'))
-                    ->set('featured_review', $this->request->getVar('f_review'))->where('id', $user->id)->update();
-
-                $this->upload('public/uploads/user/', 'profile_pic', $user->id);
-            }
-        }
-
-        $this->show('user.php', ['user_profile' => $user]);
     }
 
     /**
@@ -79,7 +58,7 @@ class User extends BaseController {
         if (!$this->validate(['funds' => 'required|numeric|greater_than[0]']))
             return $this->show('addFunds', ['errors' => $this->validator->getErrors()]);
 
-        $user = $this->session->get('user');
+        $user = $this->getUser();
 
         $user->balance += $this->request->getVar('funds');
 
@@ -98,7 +77,7 @@ class User extends BaseController {
      * @return void   
      */
     public function buyProduct($id) {
-        $user = $this->session->get('user');
+        $user = $this->getUser();
 
         $friends =  (new RelationshipM())->getFriends($user);
 
@@ -116,15 +95,14 @@ class User extends BaseController {
      * @return array array containing user-specific info such as if user has review of product, and if user has admin privileges
      */
     protected function userViewProduct($id) {
-        $user = $this->session->get('user');
+        $user = $this->getUser();
 
         $product_review = (new OwnershipM())->where('id_product', $id)->where('id_user', $user->id)->first();
 
         if ($user->review_ban == 1 || !(isset($product_review)))
             $product_review = NULL;
 
-        $admin = $user->admin_rights;
-        return ['product_review' => $product_review, 'admin' => $admin];
+        return ['product_review' => $product_review];
     }
 
     /**
@@ -134,7 +112,7 @@ class User extends BaseController {
      * @return void   
      */
     public function buyProductSubmit($id) {
-        $userFrom = $this->session->get('user');
+        $userFrom = $this->getUser();
 
         $friends = (new RelationshipM())->getFriends($userFrom);
 
@@ -160,17 +138,17 @@ class User extends BaseController {
         if ($product->base_game != null) {
             $baseGameForDLC = $ownershipM->where('id_user', $user->id)->where('id_product', $product->base_game)->findAll();
             if ($baseGameForDLC == null) {
-                return  $this->show('buyProduct', ['product' => $product, 'friends' => $friends, 'message' => 'Nema base game!']);
+                return  $this->show('buyProduct', ['product' => $product, 'friends' => $friends, 'message' => "You don't own the base game."]);
             }
         }
 
         foreach ($userProducts as $userProduct) {
             if ($userProduct->id_product == $product->id) {
-                return  $this->show('buyProduct', ['product' => $product, 'friends' => $friends, 'message' => 'Ima vec!']);
+                return  $this->show('buyProduct', ['product' => $product, 'friends' => $friends, 'message' => 'You already own this product.']);
             }
         }
         if ($userFrom->balance <  $productPrice) {
-            return  $this->show('buyProduct', ['product' => $product, 'friends' => $friends, 'message' => 'Nema novaca!']);
+            return  $this->show('buyProduct', ['product' => $product, 'friends' => $friends, 'message' => 'You have insufficient funds.']);
         }
 
         $userFrom->balance -=  $productPrice;
@@ -193,19 +171,21 @@ class User extends BaseController {
     }
 
     /**
-     *Prikaz stranice sa opcijama za izmenu/unos podataka
-     *@return void
+     * Prikaz stranice sa opcijama za izmenu/unos podataka
+     * 
+     * @return void
      */
     public function editProfile() {
         $this->show('editProfile.php');
     }
 
     /**
-     *Prikaz stranice sa listom zahteva prijateljsva (odlazeci i dolazeci)
-     *@return void
+     * Prikaz stranice sa listom zahteva prijateljsva (odlazeci i dolazeci)
+     * 
+     * @return void
      */
     public function friendRequests() {
-        $user = $this->session->get('user');
+        $user = $this->getUser();
         $relationshipM = new RelationshipM();
 
         $requesters = $relationshipM->getIncoming($user);
@@ -223,7 +203,7 @@ class User extends BaseController {
     public function makeReviewSubmit($id) {
         $text = $this->request->getVar('text');
         $rating = $this->request->getVar('rating');
-        $user = $this->session->get('user');
+        $user = $this->getUser();
 
         (new OwnershipM())->where('id_product', $id)->where('id_user', $user->id)->set(['rating' => $rating, 'text' => $text])->update();
 
@@ -233,7 +213,7 @@ class User extends BaseController {
             'rev_sum' => $product->rev_sum + $rating
         ]);
 
-        return redirect()->to(site_url("User/Product/{$product->id}"));
+        return redirect()->to(site_url("user/product/{$product->id}"));
     }
 
     /**
@@ -242,9 +222,9 @@ class User extends BaseController {
      * 
      * @return void   
      */
-    public function LikeDislikeSubmit($id, $posterUsername) {
-        $poster = (new UserM())->where('username', $posterUsername)->first();
-        $user = $this->session->get('user');
+    public function LikeDislikeSubmit($id, $posterId) {
+        $poster = (new UserM())->find($posterId);
+        $user = $this->getUser();
 
         if ($poster->id == $user->id) return redirect()->to(site_url("User/Product/{$id}"));
 
@@ -359,58 +339,24 @@ class User extends BaseController {
         $db      = \Config\Database::connect();
         $builder = $db->table('user');
         $request = \Config\Services::request();
-        $query = $builder->like('nickname', $request->getVar('q'))->select('id, nickname as text')->limit(10)->get();
+        $query = $builder->like('nickname', $request->getVar('q'))->select('id, nickname as text')->limit(7)->get();
         $data = $query->getResult();
         echo json_encode($data);
     }
 
     /**
-     *Ajax funkcija za promenu stranice na profil odabranog pretrazenog korisnika
-     *@return String
+     * Ajax funkcija za promenu stranice na profil odabranog pretrazenog korisnika
+     * @return String
      */
     public function ajaxUserLoad() {
         $nickname = $_GET['nadimak'];
         $myUsr = (new UserM())->where('nickname', $nickname)->first();
-        return "profile/" . $myUsr->id;
+        return base_url("user/profile/" . $myUsr->id);
     }
 
     /**
-     *Prikaz stranice za pretragu korisnika
-     *@return void
-     */
-    public function searchUser() {
-        $this->show('searchUser.php');
-    }
-
-    /**
-     *Ajax funkcija za azurno ucitavanje rezultata proizvoda
-     *@return array(data)
-     */
-    public function ajaxProductSearch() {
-        helper(['form', 'url']);
-
-        $data = [];
-        $db      = \Config\Database::connect();
-        $builder = $db->table('product');
-        $request = \Config\Services::request();
-        $query = $builder->like('name', $request->getVar('q'))->select('id, name as text')->limit(10)->get();
-        $data = $query->getResult();
-        echo json_encode($data);
-    }
-
-    /**
-     *Ajax funkcija za promenu stranice na odabrani proizvod
-     *@return String
-     */
-    public function ajaxProductLoad() {
-        $name = $_GET['ime'];
-        $myProduct = (new ProductM())->where('name', $name)->first();
-        return "Product/" . $myProduct->id;
-    }
-
-    /**
-     *Prikaz stranice za pretragu proizvoda
-     *@return void
+     * Prikaz stranice za pretragu proizvoda
+     * @return void
      */
     public function searchProduct() {
         $this->show('searchProduct.php');
@@ -421,7 +367,7 @@ class User extends BaseController {
      * @return void
      */
     public function deleteReviewSubmit($id) {
-        $user = $this->session->get('user');
+        $user = $this->getUser();
 
         $rating = (new OwnershipM())->where('id_product', $id)
                                     ->where('id_user', $user->id)
@@ -437,7 +383,7 @@ class User extends BaseController {
 
         (new ReviewVoteM())->where('id_product', $id)->where("id_poster", $user->id)->delete();
 
-        return redirect()->to(site_url("User/Product/{$id}"));
+        return redirect()->to(site_url("user/product/{$id}"));
     }
 
     /**
@@ -447,7 +393,7 @@ class User extends BaseController {
      * @return void
      */
     public function buyBundle($id = null) {
-        $user = $this->session->get('user');
+        $user = $this->getUser();
         $bundle = (new BundleM())->find($id);
 
         if (!isset($bundle)) {
@@ -465,13 +411,13 @@ class User extends BaseController {
 
     public function buyBundleSubmit($id) {
         $finalPrice = $this->request->getVar('final');
-        $user = $this->session->get('user');
+        $user = $this->getUser();
 
         if ($user->balance < $finalPrice) {
             return;
         }
 
-        $products = $this->bundleProducts($id);
+        $products = (new BundleM())->bundleProducts($id);
         foreach ($products as $product) {
             (new OwnershipM())
                 ->acquire($user->id, $product->id);

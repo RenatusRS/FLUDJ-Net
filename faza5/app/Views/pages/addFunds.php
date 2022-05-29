@@ -13,7 +13,7 @@ Autori:
 <div id=short-main>
   <form name='addFundsForm' action="<?= site_url("User/addFundsSubmit/") ?>" method="POST">
     <span class="input-label">Add Funds</span>
-    <input type="text" name="funds" class="full" required />
+    <input type="text" name="funds" placeholder="5.00" class="full" required />
     <?php
     if (!empty($errors['funds'])) echo $errors['funds'];
     ?>

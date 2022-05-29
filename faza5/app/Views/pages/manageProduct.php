@@ -1,6 +1,6 @@
 <title>
     <?php
-    echo isset($product) ? "Edit: " . $product->name : "Add New Product";
+    echo isset($product) ? "EDIT: " . $product->name : "Add New Product";
     ?>
 </title>
 
@@ -67,7 +67,7 @@ if (!isset($product)) {
             <input type="text" name="publisher" placeholder="Nintendo" value="<?php echo $product->publisher ?>" class=full>
 
             Release Date
-            <input type="text" name="release_date" placeholder="15/07/2015" value="<?php echo $product->release_date ?>" class=full>
+            <input type="text" name="release_date" placeholder="2015/07/15" value="<?php echo $product->release_date ?>" class=full>
 
         </div>
 
@@ -119,38 +119,36 @@ if (!isset($product)) {
         <div style="flex:1%; padding: 0 16px">
             <h3>Assets</h3>
             Banner
-            <input type="file" name="banner" accept="image/x-jpg">
+            <input type="file" name="banner" accept="image/jpeg">
+
+            Capsule
+            <input type="file" name="capsule" accept="image/jpeg">
 
             Background
             <input type="file" name="background" accept="image/x-png">
-
 
             Video
             <input type="file" name="video" accept="video/webm">
 
             Screenshot 1
-            <input type="file" name="ss1" accept="image/x-jpg">
+            <input type="file" name="ss1" accept="image/jpeg">
 
             Screenshot 2
-            <input type="file" name="ss2" accept="image/x-jpg">
+            <input type="file" name="ss2" accept="image/jpeg">
 
             Screenshot 3
-            <input type="file" name="ss3" accept="image/x-jpg">
+            <input type="file" name="ss3" accept="image/jpeg">
 
         </div>
 
         <div style="flex:60%; padding: 0 16px">
             <h3>Description</h3>
             <textarea name="description" style="width: 100%; height: 200px;" placeholder="Describe your product..."><?php echo $product->description ?></textarea>
-
         </div>
 
+        <input type="submit" value="SUBMIT" class="btn" style="margin: 10px 16px">
     </div>
-    <div id="main" style="margin: -100px 50px;">
 
-
-        <input type="submit" value="SUBMIT" class="btn">
-    </div>
 
 
 </form>
