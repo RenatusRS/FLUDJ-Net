@@ -2,7 +2,7 @@
 
 <div id=short-main>
   <form name='setDiscountForm' action="<?= site_url("Admin/setDiscountSubmit/{$productId}") ?>" method="POST">
-    <span class="input-label">Add Discount</span>
+    <span class="input-label">Set Discount</span>
     <input type="text" name="discount" class="full" required />
     <?php
     if (!empty($errors['discount'])) echo $errors['discount'];

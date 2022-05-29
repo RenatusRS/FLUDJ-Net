@@ -173,7 +173,6 @@ class ProductM extends Model {
     public function getBackground($id) {
         $background = $this->getAsset('uploads/user/' . $id . '.png');
 
-        if ($background == null) return base_url('assets/background.png');
-        return $background;
+        return $background ?: null;
     }
 }

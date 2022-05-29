@@ -7,9 +7,7 @@ Opis: Stranica za podesavanje podataka na svom profilu
 
 -->
 
-<title>Edit profile</title>
-
-<h3>Edit profile</h3>
+<title>Edit Profile</title>
 
 <?php
 

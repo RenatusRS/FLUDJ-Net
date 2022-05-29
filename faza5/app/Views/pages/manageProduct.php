@@ -1,6 +1,6 @@
 <title>
     <?php
-    echo isset($product) ? "Edit: " . $product->name : "Add New Product";
+    echo isset($product) ? "EDIT: " . $product->name : "Add New Product";
     ?>
 </title>
 

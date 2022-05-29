@@ -160,17 +160,17 @@ class User extends BaseController {
         if ($product->base_game != null) {
             $baseGameForDLC = $ownershipM->where('id_user', $user->id)->where('id_product', $product->base_game)->findAll();
             if ($baseGameForDLC == null) {
-                return  $this->show('buyProduct', ['product' => $product, 'friends' => $friends, 'message' => 'Nema base game!']);
+                return  $this->show('buyProduct', ['product' => $product, 'friends' => $friends, 'message' => "You don't own the base game."]);
             }
         }
 
         foreach ($userProducts as $userProduct) {
             if ($userProduct->id_product == $product->id) {
-                return  $this->show('buyProduct', ['product' => $product, 'friends' => $friends, 'message' => 'Ima vec!']);
+                return  $this->show('buyProduct', ['product' => $product, 'friends' => $friends, 'message' => 'You already own this product.']);
             }
         }
         if ($userFrom->balance <  $productPrice) {
-            return  $this->show('buyProduct', ['product' => $product, 'friends' => $friends, 'message' => 'Nema novaca!']);
+            return  $this->show('buyProduct', ['product' => $product, 'friends' => $friends, 'message' => 'You have insufficient funds.']);
         }
 
         $userFrom->balance -=  $productPrice;
@@ -336,7 +336,7 @@ class User extends BaseController {
 
         (new ReviewVoteM())->where('id_product', $id)->where("id_poster", $user->id)->delete();
 
-        return redirect()->to(site_url("User/Product/{$id}"));
+        return redirect()->to(site_url("user/product/{$id}"));
     }
 
     /**
