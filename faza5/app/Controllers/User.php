@@ -124,8 +124,7 @@ class User extends BaseController {
         if ($user->review_ban == 1 || !(isset($product_review)))
             $product_review = NULL;
 
-        $admin = $user->admin_rights;
-        return ['product_review' => $product_review, 'admin' => $admin];
+        return ['product_review' => $product_review];
     }
 
     /**
@@ -237,8 +236,8 @@ class User extends BaseController {
      * 
      * @return void   
      */
-    public function LikeDislikeSubmit($id, $posterUsername) {
-        $poster = (new UserM())->where('username', $posterUsername)->first();
+    public function LikeDislikeSubmit($id, $posterId) {
+        $poster = (new UserM())->find($posterId);
         $user = $this->getUser();
 
         if ($poster->id == $user->id) return redirect()->to(site_url("User/Product/{$id}"));
@@ -277,7 +276,7 @@ class User extends BaseController {
         $db      = \Config\Database::connect();
         $builder = $db->table('user');
         $request = \Config\Services::request();
-        $query = $builder->like('nickname', $request->getVar('q'))->select('id, nickname as text')->limit(10)->get();
+        $query = $builder->like('nickname', $request->getVar('q'))->select('id, nickname as text')->limit(7)->get();
         $data = $query->getResult();
         echo json_encode($data);
     }
