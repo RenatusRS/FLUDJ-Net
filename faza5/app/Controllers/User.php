@@ -165,7 +165,7 @@ class User extends BaseController {
 
         CouponM::removeCoupon($userFrom->id, $product->id);
 
-        (new CouponM())->awardPoints($userFrom->id, $product->price);
+        CouponM::awardPoints($userFrom->id, $product->price);
 
         return redirect()->to(site_url("user/product/{$product->id}"));
     }
@@ -287,7 +287,7 @@ class User extends BaseController {
         ];
 
         while ($receiverPoints >= COUPON_POINTS) {
-            $couponM->awardCoupon($idUser);
+            CouponM::awardCoupon($idUser);
             $receiverPoints -= COUPON_POINTS;
         }
 
@@ -398,7 +398,7 @@ class User extends BaseController {
             'balance' => $user->balance
         ]);
 
-        (new CouponM())->awardPoints($user->id, $finalPrice);
+        CouponM::awardPoints($user->id, $finalPrice);
 
         // TODO redirect
     }
