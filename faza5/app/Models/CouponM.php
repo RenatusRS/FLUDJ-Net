@@ -97,7 +97,7 @@ class CouponM extends Model {
      * @param  integer $idUser
      * @return boolean da li je uspešno dodeljen kupon
      */
-    public function awardCoupon($idUser) {
+    public static function awardCoupon($idUser) {
         $products = (new ProductM())->getDiscoveryProducts($idUser);
         $products = array_values(array_filter($products, function ($p) use (&$idUser) {
             $c = CouponM::couponWorth($idUser, $p['id']);
@@ -113,16 +113,11 @@ class CouponM extends Model {
         return true;
     }
 
-    public function awardPoints($idUser, $spent) {
+    public static function awardPoints($idUser, $spent) {
         $points = (int)($spent * POINTS_PRODUCT);
 
         $userM = new UserM();
         $currentPoints = $userM->points + $points;
-
-        while ($currentPoints >= COUPON_POINTS) {
-            $this->awardCoupon($idUser);
-            $currentPoints -= COUPON_POINTS;
-        }
 
         $userM->update($idUser, [
             'points' => $currentPoints
