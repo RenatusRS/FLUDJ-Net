@@ -23,7 +23,7 @@ use App\Models\CouponM;
 
 class User extends BaseController {
     public function index() {
-        $user = $this->session->get('user');
+        $user = $this->getUser();
 
         $this->frontpage($user->id);
     }
@@ -165,9 +165,9 @@ class User extends BaseController {
 
         CouponM::removeCoupon($userFrom->id, $product->id);
 
-        $this->awardPoints($userFrom->id, $product->price);
+        (new CouponM())->awardPoints($userFrom->id, $product->price);
 
-        return redirect()->to(site_url("User/Product/{$product->id}"));
+        return redirect()->to(site_url("user/product/{$product->id}"));
     }
 
     /**
@@ -252,16 +252,19 @@ class User extends BaseController {
     }
 
     public function awardUser($idUser) {
-        $user = $this->session->get('user');
+        $user = $this->getUser();
         $awardee = (new UserM())->find($idUser);
 
         $this->show('awardPoints', ['currentUser' => $user, 'awardee' => $awardee]);
     }
 
     public function awardUserSubmit($idUser) {
-        $user = $this->session->get('user');
-        $receiver = (new UserM())->find($idUser);
-        $sender = (new UserM())->find($user->id);
+        $user = $this->getUser();
+        $userM = new UserM();
+        $couponM = new CouponM();
+
+        $receiver = $userM->find($idUser);
+        $sender = $userM->find($user->id);
 
         $pointsAwarded = $this->request->getVar('points');
 
@@ -270,10 +273,10 @@ class User extends BaseController {
         $receiverPoints = $receiver->overflow + $pointsAwarded;
         $overflow = ($receiverPoints % COUPON_POINTS);
 
-        (new UserM())->update($user->id, [
+        $userM->update($user->id, [
             'points' => $user->points
         ]);
-        (new UserM())->update($receiver->id, [
+        $userM->update($receiver->id, [
             'overflow' => $overflow
         ]);
 
@@ -284,7 +287,7 @@ class User extends BaseController {
         ];
 
         while ($receiverPoints >= COUPON_POINTS) {
-            $this->awardCoupon($idUser);
+            $couponM->awardCoupon($idUser);
             $receiverPoints -= COUPON_POINTS;
         }
 
@@ -292,47 +295,11 @@ class User extends BaseController {
     }
 
     /**
-     * dodeljuje kupon korisniku sa id-jem $idUser
-     *
-     * @param  integer $idUser
-     * @return boolean da li je uspešno dodeljen kupon
+     * Ajax funkcija za azurno ucitavanje rezultata korisnika
+     * 
+     * @return array(data)
      */
-    private function awardCoupon($idUser) {
-        $products = (new ProductM())->getDiscoveryProducts($idUser);
-        $products = array_values(array_filter($products, function ($p) use (&$idUser) {
-            $c = CouponM::couponWorth($idUser, $p['id']);
-            return ($c < MAX_COUPON_DISCOUNT);
-        })); // lambda filtrira sve proizvode za koje postoji max kupon, a array values vraća ključeve da kreću od 0
-
-        $cnt = count($products);
-        if ($cnt == 0)
-            return false;
-
-        $choice = $products[rand(0, $cnt-1)];
-        CouponM::upgradeCoupon($idUser, $choice['id']);
-        return true;
-    }
-    private function awardPoints($idUser, $spent) {
-        $points = (int)($spent * POINTS_PRODUCT);
-
-        $userM = new UserM();
-        $currentPoints = $userM->points + $points;
-
-        while ($currentPoints >= COUPON_POINTS) {
-            $this->awardCoupon($idUser);
-            $currentPoints -= COUPON_POINTS;
-        }
-
-        $userM->update($idUser, [
-            'points' => $currentPoints
-        ]);
-    }
-
-    /**
-    *Ajax funkcija za azurno ucitavanje rezultata korisnika
-    *@return array(data)
-    */
-    public function ajaxUserSearch(){
+    public function ajaxUserSearch() {
         helper(['form', 'url']);
 
         $data = [];
@@ -346,6 +313,7 @@ class User extends BaseController {
 
     /**
      * Ajax funkcija za promenu stranice na profil odabranog pretrazenog korisnika
+     * 
      * @return String
      */
     public function ajaxUserLoad() {
@@ -356,6 +324,7 @@ class User extends BaseController {
 
     /**
      * Prikaz stranice za pretragu proizvoda
+     * 
      * @return void
      */
     public function searchProduct() {
@@ -364,14 +333,15 @@ class User extends BaseController {
 
     /** 
      * Procesiranje brisanja recenzije
+     * 
      * @return void
      */
     public function deleteReviewSubmit($id) {
         $user = $this->getUser();
 
         $rating = (new OwnershipM())->where('id_product', $id)
-                                    ->where('id_user', $user->id)
-                                    ->rating;
+            ->where('id_user', $user->id)
+            ->rating;
 
         (new OwnershipM())->where('id_product', $id)->where('id_user', $user->id)->set(['rating' => NULL, 'text' => NULL])->update();
 
@@ -428,9 +398,26 @@ class User extends BaseController {
             'balance' => $user->balance
         ]);
 
-        $this->awardPoints($user->id, $finalPrice);
+        (new CouponM())->awardPoints($user->id, $finalPrice);
 
         // TODO redirect
     }
 
+    public function editProfileSubmit() {
+        $user = $this->getUser();
+
+        if ($this->request->getVar('nickname') != "") {
+            (new UserM())
+                ->set('nickname', $this->request->getVar('nickname'))
+                ->set('real_name', $this->request->getVar('real_name'))
+                ->set('description', $this->request->getVar('description'))
+                ->set('featured_review', $this->request->getVar('f_review'))
+                ->where('id', $user->id)
+                ->update();
+
+            $this->upload('uploads/user/', 'profile_pic', $user->id);
+        }
+
+        return redirect()->to(site_url("user/profile/"));
+    }
 }

@@ -43,7 +43,7 @@ class Admin extends BaseController {
 
             'developer' =>    'required',
             'publisher' =>    'required',
-            'release_date' => 'required|valid_date[Y/m/d]',
+            'release_date' => 'required|valid_date[Y-m-d]',
 
             'os_min' =>  'required',
             'cpu_min' => 'required',
@@ -57,6 +57,7 @@ class Admin extends BaseController {
             'mem_rec' => 'required',
 
             'banner' =>  'uploaded[banner]|ext_in[banner,jpg]|is_image[banner]',
+            'capsule' => 'uploaded[capsule]|ext_in[capsule,jpg]|is_image[capsule]',
             'ss1' =>     'uploaded[ss1]|ext_in[ss1,jpg]|is_image[ss1]',
             'ss2' =>     'uploaded[ss2]|ext_in[ss2,jpg]|is_image[ss2]',
             'ss3' =>     'uploaded[ss3]|ext_in[ss3,jpg]|is_image[ss3]',
@@ -123,6 +124,7 @@ class Admin extends BaseController {
             unlink($targetDir . "/background.png");
 
         $this->upload($targetDir, 'banner', 'banner');
+        $this->upload($targetDir, 'capsule', 'capsule');
         $this->upload($targetDir, 'ss1', 'ss1');
         $this->upload($targetDir, 'ss2', 'ss2');
         $this->upload($targetDir, 'ss3', 'ss3');
@@ -138,7 +140,8 @@ class Admin extends BaseController {
 
     public function manageBundle($id = null) {
         $data = [];
-        $bundle = $inBundle = $notInBundle = null;
+        $bundle = null;
+        $inBundle = $notInBundle = [];
 
         if ($id != null) {
             $bundle = (new BundleM())->find($id);
@@ -222,6 +225,7 @@ class Admin extends BaseController {
 
     /** 
      * Procesiranje brisanja recenzije od strane administratora
+     * 
      * @return void
      */
     public function DeleteReviewAdminSubmit($id, $posterUsername) {
@@ -236,6 +240,7 @@ class Admin extends BaseController {
 
     /** 
      * Prikaz stranice za dodavanje popusta
+     * 
      * @return void
      */
     public function setDiscount($id) {
@@ -244,6 +249,7 @@ class Admin extends BaseController {
 
     /** 
      * Procesiranje popusta
+     * 
      * @return void
      */
     public function setDiscountSubmit($id) {
@@ -283,6 +289,6 @@ class Admin extends BaseController {
         foreach ($out as $idProduct)
             BundledProductsM::addToBundle($idBundle, $idProduct);
 
-        return redirect()->to(site_url("Admin/manageBundle/" . $idBundle));
+        return redirect()->to(site_url("admin/manageBundle/" . $idBundle));
     }
 }

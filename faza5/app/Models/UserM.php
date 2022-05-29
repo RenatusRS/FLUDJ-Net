@@ -13,7 +13,7 @@ class UserM extends Model {
     protected $allowedFields = ['username', 'password', 'admin_rights', 'balance', 'review_ban', 'avatar', 'description', 'real_name', 'nickname', 'featured_review', 'points', 'overflow'];
 
     public function getAvatar($id) {
-        $avatar = $this->getAsset('uploads/user/' . $id . '.png');
+        $avatar = $this->getAsset('uploads/user/' . $id . '.jpg');
 
         return $avatar ?: base_url('assets/avatar.png');
     }

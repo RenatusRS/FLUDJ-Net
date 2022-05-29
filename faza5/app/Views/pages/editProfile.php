@@ -19,10 +19,10 @@ $us = (new UserM())->where('id', $user->id)->first();
 ?>
 
 <div id="main" style="margin: 100px auto; width: 325px; padding: 15px; border-radius: 9px;">
-    <form name='friend_button' action="<?= site_url("User/Profile/") ?>" method="POST" enctype="multipart/form-data">
+    <form name='friend_button' action="<?= site_url("user/EditProfileSubmit/") ?>" method="POST" enctype="multipart/form-data">
 
         <h3>Avatar</h3>
-        <input type="file" name="profile_pic" required accept="image/x-png">
+        <input type="file" name="profile_pic" required accept="image/jpeg">
         <?php if (!empty($errors['profile_pic'])) echo $errors['profile_pic'] ?>
 
         <h3>Nickname</h3>
@@ -34,21 +34,15 @@ $us = (new UserM())->where('id', $user->id)->first();
         <?php if (!empty($errors['real_name'])) echo $errors['real_name'] ?>
 
         <h3>Description</h3>
-        <textarea name="description" cols="40" rows="10"> <?php echo $us->description; ?> </textarea>
+        <textarea name="description" rows=10 style="width:100%; max-width: 100%; min-width: 100%;"><?php echo $us->description; ?></textarea>
 
-        <h3>Featured review</h3>
-        <?php
-            $os=(new OwnershipM())->where('id_user', $us->id)->findAll();
-        ?>
-        <select name="f_review" id="feat_reviews"">
-        <?php
-            foreach ($os as $osr) {
-            $pr=(new ProductM())->where('id', $osr->id_product)->first();
-        ?>
-            <option value="<?php echo $pr->id ?>"> <?php echo $pr->name ?> </option>
-        <?php
-        }
-        ?>
+        <h3>Featured Review</h3>
+        <?php $os = (new OwnershipM())->where('id_user', $us->id)->findAll(); ?>
+        <select name="f_review" id="feat_reviews">
+            <?php foreach ($os as $osr) {
+                $pr = (new ProductM())->where('id', $osr->id_product)->first(); ?>
+                <option value="<?php echo $pr->id ?>"><?php echo $pr->name ?></option>
+            <?php } ?>
         </select>
 
         <input type="submit" name="editbtn" class="btn" value=<?= "Edit" ?>>

@@ -39,10 +39,14 @@ use App\Models\ProductM;
             <div class="product-detail-center">
                 <?php
 
-                # $rating = $product->rev_sum / $product->rev_cnt;
-                $rating = 4.14;
 
-                $roundedRating = round($rating);
+                if ($product->rev_cnt != 0) {
+                    $rating = $product->rev_sum / $product->rev_cnt;
+                    $roundedRating = round($rating);
+                } else {
+                    $rating = "No reviews";
+                    $roundedRating = 0;
+                }
 
                 for ($i = 1; $i <= 5; $i++) {
                     echo $i <= $roundedRating ? "★" : "☆";
@@ -52,11 +56,6 @@ use App\Models\ProductM;
             </div>
         </div>
     </div>
-    <?php $product_base = (new ProductM())->find(3); ?>
-    <?php $product_dlc = [
-        (new ProductM())->find(3),
-        (new ProductM())->find(3),
-    ]; ?>
     <div style="display:flex">
         <div style="flex: 4">
             <?php if ($product_base != null) { ?>

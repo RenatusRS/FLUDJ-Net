@@ -23,6 +23,7 @@ class CouponM extends Model {
     public function ownsCoupon($idOwner, $idProduct) {
         return ($this->couponWorth($idOwner, $idProduct) != 0);
     }
+
     /**
      * dohvata sve kupone za korisnika $idOwner
      * vraća generator kupona
@@ -51,13 +52,14 @@ class CouponM extends Model {
      */
     public static function couponWorth($idOwner, $idProduct) {
         $coupon = (new CouponM())->where('id_product', $idProduct)
-                                 ->where('id_owner', $idOwner)
-                                 ->first();
+            ->where('id_owner', $idOwner)
+            ->first();
 
         return (isset($coupon)) ?
             $coupon->discount :
             0;
     }
+
     /**
      * dodeljuje kupon ako ne postoji ili ga unapređuje
      * kupon se odnosi na korisnika sa id-jem $idOwner i proizvod sa id-jem $idProduct
@@ -82,9 +84,48 @@ class CouponM extends Model {
             'discount'   => $worth
         ]);
     }
+
     public static function removeCoupon($idOwner, $idProduct) {
         (new CouponM())->where('id_product', $idProduct)
-                       ->where('id_owner', $idOwner)
-                       ->delete();
+            ->where('id_owner', $idOwner)
+            ->delete();
+    }
+
+    /**
+     * dodeljuje kupon korisniku sa id-jem $idUser
+     *
+     * @param  integer $idUser
+     * @return boolean da li je uspešno dodeljen kupon
+     */
+    public function awardCoupon($idUser) {
+        $products = (new ProductM())->getDiscoveryProducts($idUser);
+        $products = array_values(array_filter($products, function ($p) use (&$idUser) {
+            $c = CouponM::couponWorth($idUser, $p['id']);
+            return ($c < MAX_COUPON_DISCOUNT);
+        })); // lambda filtrira sve proizvode za koje postoji max kupon, a array values vraća ključeve da kreću od 0
+
+        $cnt = count($products);
+        if ($cnt == 0)
+            return false;
+
+        $choice = $products[rand(0, $cnt - 1)];
+        CouponM::upgradeCoupon($idUser, $choice['id']);
+        return true;
+    }
+
+    public function awardPoints($idUser, $spent) {
+        $points = (int)($spent * POINTS_PRODUCT);
+
+        $userM = new UserM();
+        $currentPoints = $userM->points + $points;
+
+        while ($currentPoints >= COUPON_POINTS) {
+            $this->awardCoupon($idUser);
+            $currentPoints -= COUPON_POINTS;
+        }
+
+        $userM->update($idUser, [
+            'points' => $currentPoints
+        ]);
     }
 }

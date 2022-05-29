@@ -43,7 +43,9 @@ class Guest extends BaseController {
         $userM->save([
             'username' => $this->request->getVar('username'),
             'password' => $this->request->getVar('password'),
-            'nickname' => $this->request->getVar('username')
+            'nickname' => $this->request->getVar('username'),
+            'real_name' => '',
+            'descritpion' => 'User has not set a description.'
         ]);
 
         $user = $userM->where('username', $this->request->getVar('username'))->first();

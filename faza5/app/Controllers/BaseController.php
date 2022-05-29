@@ -214,7 +214,8 @@ class BaseController extends Controller {
             'product_dlc' => $productM->asArray()->where('base_game', $product->id)->findAll(),
             'reviews' => $this->getTopReviews($id),
             'price' => $productM->getDiscountedPrice($id),
-            'discount' => $product->discount != 0 ? true : false
+            'discount' => $product->discount != 0 ? true : false,
+            'background' => $productM->getBackground($id),
         ];
 
         $this->show('product', array_merge($res, $userRes));
@@ -229,20 +230,6 @@ class BaseController extends Controller {
         $user = $id == null ? $this->getUser() : $userM->find($id);
 
         if ($user == null) return $this->show('registration');
-
-        if ($id == null) {
-            $builder = \Config\Database::connect()->table('user');
-
-            if ($this->request->getVar('nickname') != "") {
-                $builder = $builder
-                    ->set('nickname', $this->request->getVar('nickname'))
-                    ->set('real_name', $this->request->getVar('real_name'))
-                    ->set('description', $this->request->getVar('description'))
-                    ->/*set('featured_review', $this->request->getVar('review'))*/where('id', $user->id)->update();
-
-                $this->upload('public/uploads/user/', 'profile_pic', $user->id);
-            }
-        }
 
         $this->show('user', [
             'user_profile' => $user,
@@ -282,7 +269,7 @@ class BaseController extends Controller {
         $productM = new ProductM();
 
         $heroP = $productM->getHeroProduct($idUser);
-        $heroP->description = explode(".", $heroP->description, 2)[0] . ".";
+        # $heroP->description = explode(".", $heroP->description, 2)[0] . ".";
 
         $highRatingP =  $productM->getHighRatingProducts($idUser);
         $topSellerP =   $productM->getTopSellersProducts($idUser);

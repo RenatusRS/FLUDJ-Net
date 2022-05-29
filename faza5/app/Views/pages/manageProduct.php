@@ -67,7 +67,7 @@ if (!isset($product)) {
             <input type="text" name="publisher" placeholder="Nintendo" value="<?php echo $product->publisher ?>" class=full>
 
             Release Date
-            <input type="text" name="release_date" placeholder="2015/07/15" value="<?php echo $product->release_date ?>" class=full>
+            <input type="text" name="release_date" placeholder="2015-07-15" value="<?php echo $product->release_date ?>" class=full>
 
         </div>
 
