@@ -166,7 +166,7 @@ class BaseController extends Controller {
 
         $background = $bundleM->getBackground($id);
 
-        $result = $bundleM->bundlePrice($products, $bundle->discount);
+        $result = $bundleM->bundlePrice($products, $bundle->discount, $this->getUser()->id);
 
         return $this->show('bundle', [
             'bundle' => $bundle,

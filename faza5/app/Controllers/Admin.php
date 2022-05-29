@@ -162,7 +162,7 @@ class Admin extends BaseController {
         $this->show('manageBundle', $data);
     }
 
-    private function validateBundle($uploadedBackground) {
+    private function validateBundle() {
         $max_disc = MAX_BUNDLE_DISCOUNT;
         $min_disc = MIN_BUNDLE_DISCOUNT;
         $max_descr = MAX_DESCRIPTION_SIZE;
@@ -178,23 +178,18 @@ class Admin extends BaseController {
             'banner' =>      'uploaded[banner]|ext_in[banner,jpg]|is_image[banner]'
             // TODO za veličinu isto ograničenje za slike
             // TODO dinamička provera fajla koji može da bude uploadovan pod bilo kojim imenom
-        ]) ||
-            ($uploadedBackground && !$this->validate([
-                'background' =>  'uploaded[background]|ext_in[background,png]|is_image[background]'
-            ])));
+        ]));
 
         return !$notValid;
     }
 
     public function manageBundleSubmit() {
-        $uploaded = (is_uploaded_file($_FILES['background']['tmp_name']));
-        if (!$this->validateBundle($uploaded))
+        if (!$this->validateBundle())
             return $this->show('manageBundle', ['errors' => $this->validator->getErrors()]);
 
         // ----------------- ubacivanje u bazu ----------------
 
         $id = $this->request->getVar('id');
-        $isEditing = ($id != -1);
         $data = [ // niz podataka koji se čuvaju kao red u bazi
             'name' =>           trim($this->request->getVar('name')),
             'discount' =>       trim($this->request->getVar('discount')),
@@ -213,13 +208,7 @@ class Admin extends BaseController {
 
         $targetDir = 'uploads/bundle/' . $id;
 
-        // ako je postojao background za bundle, prošli se briše
-        if ($isEditing && file_exists($targetDir . "/background.png"))
-            unlink($targetDir . "/background.png");
-
         $this->upload($targetDir, 'banner', 'banner');
-        if ($uploaded)
-            $this->upload($targetDir, 'background', 'background');
 
         return redirect()->to(site_url("user/bundle/" . $id));
     }
