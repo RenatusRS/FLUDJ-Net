@@ -263,8 +263,29 @@ class BaseController extends Controller {
         ]);
     }
 
-        $avatar = $userM->getAvatar($user->id);
+    /**
+     * Ajax funkcija za azurno ucitavanje rezultata proizvoda
+     * @return array(data)
+     */
+    public function ajaxProductSearch() {
+        helper(['form', 'url']);
 
-        $this->show('user', ['user_profile' => $user, 'friends' => $friends, 'avatar' => $avatar]);
+        $data = [];
+        $db      = \Config\Database::connect();
+        $builder = $db->table('product');
+        $request = \Config\Services::request();
+        $query = $builder->like('name', $request->getVar('q'))->select('id, name as text')->limit(7)->get();
+        $data = $query->getResult();
+        echo json_encode($data);
+    }
+
+    /**
+     * Ajax funkcija za promenu stranice na odabrani proizvod
+     * @return String
+     */
+    public function ajaxProductLoad($controller) {
+        $name = $_GET['ime'];
+        $myProduct = (new ProductM())->where('name', $name)->first();
+        return $controller . "/product/" . $myProduct->id;
     }
 }

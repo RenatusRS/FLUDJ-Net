@@ -289,33 +289,7 @@ class User extends BaseController {
     public function ajaxUserLoad() {
         $nickname = $_GET['nadimak'];
         $myUsr = (new UserM())->where('nickname', $nickname)->first();
-        return "profile/" . $myUsr->id;
-    }
-
-    /**
-     *Ajax funkcija za azurno ucitavanje rezultata proizvoda
-     *@return array(data)
-     */
-    public function ajaxProductSearch() {
-        helper(['form', 'url']);
-
-        $data = [];
-        $db      = \Config\Database::connect();
-        $builder = $db->table('product');
-        $request = \Config\Services::request();
-        $query = $builder->like('name', $request->getVar('q'))->select('id, name as text')->limit(10)->get();
-        $data = $query->getResult();
-        echo json_encode($data);
-    }
-
-    /**
-     *Ajax funkcija za promenu stranice na odabrani proizvod
-     *@return String
-     */
-    public function ajaxProductLoad() {
-        $name = $_GET['ime'];
-        $myProduct = (new ProductM())->where('name', $name)->first();
-        return "Product/" . $myProduct->id;
+        return base_url("user/profile/" . $myUsr->id);
     }
 
     /**
