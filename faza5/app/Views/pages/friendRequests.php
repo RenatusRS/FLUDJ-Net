@@ -80,7 +80,7 @@ $userM = new UserM();
 <script>
     $(function() {
         $('.search').select2({
-            placeholder: 'Search for a user',
+            placeholder: '🔍 Search for a user',
             ajax: {
                 url: '<?php echo base_url('user/ajaxUserSearch'); ?>',
                 dataType: 'json',

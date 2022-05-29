@@ -62,7 +62,7 @@
 .select2-dropdown{
     background-color:black;
     border:1px solid #aaa;
-    border-radius:4px;
+    border-radius:8px;
     box-sizing:border-box;
     display:block;
     position:absolute;
@@ -146,7 +146,7 @@
 .select2-container--default .select2-selection--single{
     background-color:#fff;
     border:1px solid #aaa;
-    border-radius:4px
+    border-radius:8px
 }
 .select2-container--default .select2-selection--single .select2-selection__rendered{
     color:#444;
@@ -203,7 +203,7 @@
 .select2-container--default .select2-selection--multiple{
     background-color:black;
     border:1px solid #aaa;
-    border-radius:4px;
+    border-radius:8px;
     cursor:text;
     padding-bottom:5px;
     padding-right:5px
@@ -220,7 +220,7 @@
 .select2-container--default .select2-selection--multiple .select2-selection__choice{
     background-color:#e4e4e4;
     border:1px solid #aaa;
-    border-radius:4px;
+    border-radius:8px;
     display:inline-block;
     margin-left:5px;
     margin-top:5px;
@@ -349,7 +349,7 @@
 .select2-container--classic .select2-selection--single{
     background-color:#f7f7f7;
     border:1px solid #aaa;
-    border-radius:4px;
+    border-radius:8px;
     outline:0;
     background-image:-webkit-linear-gradient(top, #fff 50%, #eee 100%);
     background-image:-o-linear-gradient(top, #fff 50%, #eee 100%);
@@ -449,7 +449,7 @@
 .select2-container--classic .select2-selection--multiple{
     background-color:black;
     border:1px solid #aaa;
-    border-radius:4px;
+    border-radius:8px;
     cursor:text;
     outline:0;
     padding-bottom:5px;
@@ -464,7 +464,7 @@
 .select2-container--classic .select2-selection--multiple .select2-selection__choice{
     background-color:#e4e4e4;
     border:1px solid #aaa;
-    border-radius:4px;
+    border-radius:8px;
     display:inline-block;
     margin-left:5px;
     margin-top:5px;

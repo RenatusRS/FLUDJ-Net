@@ -66,3 +66,39 @@ Opis: Indeksna stranica
 
 	</div>
 </div>
+
+<script>
+	$(function() {
+		$('.search').select2({
+			placeholder: '🔍 Search for a product',
+			ajax: {
+				url: '<?php echo base_url($controller . "/ajaxProductSearch"); ?>',
+				dataType: 'json',
+				delay: 250,
+				processResults: function(data) {
+					return {
+						results: data
+					};
+				},
+				cache: true
+			}
+		});
+
+		$('.search').on('change', function() {
+			//nakon odabira
+			var proizvod = $(".search option:selected").text();
+
+			$.ajax({
+				type: 'GET',
+				url: '<?php echo base_url($controller . "/ajaxProductLoad/" . $controller); ?>',
+				data: {
+					ime: proizvod
+				},
+				dataType: 'html',
+				success: function(response) {
+					window.location.href = response;
+				}
+			});
+		})
+	});
+</script>
