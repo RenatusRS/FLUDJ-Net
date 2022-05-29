@@ -163,10 +163,7 @@ class ProductM extends Model {
 
     protected $validationRules = [
         'name' => [
-            'rules'  => "required|alpha_numeric_space|is_unique[product.name]",
-            'errors' => [
-                'is_unique' => 'Name of product already exists in database.'
-            ]
+            'rules'  => "required|alpha_numeric_space",
         ]
     ];
 

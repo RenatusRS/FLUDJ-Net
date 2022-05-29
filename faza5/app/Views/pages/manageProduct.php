@@ -67,7 +67,7 @@ if (!isset($product)) {
             <input type="text" name="publisher" placeholder="Nintendo" value="<?php echo $product->publisher ?>" class=full>
 
             Release Date
-            <input type="text" name="release_date" placeholder="15/07/2015" value="<?php echo $product->release_date ?>" class=full>
+            <input type="text" name="release_date" placeholder="2015/07/15" value="<?php echo $product->release_date ?>" class=full>
 
         </div>
 
@@ -119,10 +119,10 @@ if (!isset($product)) {
         <div style="flex:1%; padding: 0 16px">
             <h3>Assets</h3>
             Banner
-            <input type="file" name="banner" accept="image/x-jpg">
+            <input type="file" name="banner" accept="image/jpeg">
 
             Capsule
-            <input type="file" name="capsule" accept="image/x-jpg">
+            <input type="file" name="capsule" accept="image/jpeg">
 
             Background
             <input type="file" name="background" accept="image/x-png">
@@ -131,13 +131,13 @@ if (!isset($product)) {
             <input type="file" name="video" accept="video/webm">
 
             Screenshot 1
-            <input type="file" name="ss1" accept="image/x-jpg">
+            <input type="file" name="ss1" accept="image/jpeg">
 
             Screenshot 2
-            <input type="file" name="ss2" accept="image/x-jpg">
+            <input type="file" name="ss2" accept="image/jpeg">
 
             Screenshot 3
-            <input type="file" name="ss3" accept="image/x-jpg">
+            <input type="file" name="ss3" accept="image/jpeg">
 
         </div>
 
