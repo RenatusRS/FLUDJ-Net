@@ -415,14 +415,8 @@ class ProductM extends Model {
             array_slice($products, ($offset * $limit), $limit));
     }
 
-    protected $validationRules = [
-        'name' => [
-            'rules'  => "required|alpha_numeric_space",
-        ]
-    ];
-
     public function getBackground($id) {
-        $background = $this->getAsset('uploads/user/' . $id . '.png');
+        $background = $this->getAsset('uploads/product/' . $id . '/background.png');
 
         return $background ?: null;
     }

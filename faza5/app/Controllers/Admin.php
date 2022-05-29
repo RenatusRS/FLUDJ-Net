@@ -120,14 +120,15 @@ class Admin extends BaseController {
 
         $targetDir = "uploads/product/$id";
 
-        if ($isEditing && file_exists($targetDir . "/background.png"))
-            unlink($targetDir . "/background.png");
+        //if ($isEditing && file_exists($targetDir . "/background.png"))
+        //    unlink($targetDir . "/background.png");
 
         $this->upload($targetDir, 'banner', 'banner');
         $this->upload($targetDir, 'capsule', 'capsule');
         $this->upload($targetDir, 'ss1', 'ss1');
         $this->upload($targetDir, 'ss2', 'ss2');
         $this->upload($targetDir, 'ss3', 'ss3');
+        $this->upload($targetDir, 'video', 'video');
         if ($uploaded)
             $this->upload($targetDir, 'background', 'background');
 
