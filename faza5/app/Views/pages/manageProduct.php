@@ -144,15 +144,11 @@ if (!isset($product)) {
         <div style="flex:60%; padding: 0 16px">
             <h3>Description</h3>
             <textarea name="description" style="width: 100%; height: 200px;" placeholder="Describe your product..."><?php echo $product->description ?></textarea>
-
         </div>
 
+        <input type="submit" value="SUBMIT" class="btn" style="margin: 10px 16px">
     </div>
-    <div id="main" style="margin: -100px 50px;">
 
-
-        <input type="submit" value="SUBMIT" class="btn">
-    </div>
 
 
 </form>

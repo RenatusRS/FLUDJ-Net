@@ -8,15 +8,23 @@ Opis: Indeksna stranica
 
 <title>FLUDJ Net</title>
 
+<?= link_tag('search.css') ?>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+
+<?php
+
+use App\Models\ProductM;
+
+?>
+
 <div id=main>
+	<div style="margin-bottom: 10px;">
+		<select class="search" name="search" style="width: 300px; color: black;"></select>
+	</div>
 	<div id=hero style="display:flex">
 		<div class="video-container">
 			<video autoplay muted loop>
-				<source src="<?php
-
-								use App\Models\ProductM;
-
-								echo base_url('uploads/product/' . $heroP->id . '/video.webm')  ?>">
+				<source src="<?php echo base_url('uploads/product/' . $heroP->id . '/video.webm')  ?>">
 			</video>
 			<div class="caption">
 				<img src="<?php echo base_url('uploads/product/' . $heroP->id . '/banner.jpg')  ?>">
@@ -49,8 +57,11 @@ Opis: Indeksna stranica
 									<img src=" <?php echo base_url('uploads/product/' . $discountedP[$i]->id . '/banner.jpg') ?>">
 									<p class="product-name"><?php echo $discountedP[$i]->name ?></p>
 									<?php
-									$discount = (new ProductM())->getDiscount($discountedP[$i]->id);
-									$discountedPrice = (new ProductM())->getDiscountedPrice($discountedP[$i]->id);
+
+									$productM = new ProductM();
+
+									$discount = $productM->getDiscount($discountedP[$i]->id);
+									$discountedPrice = $productM->getDiscountedPrice($discountedP[$i]->id);
 
 									if ($discount != 0) { ?>
 										<span class="discount"><?php echo $discount ?>%</span> <span class="price-original"><?php echo number_format($discountedP[$i]->price, 2) ?></span>

@@ -171,7 +171,8 @@ class BaseController extends Controller {
         return $this->show('bundle', [
             'bundle' => $bundle,
             'bundledProducts' => $products,
-            'price' => $result
+            'price' => $result,
+            'background' => $background,
         ]);
     }
 
@@ -203,20 +204,7 @@ class BaseController extends Controller {
         $productM = new ProductM();
         $product = $productM->find($id);
 
-        if (!isset($product))
-            return redirect()->to(site_url());
-
-        $genres = implode(' ', (new GenreM())->getGenres($id));
-
-        $product_base = $product->base_game != null ? $productM->find($product->base_game) : null;
-
-        $product_dlc = $productM->asArray()->where('base_game', $product->id)->findAll();
-
-        $topReviews = $this->getTopReviews($id);
-
-        $price = $productM->getDiscountedPrice($id);
-
-        $discount = $product->discount != 0 ? true : false;
+        if (!isset($product)) return redirect()->to(site_url());
 
         $userRes = $this->userViewProduct($id);
         $res = [
