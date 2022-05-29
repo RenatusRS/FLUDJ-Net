@@ -149,78 +149,24 @@ class BaseController extends Controller {
     }
 
     /**
-     * određuje početnu cenu, sniženje i finalnu cenu kolekcije za trenutnog korisnika
-     *
-     * @param  array $products niz modela dohvaćenih iz baze sa ProductM->find($id)
-     * @param  mixed $discount sniženje kolekcije
-     * @return array 'price' => puna cena, 'discount' => sniženje,
-     * 'final' => finalna cena kada se primeni sniženje
-     *
-     */
-    protected function bundlePrice($products, $discount) {
-        $price = 0.0;
-        $owned = 0;
-        $user = $this->getUser();
-        $cnt = count($products);
-
-        foreach ($products as $product) {
-            $owns = (new OwnershipM())
-                ->owns($user->id, $product->id);
-
-            if ($owns === true) {
-                $owned++;
-            } else {
-                $price += $product->price;
-            }
-        }
-
-        if ($cnt == $owned) {
-            $price = $discount = 0;
-        } else if (($cnt - $owned) == 1) {
-            $discount = 0;
-        } else {
-            while ($owned > 0) {
-                $discount -= ceil($discount / ($cnt - 1));
-                $owned--;
-            }
-        }
-
-        $final = ($price == 0) ?
-            0 :
-            $price - ($price * $discount) / 100;
-
-        return [
-            'price'    => $price,
-            'discount' => $discount,
-            'final'    => $final
-        ];
-    }
-
-    protected function bundleProducts($bundleId) {
-        $iter = (new BundledProductsM())
-            ->where('id_bundle', $bundleId)
-            ->findAll();
-
-        foreach ($iter as $bundle) {
-            yield ((new ProductM())->find($bundle->id_product));
-        }
-    }
-
-    /**
      * prikaži bundle sa id-jem $id
      *
      * @param  integer $id
      * @return void
      */
     public function bundle($id) {
-        $bundle = (new BundleM())->find($id);
+        $bundleM = new BundleM();
+
+        $bundle = $bundleM->find($id);
 
         if (!isset($bundle))
             return redirect()->to(site_url());
 
-        $products = iterator_to_array($this->bundleProducts($id));
+        $products = iterator_to_array($bundleM->bundleProducts($id));
 
-        $result = $this->bundlePrice($products, $bundle->discount);
+        $background = $bundleM->getBackground($id);
+
+        $result = $bundleM->bundlePrice($products, $bundle->discount);
 
         return $this->show('bundle', [
             'bundle' => $bundle,
