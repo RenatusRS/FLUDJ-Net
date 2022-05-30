@@ -29,7 +29,13 @@ $userM = new UserM();
     <div>
         <div style="float:left; width: 50%">
             <h2>INCOMING REQUESTS</h2>
-            <?php foreach ($requesters as $requester) {
+            <?php
+            if (count($requesters) == 0) { ?>
+                <p>
+                    You don't have any incoming friend requests.
+                </p>
+            <?php }
+            foreach ($requesters as $requester) {
                 if (isset($_POST[$requester->id . "ACCEPT"])) {
                     $relationshipM->set('status', 1)->where('id_user2', $user->id)->where('id_user1', $requester->id)->update();
                     header("Refresh:0");
@@ -59,7 +65,13 @@ $userM = new UserM();
         </div>
         <div style="float:left; width: 50%">
             <h2>OUTGOING REQUESTS</h2>
-            <?php foreach ($requestedTo as $requestedToUser) {
+            <?php
+            if (count($requestedTo) == 0) { ?>
+                <p>
+                    You don't have any outgoing friend requests.
+                </p>
+            <?php }
+            foreach ($requestedTo as $requestedToUser) {
                 if (isset($_POST[$requestedToUser->id . "CANCEL"])) {
                     $relationshipM->where('id_user1', $user->id)->where('id_user2', $requestedToUser->id)->delete();
                     header("Refresh:0");

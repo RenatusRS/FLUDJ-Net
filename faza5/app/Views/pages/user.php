@@ -85,25 +85,44 @@ if ($user->id != $user_profile->id) {
         </div>
     </div>
     <div style="min-width: 885px;">
-        <div style="background-color: black;border-radius: 5px;float:left;">
+        <div style="background-color: black;border-radius: 5px;float:left; padding: 0 10px 10px 10px">
             <div>
                 <h2>Products</h2>
+                <?php if (count($friends) > 0) {
+                    foreach ($friends as $friend) { ?>
+                        <a href="<?php "http://localhost:8080/" . $controller . "/profile/" . $friend->id ?>">
+                            <div style="margin:5px">
+                                <img style=" width:25%;vertical-align: middle" src="<?php echo $userM->getAvatar($friend->id) ?>">
+                                <span style="vertical-align: middle"><?php echo $friend->nickname ?></span>
+                            </div>
+                        </a>
+                    <?php }
+                } else { ?>
+                    <p>This user doesn't own any products.</p>
+                <?php } ?>
             </div>
-            <div>
-                <h2>
-                    Featured Review
-                </h2>
-            </div>
+            <?php if ($user_profile->featured_review != null) { ?>
+                <div>
+                    <h2>
+                        Featured Review
+                    </h2>
+                    <img src="<?php echo base_url("uploads/product/" . $user_profile->featured_review . "/banner.jpg") ?>">
+                </div>
+            <?php } ?>
         </div>
         <div style="background-color: black;border-radius: 5px;float:right; width: 15%; padding: 0 10px 10px 10px">
             <h2>Friends</h2>
-            <?php foreach ($friends as $friend) { ?>
-                <a href="http://localhost:8080/user/profile/<?php echo $friend->id ?>">
-                    <div style="margin:5px">
-                        <img style=" width:25%;vertical-align: middle" src="<?php echo $userM->getAvatar($friend->id) ?>">
-                        <span style="vertical-align: middle"><?php echo $friend->nickname ?></span>
-                    </div>
-                </a>
+            <?php if (count($friends) > 0) {
+                foreach ($friends as $friend) { ?>
+                    <a href="<?php "http://localhost:8080/" . $controller . "/profile/" . $friend->id ?>">
+                        <div style="margin:5px">
+                            <img style=" width:25%;vertical-align: middle" src="<?php echo $userM->getAvatar($friend->id) ?>">
+                            <span style="vertical-align: middle"><?php echo $friend->nickname ?></span>
+                        </div>
+                    </a>
+                <?php }
+            } else { ?>
+                <p>This user has no friends.</p>
             <?php } ?>
         </div>
     </div>

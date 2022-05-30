@@ -48,7 +48,7 @@ use App\Models\ProductM;
 <div id="main">
     <h1><?php echo $product->name ?></h1>
     <div style="display: flex; margin-bottom: 0px">
-        <div style="flex: 4">
+        <div style="flex: 6">
             <div style="margin-bottom: 10px;">
                 <div class="mySlides">
                     <video id="video" style="width: 100%; color: yellow" autoplay muted loop controls poster="assets/thumbnail.png">
@@ -82,8 +82,64 @@ use App\Models\ProductM;
                     <img class="demo cursor" src="<?php echo base_url('uploads/product/' . $product->id . '/ss3.jpg')  ?>" style="width:100%" onclick="currentSlide(4)">
                 </div>
             </div>
+            <?php if ($product_base != null) { ?>
+                <a href="<?php echo site_url($controller . "/product/" . $product_base->id) ?>">
+                    <div style="background-color:black;">
+                        <img style="vertical-align: middle; width: 120px" src="<?php echo base_url('uploads/product/' . $product_base->id . '/banner.jpg')  ?>">
+                        <span style="vertical-align: middle;">This product is a DLC for <?php echo $product_base->name ?>.</span>
+                    </div>
+                </a>
+            <?php } ?>
+            <div>
+                <h2>Bundles</h2>
+            </div>
+            <?php if (count($product_dlc) > 0) { ?>
+                <div>
+                    <h2>Downloadable Content</h2>
+                    <?php foreach ($product_dlc as $dlc) { ?>
+                        <a href="<?php echo site_url($controller . "/product/" . $dlc->id) ?>">
+                            <div class="dlc">
+                                <img style="vertical-align: middle; width: 80px" src="<?php echo base_url('uploads/product/' . $dlc->id . '/banner.jpg')  ?>">
+                                <span style="vertical-align: middle;"><?php echo $dlc->name ?></span>
+                            </div>
+                        </a>
+                    <?php } ?>
+                </div>
+            <?php } ?>
+            <div>
+                <h2>About</h2>
+                <?php foreach ($description as $row) { ?>
+                    <p style="text-align:justify">
+                        <?php echo $row ?>
+                    </p>
+                <?php } ?>
+            </div>
+            <div>
+                <?php if (isset($product_review)) { ?>
+                    <hr>
+                    <h2>Submit Review</h2>
+                    <?php if (isset($product_review)) { ?>
+                        <form action="<?= site_url("user/makeReviewSubmit/{$product->id}") ?>" method="POST">
+                            <textarea style="width:100%; min-width: 100%; max-width: 100%;" name="text" id="" cols="30" rows="10"><?php echo $product_review->text ?></textarea>
+                            <div style="text-align: center;">
+                                <?php if (isset($product_review->rating)) : ?>
+                                    Current rating: <?php echo $product_review->rating ?>/5
+                                <?php endif ?>
+                            </div>
+                            <input type="range" style="width:100%" name="rating" value="<?php echo $product_review->rating ?>" min="1" max="5">
+                            <input type="submit" class="btn" value="Create Review">
+                        </form>
+                        <?php if ($product_review != null) { ?>
+                            <form action="<?= site_url("user/deleteReviewSubmit/{$product->id}") ?>" method="POST">
+                                <input type="submit" class="btn" value="Delete Review">
+                            </form>
+                        <?php } ?>
+
+                <?php }
+                } ?>
+            </div>
         </div>
-        <div style="flex: 1; margin-left: 35px; margin-bottom: 15px; min-width: 180px;">
+        <div style="flex: 2; margin-left: 35px; margin-bottom: 15px; min-width: 180px;">
             <img style="width:100%" src="<?php echo base_url('uploads/product/' . $product->id . '/banner.jpg')  ?>" />
             <br>
             <?php
@@ -111,8 +167,6 @@ use App\Models\ProductM;
             </div>
             <div class="product-detail-center">
                 <?php
-
-
                 if ($product->rev_cnt != 0) {
                     $rating = $product->rev_sum / $product->rev_cnt;
                     $roundedRating = round($rating);
@@ -127,65 +181,6 @@ use App\Models\ProductM;
                 <br>
                 <span style="font-size: 20px"><?php echo $rating ?></span>
             </div>
-        </div>
-    </div>
-    <div style="display:flex">
-        <div style="flex: 4">
-            <?php if ($product_base != null) { ?>
-                <a href="<?php echo site_url($controller . "/product/" . $product_base->id) ?>">
-                    <div style="background-color:black;">
-                        <img style="vertical-align: middle; width: 120px" src="<?php echo base_url('uploads/product/' . $product_base->id . '/banner.jpg')  ?>">
-                        <span style="vertical-align: middle;">This product is a DLC for <?php echo $product_base->name ?>.</span>
-                    </div>
-                </a>
-            <?php } ?>
-            <div>
-                <h3>Bundles</h3>
-            </div>
-            <?php if (count($product_dlc) > 0) { ?>
-                <div>
-                    <h3>Downloadable Content</h3>
-                    <?php foreach ($product_dlc as $dlc) { ?>
-                        <a href="<?php echo site_url($controller . "/product/" . $dlc->id) ?>">
-                            <div class="dlc">
-                                <img style="vertical-align: middle; width: 80px" src="<?php echo base_url('uploads/product/' . $dlc->id . '/banner.jpg')  ?>">
-                                <span style="vertical-align: middle;"><?php echo $dlc->name ?></span>
-                            </div>
-                        </a>
-                    <?php } ?>
-                </div>
-            <?php } ?>
-            <div>
-                <h3>About</h3>
-                <p style="text-align:justify"><?php echo $product->description ?></p>
-
-            </div>
-            <div>
-                <?php if (isset($user)) { ?>
-                    <hr>
-                    <h3>Submit Review</h3>
-                    <?php if (isset($product_review)) { ?>
-                        <form action="<?= site_url("user/makeReviewSubmit/{$product->id}") ?>" method="POST">
-                            <textarea style="width:100%" name="text" id="" cols="30" rows="10"><?php echo $product_review->text ?></textarea>
-                            <div style="text-align: center;">
-                                <?php if (isset($product_review->rating)) : ?>
-                                    Current rating: <?php echo $product_review->rating ?>/5
-                                <?php endif ?>
-                            </div>
-                            <input type="range" style="width:100%" name="rating" value="<?php echo $product_review->rating ?>" min="1" max="5">
-                            <input type="submit" class="btn" value="Create Review">
-                        </form>
-                        <?php if ($product_review != null) { ?>
-                            <form action="<?= site_url("user/deleteReviewSubmit/{$product->id}") ?>" method="POST">
-                                <input type="submit" class="btn" value="Delete Review">
-                            </form>
-                        <?php } ?>
-
-                <?php }
-                } ?>
-            </div>
-        </div>
-        <div style="flex: 1; margin-left: 35px; min-width: 180px;">
             <div>
                 <?php foreach ($genres as $genre) { ?>
                     <span class="genre"><?php echo $genre ?></span>
@@ -221,8 +216,14 @@ use App\Models\ProductM;
             </div>
         </div>
     </div>
-    <div>
-        <h2>More Like This</h2>
+    <h2>More Like This</h2>
+
+    <div style="display: flex;">
+        <?php for ($i = 0; $i < 4; $i++) { ?>
+            <div style="flex: 1;">
+                <img style="width:100%" src="<?php echo base_url('uploads/product/' . $similar_products[$i]->id . '/banner.jpg') ?>">
+            </div>
+        <?php } ?>
     </div>
     <div>
         <?php

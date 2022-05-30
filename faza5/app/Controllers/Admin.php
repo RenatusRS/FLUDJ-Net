@@ -94,8 +94,12 @@ class Admin extends BaseController {
             'gpu_rec' =>      $this->request->getVar('gpu_rec'),
             'ram_rec' =>      $this->request->getVar('ram_rec'),
             'mem_rec' =>      $this->request->getVar('mem_rec'),
-            'description' =>  $this->request->getVar('description')
+            'description' =>  $this->request->getVar('description'),
         ];
+
+        $baseGame = $this->request->getVar('base_game');
+
+        if ($baseGame != '') $data['base_game'] = $baseGame;
 
         $genreM = new GenreM();
         $productM = new ProductM();

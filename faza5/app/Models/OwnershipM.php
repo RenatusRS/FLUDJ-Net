@@ -21,11 +21,38 @@ class OwnershipM extends Model {
      * @return boolean korisnik poseduje proizvod
      */
     public function owns($idUser, $idProduct) {
-        $query = $this ->where('id_product', $idProduct)
-                       ->where('id_user', $idUser)
-                       ->first();
+        $query = $this->where('id_product', $idProduct)
+            ->where('id_user', $idUser)
+            ->first();
 
         return (isset($query));
+    }
+
+    /**
+     * Proverava da li korisnik sa id-jem $idUser poseduje
+     * proizvod sa id-jem $idProduct
+     *
+     * @param  integer $idUser
+     * @param  integer $idProduct
+     * @return boolean korisnik poseduje proizvod
+     */
+    public function getOwned($idUser) {
+        $ownedList = $this->where('id_user', $idUser)->findAll();
+        $productM = new ProductM();
+
+        $owned = array();
+
+        foreach ($ownedList as $own) {
+            $product = $productM->find($own->id_product);
+
+            $owned[$own->id_product] = [
+                'product' => $product,
+                'rating' => $own->rating,
+                'review' => $own->text,
+            ];
+        }
+
+        return $owned;
     }
 
     /**
@@ -102,7 +129,7 @@ class OwnershipM extends Model {
     public function matchingGenres($idUser) {
         $this->db = \Config\Database::connect();
         $res = $this->db->query(
-                "SELECT sum(cnt) AS matching, p.*
+            "SELECT sum(cnt) AS matching, p.*
                  FROM (
                      SELECT genre_name, count(genre_name) AS cnt
                      FROM $this->table
@@ -116,7 +143,8 @@ class OwnershipM extends Model {
                      FROM product
                      JOIN genre ON product.id = genre.id_product
                  ) AS p ON z.genre_name = p.genre_name
-                 GROUP BY id; ");
+                 GROUP BY id; "
+        );
 
         foreach ($res->getResult('object') as $row) {
             yield $row;
@@ -133,7 +161,7 @@ class OwnershipM extends Model {
     public function friendsLikes($idUser) {
         $this->db = \Config\Database::connect();
         $res = $this->db->query(
-                "SELECT id_product, sum(rating) AS rev_sum, count(*) AS rev_cnt
+            "SELECT id_product, sum(rating) AS rev_sum, count(*) AS rev_cnt
 
                  FROM (
                     SELECT id_user2 AS id

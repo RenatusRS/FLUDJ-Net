@@ -29,6 +29,7 @@ body {
     margin: 60px 0 0 0px;
     display: flex;
     flex-direction: column;
+    font-weight: 300;
 }
 
 #main {
@@ -86,10 +87,11 @@ header li {
     border-right: 1px solid rgb(92, 92, 92);
 }
 
-header li:nth-last-child(2),
+header li:nth-child(3),
 header li:first-child {
     border-right: none;
 }
+
 
 header li a:not(#logo) {
     display: block;
@@ -255,7 +257,7 @@ footer img {
     border-radius: 3px;
     padding: 15px 8px;
     text-align: left;
-    font-size: 14px;
+    font-size: 17px;
 }
 
 .product-detail-center {
@@ -327,7 +329,7 @@ footer img {
     border-radius: 15px;
     padding: 8px;
     margin: 3px;
-    font-size: 12px;
+    font-size: 15px;
     display: inline-block;
 }
 

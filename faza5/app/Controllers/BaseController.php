@@ -211,11 +211,13 @@ class BaseController extends Controller {
             'product' => $product,
             'genres' => (new GenreM())->getGenres($id),
             'product_base' => $product->base_game != null ? $productM->find($product->base_game) : null,
-            'product_dlc' => $productM->asArray()->where('base_game', $product->id)->findAll(),
+            'product_dlc' => $productM->where('base_game', $product->id)->findAll(),
             'reviews' => $this->getTopReviews($id),
             'price' => $productM->getDiscountedPrice($id),
             'discount' => $product->discount != 0 ? true : false,
             'background' => $productM->getBackground($id),
+            'description' => explode(PHP_EOL, $product->description),
+            'similar_products' => $productM->getSimilarProducts($id, $this->getUser()->id, 0, 4),
         ];
 
         $this->show('product', array_merge($res, $userRes));
@@ -236,6 +238,7 @@ class BaseController extends Controller {
             'friends' => (new RelationshipM())->getFriends($user),
             'avatar' => $userM->getAvatar($user->id),
             'background' => $userM->getBackground($user->id),
+            'products' => (new OwnershipM())->getOwned($user->id),
         ]);
     }
 
