@@ -36,10 +36,15 @@ class GenreM extends Model {
     public function getSimilarProducts($productId, $filterDLCs = true) {
         $this->db = \Config\Database::connect();
         $res = $this->db->query(
-            "SELECT t1.id_product, count(*) as match_count
-             FROM (SELECT id_product, genre_name FROM $this->table WHERE id_product <> $productId) AS t1
-             JOIN (SELECT genre_name             FROM $this->table WHERE id_product =  $productId) AS t2 ON t1.genre_name = t2.genre_name
-             GROUP BY t1.id_product;"
+            "SELECT t.match_count, product.*
+             FROM
+             (
+                SELECT t1.id_product, count(*) as match_count
+                FROM (SELECT id_product, genre_name FROM genre WHERE id_product <> $productId) AS t1
+                JOIN (SELECT genre_name             FROM genre WHERE id_product =  $productId) AS t2 ON t1.genre_name = t2.genre_name
+                GROUP BY t1.id_product
+             ) AS t
+             JOIN product ON t.id_product = id;"
         );
 
         foreach ($res->getResult('object') as $row) {

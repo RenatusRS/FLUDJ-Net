@@ -401,21 +401,15 @@ class ProductM extends Model {
         $similar = (new GenreM())->getSimilarProducts($productId);
 
         $products = [];
-        $counts = [];
-        foreach ($similar as $product) {
-            $id = $product->id_product;
-            if ($idUser != null && ((new OwnershipM())->owns($idUser, $id)))
+        foreach ($similar as $p) {
+            if ($idUser != null && ((new OwnershipM())->owns($idUser, $p->id)))
                 continue;
 
-            $newProduct = (new ProductM())->find($id);
-            array_push($products, $newProduct);
-
-            $counts[$id] = $product->match_count;
+            array_push($products, $p);
         }
 
-        usort($products, function ($p1, $p2) use (&$counts) { // za sada usort samo radi po tome ko se više puta pojavljuje, TODO
-            return $counts[$p2->id] <=> $counts[$p1->id];
-        });
+        usort($products, fn($p1, $p2) => // za sada usort samo radi po tome ko se više puta pojavljuje, TODO
+                        $p2->match_count <=> $p1->match_count);
 
         return array_values(($limit <= 0) ?
             $products :
