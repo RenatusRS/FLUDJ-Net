@@ -32,7 +32,7 @@ body {
 }
 
 #main {
-    margin: 30px 10% 100px 10%;
+    margin: 30px 15% 100px 15%;
 }
 
 #short-main {
@@ -552,7 +552,6 @@ input[type=range]::-ms-thumb {
     border-radius: 50px;
     cursor: pointer;
     margin-top: 0px;
-    /*Needed to keep the Edge thumb centred*/
 }
 
 input[type=range]:focus::-ms-fill-lower {
@@ -563,13 +562,8 @@ input[type=range]:focus::-ms-fill-upper {
     background: #7e7e7e;
 }
 
-/*TODO: Use one of the selectors from https://stackoverflow.com/a/20541859/7077589 and figure out
-  how to remove the virtical space around the range input in IE*/
 @supports (-ms-ime-align:auto) {
-
-    /* Pre-Chromium Edge only styles, selector taken from hhttps://stackoverflow.com/a/32202953/7077589 */
     input[type=range] {
         margin: 0;
-        /*Edge starts the margin from the thumb, not the track as other browsers do*/
     }
 }

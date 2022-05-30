@@ -3,14 +3,87 @@
 use App\Models\ProductM;
 ?>
 
+<style>
+    img {
+        vertical-align: middle;
+    }
+
+    /* Hide the images by default */
+    .mySlides {
+        display: none;
+    }
+
+    /* Add a pointer when hovering over the thumbnail images */
+    .cursor {
+        cursor: pointer;
+    }
+
+
+
+    .row:after {
+        content: "";
+        display: table;
+        clear: both;
+    }
+
+    /* Six columns side by side */
+    .column {
+        width: 16.66%;
+    }
+
+    /* Add a transparency effect for thumnbail images */
+    .demo {
+        opacity: 0.6;
+        transition: 0.2s;
+
+    }
+
+    .activet,
+    .demo:hover {
+        opacity: 1;
+    }
+</style>
+
 <title><?php echo $product->name; ?></title>
 <div id="main">
-    <h2><?php echo $product->name ?></h2>
+    <h1><?php echo $product->name ?></h1>
     <div style="display: flex; margin-bottom: 0px">
-        <div style="flex: 4;">
-            Slide
+        <div style="flex: 4">
+            <div style="margin-bottom: 10px;">
+                <div class="mySlides">
+                    <video id="video" style="width: 100%; color: yellow" autoplay muted loop controls poster="assets/thumbnail.png">
+                        <source src="<?php echo base_url('uploads/product/' . $product->id . '/video.webm')  ?>" type="video/webm">
+                    </video>
+                </div>
+
+                <div class="mySlides">
+                    <img src="<?php echo base_url('uploads/product/' . $product->id . '/ss1.jpg')  ?>" style="width:100%">
+                </div>
+
+                <div class="mySlides">
+                    <img src="<?php echo base_url('uploads/product/' . $product->id . '/ss2.jpg')  ?>" style="width:100%">
+                </div>
+
+                <div class="mySlides">
+                    <img src="<?php echo base_url('uploads/product/' . $product->id . '/ss3.jpg')  ?>" style="width:100%">
+                </div>
+            </div>
+            <div style="display:flex">
+                <div style="flex:1">
+                    <img class="demo cursor" src="<?php echo base_url('assets/thumbnail.png')  ?>" style="width:100%" onclick="currentSlide(1)">
+                </div>
+                <div style="flex:1">
+                    <img class="demo cursor" src="<?php echo base_url('uploads/product/' . $product->id . '/ss1.jpg')  ?>" style="width:100%" onclick="currentSlide(2)">
+                </div>
+                <div style="flex:1">
+                    <img class="demo cursor" src="<?php echo base_url('uploads/product/' . $product->id . '/ss2.jpg')  ?>" style="width:100%" onclick="currentSlide(3)">
+                </div>
+                <div style="flex:1">
+                    <img class="demo cursor" src="<?php echo base_url('uploads/product/' . $product->id . '/ss3.jpg')  ?>" style="width:100%" onclick="currentSlide(4)">
+                </div>
+            </div>
         </div>
-        <div style="flex: 1; margin-left: 10px; margin-bottom: 15px;">
+        <div style="flex: 1; margin-left: 35px; margin-bottom: 15px; min-width: 180px;">
             <img style="width:100%" src="<?php echo base_url('uploads/product/' . $product->id . '/banner.jpg')  ?>" />
             <br>
             <?php
@@ -44,7 +117,7 @@ use App\Models\ProductM;
                     $rating = $product->rev_sum / $product->rev_cnt;
                     $roundedRating = round($rating);
                 } else {
-                    $rating = "No reviews";
+                    $rating = "No Reviews";
                     $roundedRating = 0;
                 }
 
@@ -112,7 +185,7 @@ use App\Models\ProductM;
                 } ?>
             </div>
         </div>
-        <div style="flex: 1; margin-left: 10px">
+        <div style="flex: 1; margin-left: 35px; min-width: 180px;">
             <div>
                 <?php foreach ($genres as $genre) { ?>
                     <span class="genre"><?php echo $genre ?></span>
@@ -197,3 +270,41 @@ use App\Models\ProductM;
         } ?>
     </div>
 </div>
+
+<script>
+    let video = document.getElementById("video");
+    let slideIndex = 1;
+    showSlides(slideIndex);
+
+    function plusSlides(n) {
+        showSlides(slideIndex += n);
+    }
+
+    function currentSlide(n) {
+        showSlides(slideIndex = n);
+    }
+
+    function showSlides(n) {
+        let i;
+        let slides = document.getElementsByClassName("mySlides");
+        let dots = document.getElementsByClassName("demo");
+
+        if (n != 1) video.pause();
+        else video.play();
+
+        if (n > slides.length) {
+            slideIndex = 1
+        }
+        if (n < 1) {
+            slideIndex = slides.length
+        }
+        for (i = 0; i < slides.length; i++) {
+            slides[i].style.display = "none";
+        }
+        for (i = 0; i < dots.length; i++) {
+            dots[i].className = dots[i].className.replace(" activet", "");
+        }
+        slides[slideIndex - 1].style.display = "block";
+        dots[slideIndex - 1].className += " activet";
+    }
+</script>
