@@ -23,4 +23,19 @@ class UserM extends Model {
 
         return $product_id != null ? (new ProductM())->getBackground($product_id) : null;
     }
+
+    private static function setBan($idUser, $val) {
+        (new UserM())->update($idUser, [
+            'review_ban' => $val
+        ]);
+    }
+    private static function setPrivilege($idUser, $admin) {
+        (new UserM())->update($idUser, [
+            'admin_rights' => $admin
+        ]);
+    }
+    public static function banUser($idUser) { self::setBan($idUser, 1); }
+    public static function unbanUser($idUser) { self::setBan($idUser, 0); }
+    public static function promoteUser($idUser) { self::setPrivilege($idUser, 1); }
+    public static function demoteUser($idUser) { self::setPrivilege($idUser, 0); }
 }

@@ -285,4 +285,9 @@ class Admin extends BaseController {
 
         return redirect()->to(site_url("admin/manageBundle/" . $idBundle));
     }
+
+    public function ban($idUser) { UserM::banUser($idUser); }
+    public function unban($idUser) { UserM::unbanUser($idUser); }
+    public function promote($idUser) { UserM::promoteUser($idUser); }
+    public function demote($idUser) { UserM::demoteUser($idUser); }
 }
