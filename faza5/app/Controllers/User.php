@@ -412,8 +412,19 @@ class User extends BaseController {
         // TODO redirect
     }
 
+    private function validateUser($profile_pic) {
+        $notValid = ($profile_pic && !$this->validate([
+            'profile_pic' => 'uploaded[profile_pic]|ext_in[profile_pic,jpg]|is_image[profile_pic]'
+            ]));
+
+        return !$notValid;
+    }
+
     public function editProfileSubmit() {
         $user = $this->getUser();
+        $uploaded = (is_uploaded_file($_FILES['profile_pic']['tmp_name']));
+        if (!$this->validateUser($uploaded))
+            return $this->show('editProfile', ['errors' => $this->validator->getErrors()]);
 
         if ($this->request->getVar('nickname') != "") {
             (new UserM())
