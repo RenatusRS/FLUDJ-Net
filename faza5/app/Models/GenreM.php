@@ -31,8 +31,9 @@ class GenreM extends Model {
      * ima istih žanrova sa proizvodom za koji se traže slični proizvodi.
      *
      * @param  integer $productId
+     * @param  boolean $filterDLCs ako je truthy, DLC-evi se ne vraćaju u generatoru
      */
-    public function getSimilarProducts($productId) {
+    public function getSimilarProducts($productId, $filterDLCs = true) {
         $this->db = \Config\Database::connect();
         $res = $this->db->query(
             "SELECT t1.id_product, count(*) as match_count
@@ -42,6 +43,8 @@ class GenreM extends Model {
         );
 
         foreach ($res->getResult('object') as $row) {
+            if ($filterDLCs && isset($row->base_game))
+                continue;
             yield $row;
         }
     }

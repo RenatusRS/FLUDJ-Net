@@ -64,7 +64,12 @@ class ProductM extends Model {
     }
 
 
-    public function getAllProducts() {
+    /**
+     * vraća sve objekte proizvoda u generatoru
+     *
+     * @param  boolean $filterDLCs ako je truthy, DLC-evi se ne vraćaju u generatoru
+     */
+    public function getAllProducts($filterDLCs = true) {
         $this->db = \Config\Database::connect();
         $res = $this->db->query(
             "SELECT *
@@ -72,6 +77,8 @@ class ProductM extends Model {
         );
 
         foreach ($res->getResult('object') as $product) {
+            if ($filterDLCs && isset($product->base_game))
+                continue;
             yield $product;
         }
     }

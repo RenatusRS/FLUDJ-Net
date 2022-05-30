@@ -98,8 +98,9 @@ class OwnershipM extends Model {
      *
      * @param  integer $limit
      * @param  integer $offset
+     * @param  boolean $filterDLCs ako je truthy, DLC-evi se ne vraćaju u generatoru
      */
-    public function ownedSum($limit = 1000000, $offset = 0) { // limit koristi magičan broj 1000000 jer nema oznaka za beskonačno
+    public function ownedSum($limit = 1000000, $offset = 0, $filterDLCs = true) { // limit koristi magičan broj 1000000 jer nema oznaka za beskonačno
         $this->db = \Config\Database::connect();
         $res = $this->db->query(
             "SELECT t.cnt, product.*
@@ -116,6 +117,8 @@ class OwnershipM extends Model {
         );
 
         foreach ($res->getResult('object') as $row) {
+            if ($filterDLCs && isset($row->base_game))
+                continue;
             yield $row;
         }
     }
@@ -124,9 +127,10 @@ class OwnershipM extends Model {
      * koliko žanrova koje taj proizvod sadrži korisnik ($idUser) već ima
      *
      *
-     * @param  mixed $idUser
+     * @param  integer $idUser
+     * @param  boolean $filterDLCs ako je truthy, DLC-evi se ne vraćaju u generatoru
      */
-    public function matchingGenres($idUser) {
+    public function matchingGenres($idUser, $filterDLCs = true) {
         $this->db = \Config\Database::connect();
         $res = $this->db->query(
             "SELECT sum(cnt) AS matching, p.*
@@ -147,6 +151,8 @@ class OwnershipM extends Model {
         );
 
         foreach ($res->getResult('object') as $row) {
+            if ($filterDLCs && isset($row->base_game))
+                continue;
             yield $row;
         }
     }
@@ -156,9 +162,10 @@ class OwnershipM extends Model {
      * označavaju id proizvoda, sumu njegovih ocena i koliko puta je ocenjen.
      * ove ocene su samo ocene prijatelja.
      *
-     * @param  mixed $idUser
+     * @param  integer $idUser
+     * @param  boolean $filterDLCs ako je truthy, DLC-evi se ne vraćaju u generatoru
      */
-    public function friendsLikes($idUser) {
+    public function friendsLikes($idUser, $filterDLCs = true) {
         $this->db = \Config\Database::connect();
         $res = $this->db->query(
             "SELECT id_product, sum(rating) AS rev_sum, count(*) AS rev_cnt
@@ -181,6 +188,8 @@ class OwnershipM extends Model {
         );
 
         foreach ($res->getResult('object') as $row) {
+            if ($filterDLCs && isset($row->base_game))
+                continue;
             yield $row;
         }
     }

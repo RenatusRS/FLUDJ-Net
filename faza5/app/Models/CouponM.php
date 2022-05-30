@@ -28,9 +28,10 @@ class CouponM extends Model {
      * dohvata sve kupone za korisnika $idOwner
      * vraća generator kupona
      *
-     * @param  mixed $idOwner
+     * @param  integer $idOwner
+     * @param  boolean $filterDLCs ako je truthy, DLC-evi se ne vraćaju u generatoru
      */
-    public function getAllCoupons($idOwner) {
+    public function getAllCoupons($idOwner, $filterDLCs = true) {
         $query = $this->db->query(
             "SELECT coupon.discount as coupon, product.*
              FROM coupon
@@ -39,6 +40,8 @@ class CouponM extends Model {
         );
 
         foreach ($query->getResult('object') as $row) {
+            if ($filterDLCs && isset($row->base_game))
+                continue;
             yield $row;
         }
     }
