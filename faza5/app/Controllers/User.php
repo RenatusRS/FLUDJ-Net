@@ -426,12 +426,14 @@ class User extends BaseController {
         if (!$this->validateUser($uploaded))
             return $this->show('editProfile', ['errors' => $this->validator->getErrors()]);
 
+            $featured_review= $this->request->getVar('f_review');
+            if($featured_review=="none")$featured_review=null;
         if ($this->request->getVar('nickname') != "") {
             (new UserM())
                 ->set('nickname', $this->request->getVar('nickname'))
                 ->set('real_name', $this->request->getVar('real_name'))
                 ->set('description', $this->request->getVar('description'))
-                ->set('featured_review', $this->request->getVar('f_review'))
+                ->set('featured_review', $featured_review)
                 ->where('id', $user->id)
                 ->update();
 
