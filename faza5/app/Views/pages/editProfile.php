@@ -22,7 +22,7 @@ $us = (new UserM())->where('id', $user->id)->first();
     <form name='friend_button' action="<?= site_url("user/EditProfileSubmit/") ?>" method="POST" enctype="multipart/form-data">
 
         <h3>Avatar</h3>
-        <input type="file" name="profile_pic" required accept="image/jpeg">
+        <input type="file" name="profile_pic" accept="image/jpeg">
         <?php if (!empty($errors['profile_pic'])) echo $errors['profile_pic'] ?>
 
         <h3>Nickname</h3>
