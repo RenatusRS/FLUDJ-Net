@@ -253,7 +253,7 @@ class Admin extends BaseController {
 
         $expDate = date($_POST['expDate']);
 
-        $future_date = (new ProductM())->future_date($_POST['expDate']);
+        $future_date = ProductM::future_date($_POST['expDate']);
 
         if (!($future_date))
             return $this->show('setDiscount', ['productId' => $id, 'message' => "Discount must last at least one day."]);
