@@ -35,19 +35,33 @@ class RelationshipM extends Model {
      * 
      * @return array(user)   
      */
-    public function getFriends($user) {
+    public function getFriends($user_id) {
         $userM = new UserM();
-        $friendRows = (new RelationshipM())->where("status", 1)->groupStart()->where("id_user1", $user->id)->orWhere("id_user2", $user->id)->groupEnd()->findAll();
+        $friendRows = (new RelationshipM())->where("status", 1)->groupStart()->where("id_user1", $user_id)->orWhere("id_user2", $user_id)->groupEnd()->findAll();
 
         $friends = [];
         foreach ($friendRows as $friendRow) {
-            if ($friendRow->id_user1 == $user->id) $friend = $userM->find($friendRow->id_user2);
+            if ($friendRow->id_user1 == $user_id) $friend = $userM->find($friendRow->id_user2);
             else $friend = $userM->find($friendRow->id_user1);
 
             array_push($friends, $friend);
         }
 
         return $friends;
+    }
+
+    public function getFriendsWhoOwn($user_id, $product_id) {
+        $friends = $this->getFriends($user_id);
+
+        $friendsWhoOwn = [];
+        $ownershipM = new OwnershipM();
+
+
+        foreach ($friends as $friend) {
+            if ($ownershipM->owns($friend->id, $product_id)) array_push($friendsWhoOwn, $friend);
+        }
+
+        return $friendsWhoOwn;
     }
 
 

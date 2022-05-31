@@ -1,7 +1,11 @@
 <?php
 
+use App\Models\UserM;
 use App\Models\ProductM;
 ?>
+
+<?= link_tag('search.css') ?>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
 
 <style>
     img {
@@ -46,6 +50,9 @@ use App\Models\ProductM;
 
 <title><?php echo $product->name; ?></title>
 <div id="main">
+    <div style="margin-bottom: 10px;">
+        <select class="search" name="search" style="width: 300px; color: black;"></select>
+    </div>
     <h1><?php echo $product->name ?></h1>
     <div style="display: flex; margin-bottom: 0px">
         <div style="flex: 6">
@@ -90,9 +97,6 @@ use App\Models\ProductM;
                     </div>
                 </a>
             <?php } ?>
-            <div>
-                <h2>Bundles</h2>
-            </div>
             <?php if (count($product_dlc) > 0) { ?>
                 <div>
                     <h2>Downloadable Content</h2>
@@ -105,6 +109,17 @@ use App\Models\ProductM;
                         </a>
                     <?php } ?>
                 </div>
+            <?php } ?>
+            <?php if (count($product_bundle) > 0) { ?>
+                <h2>Bundles</h2>
+                <?php foreach ($product_bundle as $bundle) { ?>
+                    <a href="<?php echo site_url($controller . "/bundle/" . $bundle->id) ?>">
+                        <div class="dlc">
+                            <img style="vertical-align: middle; width: 80px" src="<?php echo base_url('uploads/bundle/' . $bundle->id . '/banner.jpg')  ?>">
+                            <span style="vertical-align: middle;"><?php echo $bundle->name ?></span>
+                        </div>
+                    </a>
+                <?php } ?>
             <?php } ?>
             <div>
                 <h2>About</h2>
@@ -120,12 +135,8 @@ use App\Models\ProductM;
                     <h2>Submit Review</h2>
                     <?php if (isset($product_review)) { ?>
                         <form action="<?= site_url("user/makeReviewSubmit/{$product->id}") ?>" method="POST">
-                            <textarea style="width:100%; min-width: 100%; max-width: 100%;" name="text" id="" cols="30" rows="10"><?php echo $product_review->text ?></textarea>
-                            <div style="text-align: center;">
-                                <?php if (isset($product_review->rating)) : ?>
-                                    Current rating: <?php echo $product_review->rating ?>/5
-                                <?php endif ?>
-                            </div>
+                            <textarea style="width:100%;" name="text" id="" cols="30" rows="10"><?php echo $product_review->text ?></textarea>
+
                             <input type="range" style="width:100%" name="rating" value="<?php echo $product_review->rating ?>" min="1" max="5">
                             <input type="submit" class="btn" value="Create Review">
                         </form>
@@ -181,47 +192,62 @@ use App\Models\ProductM;
                 <br>
                 <span style="font-size: 20px"><?php echo $rating ?></span>
             </div>
-            <div>
+            <div style="margin-top: 20px">
                 <?php foreach ($genres as $genre) { ?>
-                    <span class="genre"><?php echo $genre ?></span>
+                    <span class=" genre"><?php echo $genre ?></span>
                 <?php  } ?>
             </div>
-            <div>
-                Already owned by ? friends:
-            </div>
-            <div style="margin-left: 20px; margin-top: 10px;flex:1;" class="grid-container2">
+            <?php if (count($friends) > 0) { ?>
+                <div>
+                    Already owned by <?php echo count($friends) ?> friends:
+                    <?php $limit = min(6, count($friends));
+                    for ($i = 0; $i < $limit; $i++) { ?>
+                        <a href="<?php echo site_url($controller . "/profile/" . $friends[$i]->id) ?>">
+                            <div style="margin:5px 0">
+                                <img style=" width:25%;vertical-align: middle; max-width: 60px" src="<?php echo (new UserM())->getAvatar($friends[$i]->id) ?>">
+                                <span style="vertical-align: middle"><?php echo $friends[$i]->nickname ?></span>
+                            </div>
+                        </a>
+                    <?php } ?>
+
+                </div>
+            <?php } ?>
+            <div style="margin-top: 10px;flex:1;" class="grid-container2">
                 <div></div>
-                <div>RECOMMENDED</div>
                 <div>MINIMUM</div>
+                <div>RECOMMENDED</div>
 
                 <div>OS</div>
-                <div><?php echo $product->os_rec ?></div>
                 <div><?php echo $product->os_min ?></div>
+                <div><?php echo $product->os_rec ?></div>
 
                 <div>Processor</div>
-                <div><?php echo $product->cpu_rec ?></div>
                 <div><?php echo $product->cpu_min ?></div>
+                <div><?php echo $product->cpu_rec ?></div>
 
                 <div>Graphics</div>
-                <div><?php echo $product->gpu_rec ?></div>
                 <div><?php echo $product->gpu_min ?></div>
+                <div><?php echo $product->gpu_rec ?></div>
 
                 <div>Memory</div>
-                <div><?php echo $product->ram_rec ?> RAM</div>
                 <div><?php echo $product->ram_min ?> RAM</div>
+                <div><?php echo $product->ram_rec ?> RAM</div>
 
                 <div>Storage</div>
-                <div><?php echo $product->mem_rec ?> available space</div>
                 <div><?php echo $product->mem_min ?> available space</div>
+                <div><?php echo $product->mem_rec ?> available space</div>
             </div>
         </div>
     </div>
-    <h2>More Like This</h2>
 
-    <div style="display: flex;">
+    <h2>More Like This</h2>
+    <div style="display: flex;margin:0 -5px 0 -5px">
         <?php for ($i = 0; $i < 4; $i++) { ?>
-            <div style="flex: 1;">
-                <img style="width:100%" src="<?php echo base_url('uploads/product/' . $similar_products[$i]->id . '/banner.jpg') ?>">
+            <div style="flex: 1; margin: 5px;">
+                <a href="<?php echo site_url($controller . "/product/" . $similar_products[$i]->id) ?>">
+                    <img style="width:100%" src="<?php echo base_url('uploads/product/' . $similar_products[$i]->id . '/banner.jpg') ?>">
+                    <h3><?php echo $similar_products[$i]->name ?></h3>
+                </a>
             </div>
         <?php } ?>
     </div>
@@ -232,18 +258,18 @@ use App\Models\ProductM;
                 $name = $review['user']->nickname;
                 $id = $review['user']->id;
         ?>
-
-                <div style="color: rgb(255, 196, 0); background-color:black; border-radius: 5px">
+                <div style="color: rgb(255, 196, 0); background-color:black; border-radius: 5px; margin-bottom: 10px">
                     <div style="display:flex">
                         <div style="flex: 3">
                             <img width=70px class=smooth-border style="padding-right: 13px; border-radius: 5px 0 0 0;vertical-align: middle;" src="<?php echo $review['avatar'] ?>">
                             <span style="vertical-align: middle;"><?php echo $name ?></span>
                         </div>
-                        <div style="flex: 1; text-align: right;">
-                            <span style="vertical-align: middle; font-size: 28px"><?php
-                                                                                    for ($i = 1; $i <= 5; $i++) {
-                                                                                        echo $i <= $review['review']->rating ? "★" : "☆";
-                                                                                    } ?>
+                        <div style="flex: 1;vertical-align: middle; text-align: right;">
+                            <span style="vertical-align: middle;font-size: 28px; margin-right: 5px">
+                                <?php
+                                for ($i = 1; $i <= 5; $i++) {
+                                    echo $i <= $review['review']->rating ? "★" : "☆";
+                                } ?>
                             </span>
                             <?php if (isset($user) && $user->admin_rights != 0) { ?>
                                 <form style="display:inline-block" action="<?= site_url("admin/DeleteReviewAdminSubmit/{$product->id}/{$id}") ?>" method="POST">
@@ -257,8 +283,11 @@ use App\Models\ProductM;
                         <?php echo $review["review"]->text ?>
                     </div>
                     <div style="display:flex">
+                        <form style="flex: 1;" action=" <?= site_url("user/awardUser/$id/") ?>" method="POST">
+                            <input style="border-radius: 0 0 0 5px; margin: 0" type="submit" class="btn" name="action" value="🌟">
+                        </form>
                         <form style="flex: 1;" action=" <?= site_url("user/LikeDislikeSubmit/{$product->id}/{$id}") ?>" method="POST">
-                            <input style="border-radius: 0 0 0 5px; margin: 0" type="submit" class="btn" name="action" value="👍 <?php echo $review["positive"] ?>">
+                            <input style="border-radius: 0; margin: 0" type="submit" class="btn" name="action" value="👍 <?php echo $review["positive"] ?>">
                             <input type="hidden" name="like" value="1">
                         </form>
                         <form style="flex: 1" action="<?= site_url("user/LikeDislikeSubmit/{$product->id}/{$id}") ?>" method="POST">
@@ -308,4 +337,40 @@ use App\Models\ProductM;
         slides[slideIndex - 1].style.display = "block";
         dots[slideIndex - 1].className += " activet";
     }
+</script>
+
+<script>
+    $(function() {
+        $('.search').select2({
+            placeholder: '🔍 Search for a product',
+            ajax: {
+                url: '<?php echo base_url($controller . "/ajaxProductSearch"); ?>',
+                dataType: 'json',
+                delay: 250,
+                processResults: function(data) {
+                    return {
+                        results: data
+                    };
+                },
+                cache: true
+            }
+        });
+
+        $('.search').on('change', function() {
+            //nakon odabira
+            var proizvod = $(".search option:selected").text();
+
+            $.ajax({
+                type: 'GET',
+                url: '<?php echo base_url($controller . "/ajaxProductLoad/" . $controller); ?>',
+                data: {
+                    ime: proizvod
+                },
+                dataType: 'html',
+                success: function(response) {
+                    window.location.href = response;
+                }
+            });
+        })
+    });
 </script>

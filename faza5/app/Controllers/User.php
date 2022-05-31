@@ -79,7 +79,7 @@ class User extends BaseController {
     public function buyProduct($id) {
         $user = $this->getUser();
 
-        $friends =  (new RelationshipM())->getFriends($user);
+        $friends =  (new RelationshipM())->getFriends($user->id);
 
         $productM = new ProductM();
         $product = $productM->find($id);
@@ -114,7 +114,7 @@ class User extends BaseController {
     public function buyProductSubmit($id) {
         $userFrom = $this->getUser();
 
-        $friends = (new RelationshipM())->getFriends($userFrom);
+        $friends = (new RelationshipM())->getFriends($userFrom->id);
 
         $userFor = null;
 
@@ -138,13 +138,13 @@ class User extends BaseController {
         if ($product->base_game != null) {
             $baseGameForDLC = $ownershipM->where('id_user', $user->id)->where('id_product', $product->base_game)->findAll();
             if ($baseGameForDLC == null) {
-                return  $this->show('buyProduct', ['product' => $product, 'friends' => $friends, 'message' => "You don't own the base game."]);
+                return  $this->show('buyProduct', ['product' => $product, 'friends' => $friends, 'message' => "User doesn't own the base product."]);
             }
         }
 
         foreach ($userProducts as $userProduct) {
             if ($userProduct->id_product == $product->id) {
-                return  $this->show('buyProduct', ['product' => $product, 'friends' => $friends, 'message' => 'You already own this product.']);
+                return  $this->show('buyProduct', ['product' => $product, 'friends' => $friends, 'message' => 'User already owns this product.']);
             }
         }
         if ($userFrom->balance <  $productPrice) {
@@ -415,7 +415,7 @@ class User extends BaseController {
     private function validateUser($profile_pic) {
         $notValid = ($profile_pic && !$this->validate([
             'profile_pic' => 'uploaded[profile_pic]|ext_in[profile_pic,jpg]|is_image[profile_pic]'
-            ]));
+        ]));
 
         return !$notValid;
     }

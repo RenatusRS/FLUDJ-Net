@@ -408,8 +408,8 @@ class ProductM extends Model {
             array_push($products, $p);
         }
 
-        usort($products, fn($p1, $p2) => // za sada usort samo radi po tome ko se više puta pojavljuje, TODO
-                        $p2->match_count <=> $p1->match_count);
+        usort($products, fn ($p1, $p2) => // za sada usort samo radi po tome ko se više puta pojavljuje, TODO
+        $p2->match_count <=> $p1->match_count);
 
         return array_values(($limit <= 0) ?
             $products :

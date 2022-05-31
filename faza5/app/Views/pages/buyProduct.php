@@ -29,19 +29,21 @@ use App\Models\ProductM;
   <?php } ?>
   <span class="price-solid"><?php echo number_format($discountedPrice, 2) ?></span>
   <form name='buyProductForm' action="<?= site_url("User/buyProductSubmit/{$product->id}") ?>" method="POST">
-    <div style="background-color: rgb(255, 196, 0); padding: 0 0 0 5px;color:black;margin-top: 10px;">
-      <span>Purchase For</span>
+    <div style="background-color: rgb(255, 196, 0); padding: 0 0 0 5px;color:black;margin-top: 10px;display: flex;">
+      <span style="flex: 1">Buy For</span>
 
-      <select name="buyOptions" style="width:200.18px">
+      <select name="buyOptions" style="flex: 1">
 
         <option value="myself">Myself</option>
-        <option disabled>───────────────────</option>
 
-        <optgroup label="Gift To">
-          <?php foreach ($friends as $friend) { ?>
-            <option value="<?php echo $friend->id ?>"><?php echo $friend->username ?></option>
-          <?php } ?>
-        </optgroup>
+        <?php if (count($friends) > 0) { ?>
+          <option disabled>───────────────────</option>
+          <optgroup label="Gift To">
+            <?php foreach ($friends as $friend) { ?>
+              <option value="<?php echo $friend->id ?>"><?php echo $friend->username ?></option>
+            <?php } ?>
+          </optgroup>
+        <?php } ?>
       </select>
     </div>
     <?php if (isset($message)) echo "$message" ?>

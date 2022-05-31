@@ -90,4 +90,17 @@ class BundleM extends Model {
 
         return $background;
     }
+
+    public function getBundles($product_id) {
+        $bundlesList = (new BundledProductsM())->where('id_product', $product_id)->findAll();
+        $bundles = [];
+
+        foreach ($bundlesList as $bundled) {
+            $bundle = $this->find($bundled->id_bundle);
+
+            $bundles[$bundle->id] = $bundle;
+        }
+
+        return $bundles;
+    }
 }
