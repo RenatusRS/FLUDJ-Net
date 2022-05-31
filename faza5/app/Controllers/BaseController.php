@@ -209,6 +209,9 @@ class BaseController extends Controller {
 
         if (!isset($product)) return redirect()->to(site_url());
 
+        $user = $this->getUser();
+        $userId = $user != null ? $user->id : null;
+
         $userRes = $this->userViewProduct($id);
         $res = [
             'product' => $product,
@@ -220,7 +223,9 @@ class BaseController extends Controller {
             'discount' => $product->discount != 0 ? true : false,
             'background' => $productM->getBackground($id),
             'description' => explode(PHP_EOL, $product->description),
-            'similar_products' => $productM->getSimilarProducts($id, $this->getUser()->id, 0, 4),
+            'similar_products' => $productM->getSimilarProducts($id, $userId, 0, 4),
+            'product_bundle' => (new BundleM)->getBundles($id),
+            'friends' => (new RelationshipM())->getFriendsWhoOwn($userId, $id),
         ];
 
         $this->show('product', array_merge($res, $userRes));
@@ -238,7 +243,7 @@ class BaseController extends Controller {
 
         $this->show('user', [
             'user_profile' => $user,
-            'friends' => (new RelationshipM())->getFriends($user),
+            'friends' => (new RelationshipM())->getFriends($user->id),
             'avatar' => $userM->getAvatar($user->id),
             'background' => $userM->getBackground($user->id),
             'products' => (new OwnershipM())->getOwned($user->id),
@@ -277,25 +282,17 @@ class BaseController extends Controller {
         $heroP = $productM->getHeroProduct($idUser);
         # $heroP->description = explode(".", $heroP->description, 2)[0] . ".";
 
-        $highRatingP =  $productM->getHighRatingProducts($idUser);
-        $topSellerP =   $productM->getTopSellersProducts($idUser);
-        $discountedP =  $productM->getDiscountedProducts($idUser);
-        $discoveryP =   $productM->getDiscoveryProducts($idUser);
-        $couponP =      $productM->getCouponProducts($idUser);
-        $userLikeP =    $productM->getProductsUserLike($idUser);
-        $friendsLikeP = $productM->getProductsUserFriendsLike($idUser);
-
         $this->show(
             'index',
             [
                 'heroP' => $heroP,
-                'highRatingP' => $highRatingP,
-                'topSellerP' => $topSellerP,
-                'discountedP' => $discountedP,
-                'discoveryP' => $discoveryP,
-                'couponP' => $couponP,
-                'userLikeP' => $userLikeP,
-                'friendsLikeP' => $friendsLikeP
+                'highRatingP' => $productM->getHighRatingProducts($idUser),
+                'topSellerP' => $productM->getTopSellersProducts($idUser),
+                'discountedP' => $productM->getDiscountedProducts($idUser),
+                'discoveryP' => $productM->getDiscoveryProducts($idUser),
+                'couponP' => $productM->getCouponProducts($idUser),
+                'userLikeP' => $productM->getProductsUserLike($idUser),
+                'friendsLikeP' => $productM->getProductsUserFriendsLike($idUser),
             ]
         );
     }

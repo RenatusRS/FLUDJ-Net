@@ -429,6 +429,7 @@ textarea {
     grid-template-rows: repeat(3, 1fr);
     grid-column-gap: 0px;
     grid-row-gap: 0px;
+    align-items: center;
 }
 
 .grid-container>div {
@@ -439,10 +440,11 @@ textarea {
 .grid-container2 {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(7, 1fr);
+    grid-template-rows: repeat(6, 1fr);
     grid-column-gap: 5px;
     grid-row-gap: 0px;
-    font-size: 10px;
+    font-size: 14px;
+    align-items: center;
 }
 
 .grid-container2>div {
