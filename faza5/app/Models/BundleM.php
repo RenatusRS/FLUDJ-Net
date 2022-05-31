@@ -17,7 +17,7 @@ class BundleM extends Model {
 
     protected $validationRules = [
         'name' => [
-            'rules'  => 'required|alpha_numeric_space',
+            'rules'  => 'required',
         ]
     ];
 
