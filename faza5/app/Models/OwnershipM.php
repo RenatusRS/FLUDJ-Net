@@ -108,7 +108,7 @@ class OwnershipM extends Model {
 
     /**
      * nalazi sve proizvode koje se pojavljuju najviše puta, odnosno proizvodi
-     * koje najviše ljudi ima
+     * koje najviše ljudi ima (SORTIRANO)
      *
      * $limit ograničava koliko će biti proizvoda u povratnoj vrednosti, po podrazumevanom
      * je "beskonačno" (konačno je ali nedostižan broj) jer ne može drugačije sa mysql
@@ -187,6 +187,7 @@ class OwnershipM extends Model {
      * @param  boolean $filterDLCs ako je truthy, DLC-evi se ne vraćaju u generatoru
      */
     public function friendsLikes($idUser, $filterDLCs = true) {
+        // TODO valjalo bi ovde dodati da se kroz query dohvataju proizvodi a ne samo id-jevi
         $this->db = \Config\Database::connect();
         $res = $this->db->query(
             "SELECT id_product, sum(rating) AS rev_sum, count(*) AS rev_cnt
