@@ -86,14 +86,16 @@ if ($user->id != $user_profile->id) {
     </div>
     <div style="min-width: 885px;">
         <div style="background-color: black;border-radius: 5px;float:left; padding: 0 10px 10px 10px">
-            <div>
-                <h2>Products</h2>
-                <?php if (count($friends) > 0) {
-                    foreach ($friends as $friend) { ?>
-                        <a href="<?php "http://localhost:8080/" . $controller . "/profile/" . $friend->id ?>">
-                            <div style="margin:5px">
-                                <img style=" width:25%;vertical-align: middle" src="<?php echo $userM->getAvatar($friend->id) ?>">
-                                <span style="vertical-align: middle"><?php echo $friend->nickname ?></span>
+            <h2>Products</h2>
+            <div style="display:flex; overflow-y: scroll;">
+
+                <?php if (count($products) > 0) {
+                    foreach ($products as $product) { ?>
+                        <a href="<?php echo site_url($controller . "/product/" . $product['product']->id) ?>">
+                            <div style="margin:5px; flex: 1">
+                                <img style=" width:25%;vertical-align: middle" src="<?php echo base_url('uploads/product/' . $product['product']->id . '/banner.jpg')  ?>">
+                                <br>
+                                <span style="vertical-align: middle"><?php echo $product['product']->name ?></span>
                             </div>
                         </a>
                     <?php }
@@ -114,7 +116,7 @@ if ($user->id != $user_profile->id) {
             <h2>Friends</h2>
             <?php if (count($friends) > 0) {
                 foreach ($friends as $friend) { ?>
-                    <a href="<?php "http://localhost:8080/" . $controller . "/profile/" . $friend->id ?>">
+                    <a href="<?php echo site_url($controller . "/profile/" . $friend->id) ?>">
                         <div style="margin:5px">
                             <img style=" width:25%;vertical-align: middle" src="<?php echo $userM->getAvatar($friend->id) ?>">
                             <span style="vertical-align: middle"><?php echo $friend->nickname ?></span>
