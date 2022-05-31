@@ -253,7 +253,7 @@ class Admin extends BaseController {
 
         $expDate = date($_POST['expDate']);
 
-        $future_date = (new ProductM())->future_date($_POST['expDate']);
+        $future_date = ProductM::future_date($_POST['expDate']);
 
         if (!($future_date))
             return $this->show('setDiscount', ['productId' => $id, 'message' => "Discount must last at least one day."]);
@@ -285,4 +285,9 @@ class Admin extends BaseController {
 
         return redirect()->to(site_url("admin/manageBundle/" . $idBundle));
     }
+
+    public function ban($idUser) { UserM::banUser($idUser); }
+    public function unban($idUser) { UserM::unbanUser($idUser); }
+    public function promote($idUser) { UserM::promoteUser($idUser); }
+    public function demote($idUser) { UserM::demoteUser($idUser); }
 }

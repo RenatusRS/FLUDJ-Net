@@ -26,7 +26,7 @@ class ProductM extends Model {
      * Poredjenje unetog i trenutnog datuma
      * @return bool
      */
-    public function future_date($date) {
+    public static function future_date($date) {
         $curdate = date("Y/m/d");
 
         $date1 = date_create($curdate);
@@ -41,7 +41,7 @@ class ProductM extends Model {
      */
     public function getDiscount($id) {
         $product = $this->find($id);
-        $discountExpired = $this->future_date($product->discount_expire);
+        $discountExpired = self::future_date($product->discount_expire);
 
         if (!$discountExpired) {
             $this->update($id, [
@@ -230,7 +230,7 @@ class ProductM extends Model {
         $results = iterator_to_array($this->getAllProducts());
 
         $results = array_filter($results, function ($product) use (&$idUser) {
-            return ($product->discount > 0) && // FIXME potrebna provera da li je sniženje isteklo
+            return (ProductM::future_date($product->discount_expire)) &&
                 (!isset($idUser) || !((new OwnershipM())->owns($idUser, $product->id)));
         }); // lambda kaže "ako je proizvod na sniženju + ako korisnik nije ulogovan, ili ako ulogovan ne poseduje proizvod, ostavi ga u nizu"
 
