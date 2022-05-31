@@ -273,7 +273,7 @@ class BaseController extends Controller {
     public function ajaxProductLoad($controller) {
         $name = $_GET['ime'];
         $myProduct = (new ProductM())->where('name', $name)->first();
-        return $controller . "/product/" . $myProduct->id;
+        return base_url($controller . "/product/" . $myProduct->id);
     }
 
     protected function frontpage($idUser = null) {

@@ -1,6 +1,6 @@
 <title>Login</title>
 
-<?php if (isset($message)) echo "$message" ?>
+
 <div id="short-main">
     <form name='loginForm' action="<?= site_url("Guest/loginSubmit") ?>" method="POST">
         <span class="input-label">Username</span>
@@ -14,6 +14,7 @@
         <?php
         if (!empty($errors['password'])) echo $errors['password'];
         ?>
+        <?php if (isset($message)) echo "$message" ?>
 
         <input type="submit" class="btn" value="SIGN-IN">
     </form>
