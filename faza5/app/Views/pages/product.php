@@ -179,7 +179,7 @@ use App\Models\ProductM;
             <div class="product-detail-center">
                 <?php
                 if ($product->rev_cnt != 0) {
-                    $rating = $product->rev_sum / $product->rev_cnt;
+                    $rating = number_format($product->rev_sum / $product->rev_cnt, 2);
                     $roundedRating = round($rating);
                 } else {
                     $rating = "No Reviews";
@@ -262,7 +262,7 @@ use App\Models\ProductM;
         ?>
                 <div style="color: rgb(255, 196, 0); background-color:black; border-radius: 5px; margin-bottom: 10px">
                     <div style="display:flex">
-                        <div style="flex: 3">
+                        <div style="flex: 1">
                             <img width=70px class=smooth-border style="padding-right: 13px; border-radius: 5px 0 0 0;vertical-align: middle;" src="<?php echo $review['avatar'] ?>">
                             <span style="vertical-align: middle;"><?php echo $name ?></span>
                         </div>
