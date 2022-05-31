@@ -328,6 +328,12 @@ class BaseController extends Controller {
             ->where("id_poster", $idPoster)
             ->delete();
 
+        (new UserM())
+            ->where('featured_review', $idProduct)
+            ->where('id', $idPoster)
+            ->set(['featured_review' => NULL])
+            ->update();
+
         return redirect()->to(site_url("user/product/{$idProduct}"));
     }
 }
