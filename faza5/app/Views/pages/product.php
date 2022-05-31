@@ -244,10 +244,12 @@ use App\Models\ProductM;
     <div style="display: flex;margin:0 -5px 0 -5px">
         <?php for ($i = 0; $i < 4; $i++) { ?>
             <div style="flex: 1; margin: 5px;">
-                <a href="<?php echo site_url($controller . "/product/" . $similar_products[$i]->id) ?>">
-                    <img style="width:100%" src="<?php echo base_url('uploads/product/' . $similar_products[$i]->id . '/banner.jpg') ?>">
-                    <h3><?php echo $similar_products[$i]->name ?></h3>
-                </a>
+                <?php if (count($similar_products) > $i) { ?>
+                    <a href="<?php echo site_url($controller . "/product/" . $similar_products[$i]->id) ?>">
+                        <img style="width:100%" src="<?php echo base_url('uploads/product/' . $similar_products[$i]->id . '/banner.jpg') ?>">
+                        <h3><?php echo $similar_products[$i]->name ?></h3>
+                    </a>
+                <?php } ?>
             </div>
         <?php } ?>
     </div>
