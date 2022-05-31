@@ -74,6 +74,16 @@ class OwnershipM extends Model {
         return true;
     }
 
+    /**
+     * dohvata ocenu koju je korisnik sa id-jem $idUser ostavio na proizvodu
+     * sa id-jem $idProduct
+     *
+     * ako nije ostavio ocenu, vraća 0
+     *
+     * @param  integer $idUser
+     * @param  integer $idProduct
+     * @return integer
+     */
     public function getRating($idUser, $idProduct) {
         $query = $this
             ->where('id_user', $idUser)

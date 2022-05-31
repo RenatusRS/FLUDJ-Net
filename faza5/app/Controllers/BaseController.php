@@ -296,4 +296,44 @@ class BaseController extends Controller {
             ]
         );
     }
+    /**
+     * briše recenziju korisnika sa id-jem $idPoster za proizvod sa id-jem $idProduct
+     *
+     * @param  integer $idProduct
+     * @param  integer $idPoster
+     * @param  boolean $removeRating ako je truthy, sklanja se i ocena asocirana sa recenzijom
+     */
+    protected function deleteReview($idProduct, $idPoster, $removeRating = false) {
+        $oldRating = (new OwnershipM())->getRating($idPoster, $idProduct);
+        $newRating = ($removeRating || $oldRating == 0) ?
+            NULL :
+            $oldRating;
+
+        (new OwnershipM())
+            ->where('id_product', $idProduct)
+            ->where('id_user', $idPoster)
+            ->set(['rating' => $newRating, 'text' => NULL])
+            ->update();
+
+        if ($removeRating) {
+            $product = (new ProductM())->find($idProduct);
+            (new ProductM())->update($idProduct, [
+                'rev_cnt' => $product->rev_cnt - (($oldRating == 0) ? 0 : 1),
+                'rev_sum' => $product->rev_sum - $oldRating
+            ]);
+        }
+
+        (new ReviewVoteM())
+            ->where('id_product', $idProduct)
+            ->where("id_poster", $idPoster)
+            ->delete();
+
+        (new UserM())
+            ->where('featured_review', $idProduct)
+            ->where('id', $idPoster)
+            ->set(['featured_review' => NULL])
+            ->update();
+
+        return redirect()->to(site_url("user/product/{$idProduct}"));
+    }
 }
