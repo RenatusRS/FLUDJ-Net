@@ -296,4 +296,26 @@ class BaseController extends Controller {
             ]
         );
     }
+    protected function deleteReview($idProduct, $idPoster) {
+        $oldRating = (new OwnershipM())->getRating($idPoster, $idProduct);
+
+        (new OwnershipM())
+            ->where('id_product', $idProduct)
+            ->where('id_user', $idPoster)
+            ->set(['rating' => NULL, 'text' => NULL])
+            ->update();
+
+        $product = (new ProductM())->find($idProduct);
+        (new ProductM())->update($idProduct, [
+            'rev_cnt' => $product->rev_cnt - (($oldRating == 0) ? 0 : 1),
+            'rev_sum' => $product->rev_sum - $oldRating
+        ]);
+
+        (new ReviewVoteM())
+            ->where('id_product', $idProduct)
+            ->where("id_poster", $idPoster)
+            ->delete();
+
+        return redirect()->to(site_url("user/product/{$idProduct}"));
+    }
 }

@@ -225,11 +225,7 @@ class Admin extends BaseController {
     public function DeleteReviewAdminSubmit($id, $posterUsername) {
         $poster = (new UserM())->where('username', $posterUsername)->first();
 
-        (new OwnershipM())->where('id_product', $id)->where('id_user', $poster->id)->set(['rating' => NULL, 'text' => NULL])->update();
-
-        (new ReviewVoteM())->where('id_product', $id)->where("id_poster", $poster->id)->delete();
-
-        return redirect()->to(site_url("user/product/{$id}"));
+        return $this->deleteReview($id, $poster->id);
     }
 
     /** 

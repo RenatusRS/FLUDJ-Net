@@ -346,23 +346,7 @@ class User extends BaseController {
     public function deleteReviewSubmit($id) {
         $user = $this->getUser();
 
-        $oldRating = (new OwnershipM())->getRating($user->id, $id);
-
-        (new OwnershipM())
-            ->where('id_product', $id)
-            ->where('id_user', $user->id)
-            ->set(['rating' => NULL, 'text' => NULL])
-            ->update();
-
-        $product = (new ProductM())->find($id);
-        (new ProductM())->update($id, [
-            'rev_cnt' => $product->rev_cnt - (($oldRating == 0) ? 0 : 1),
-            'rev_sum' => $product->rev_sum - $oldRating
-        ]);
-
-        (new ReviewVoteM())->where('id_product', $id)->where("id_poster", $user->id)->delete();
-
-        return redirect()->to(site_url("user/product/{$id}"));
+        return $this->deleteReview($id, $user->id);
     }
 
     /**
