@@ -41,8 +41,9 @@ $us = (new UserM())->where('id', $user->id)->first();
         <textarea name="description" rows=10 style="width:100%; max-width: 100%; min-width: 100%;"><?php echo $us->description; ?></textarea>
 
         <h3>Featured Review</h3>
-        <?php $os = (new OwnershipM())->where('id_user', $us->id)->findAll(); ?>
+        <?php $os = (new OwnershipM())->where('id_user', $us->id)->where('rating !=', null)->findAll(); ?>
         <select name="f_review" id="feat_reviews">
+        <option value="none">None</option>
             <?php foreach ($os as $osr) {
                 $pr = (new ProductM())->where('id', $osr->id_product)->first(); ?>
                 <option value="<?php echo $pr->id ?>"><?php echo $pr->name ?></option>
