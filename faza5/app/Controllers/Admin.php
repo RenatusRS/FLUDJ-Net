@@ -225,7 +225,7 @@ class Admin extends BaseController {
     public function DeleteReviewAdminSubmit($id, $posterUsername) {
         $poster = (new UserM())->where('username', $posterUsername)->first();
 
-        return $this->deleteReview($id, $poster->id);
+        return $this->deleteReview($id, $poster->id, false);
     }
 
     /** 

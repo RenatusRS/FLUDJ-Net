@@ -346,7 +346,7 @@ class User extends BaseController {
     public function deleteReviewSubmit($id) {
         $user = $this->getUser();
 
-        return $this->deleteReview($id, $user->id);
+        return $this->deleteReview($id, $user->id, true);
     }
 
     /**
