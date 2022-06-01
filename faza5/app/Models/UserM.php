@@ -12,6 +12,15 @@ class UserM extends Model {
 
     protected $allowedFields = ['username', 'password', 'admin_rights', 'balance', 'review_ban', 'avatar', 'description', 'real_name', 'nickname', 'featured_review', 'points', 'overflow'];
 
+    protected $validationRules = [
+        'username' => 'required|is_unique[user.username]'
+    ];
+    protected $validationMessages = [
+        'username' => [
+            'is_unique' => 'Username already exists.'
+        ]
+    ];
+
     public function getAvatar($id) {
         $avatar = $this->getAsset('uploads/user/' . $id . '.jpg');
 
