@@ -77,7 +77,7 @@ use App\Models\ProductM;
             </div>
             <div style="display:flex">
                 <div style="flex:1">
-                    <img class="demo cursor" src="<?php echo base_url('assets/thumbnail.png')  ?>" style="width:100%" onclick="currentSlide(1)">
+                    <img class="demo cursor" src="<?php echo base_url('assets/thumbnail.png')  ?>" style="width:100%; height: 100%;" onclick="currentSlide(1)">
                 </div>
                 <div style="flex:1">
                     <img class="demo cursor" src="<?php echo base_url('uploads/product/' . $product->id . '/ss1.jpg')  ?>" style="width:100%" onclick="currentSlide(2)">
@@ -115,7 +115,7 @@ use App\Models\ProductM;
                 <?php foreach ($product_bundle as $bundle) { ?>
                     <a href="<?php echo site_url($controller . "/bundle/" . $bundle->id) ?>">
                         <div class="dlc">
-                            <img style="vertical-align: middle; width: 80px" src="<?php echo base_url('uploads/bundle/' . $bundle->id . '/banner.jpg')  ?>">
+                            <img style="vertical-align: middle; width: 200px" src="<?php echo base_url('uploads/bundle/' . $bundle->id . '/banner.jpg')  ?>">
                             <span style="vertical-align: middle;"><?php echo $bundle->name ?></span>
                         </div>
                     </a>
@@ -282,7 +282,11 @@ use App\Models\ProductM;
 
                     </div>
                     <div style="padding: 10px;background-color: rgb(64,64,64);text-align: justify;">
-                        <?php echo $review["review"]->text ?>
+                        <?php foreach ($review["review"]->text as $line) { ?>
+                            <p>
+                                <?php echo $line ?>
+                            </p>
+                        <?php } ?>
                     </div>
                     <div style="display:flex">
                         <form style="flex: 1;" action=" <?= site_url("user/awardUser/$id/") ?>" method="POST">

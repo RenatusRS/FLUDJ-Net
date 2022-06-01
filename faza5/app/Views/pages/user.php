@@ -107,7 +107,11 @@ if ($user != null && $user->id != $user_profile->id) {
             </h2>
             <?php if ($user_profile->featured_review != null) { ?>
                 <div style="text-align:justify">
-                    <?php echo $products[$user_profile->featured_review]['review'] ?>
+                    <?php foreach ($products[$user_profile->featured_review]['review'] as $line) { ?>
+                        <p>
+                            <?php echo $line ?>
+                        </p>
+                    <?php } ?>
                 </div>
             <?php } else { ?>
                 <p>This user didn't set his featured review.</p>
