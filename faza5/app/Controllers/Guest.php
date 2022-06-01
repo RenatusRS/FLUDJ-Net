@@ -40,13 +40,17 @@ class Guest extends BaseController {
             return $this->show('registration', ['errors' => $this->validator->getErrors()]);
 
         $userM = new UserM();
-        $userM->save([
+        $data = [
             'username' => $this->request->getVar('username'),
             'password' => $this->request->getVar('password'),
             'nickname' => $this->request->getVar('username'),
             'real_name' => '',
-            'descritpion' => 'User has not set a description.'
-        ]);
+            'description' => 'User has not set a description.'
+        ];
+
+        if ($userM->save($data) === false) {
+            return $this->show('registration', ['errors' => $userM->errors()]);
+        }
 
         $user = $userM->where('username', $this->request->getVar('username'))->first();
         $this->session->set('user_id', $user->id);

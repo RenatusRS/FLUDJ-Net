@@ -28,6 +28,16 @@ class BundledProductsM extends Model {
                                 ->delete();
     }
     /**
+     * otklanja sve proizvode iz kolekcije sa id-jem $idBundle
+     *
+     * @param  integer $idBundle
+     * @return void
+     */
+    public static function clearBundle($idBundle) {
+        (new BundledProductsM())->where('id_bundle', $idBundle)
+                                ->delete();
+    }
+    /**
      * dodaj proizvod sa id-jem $idProduct u kolekciju sa id-jem $idBundle
      *
      * @param  integer $idBundle
