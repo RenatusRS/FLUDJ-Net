@@ -47,11 +47,11 @@
                 <?php } ?>
                 <?php if (!$user_profile->review_ban) { ?>
                     <a href="http://localhost:8080/admin/ban/<?php echo $user_profile->id ?>">
-                        <div><i class="bi bi-slash-circle"></i></i><br />Review Ban</div>
+                        <div><i class="bi bi-slash-circle"></i><br />Review Ban</div>
                     </a>
                 <?php } else { ?>
                     <a href="http://localhost:8080/admin/unban/<?php echo $user_profile->id ?>">
-                        <div><i class="bi bi-slash-circle"></i></i><br />Review Unban</div>
+                        <div><i class="bi bi-circle"></i><br />Review Unban</div>
                     </a>
                 <?php } ?>
             <?php } ?>

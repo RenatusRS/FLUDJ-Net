@@ -72,15 +72,15 @@ if (!isset($bundle)) {
                 <br>
                 <?php if ($bundle->id == -1) : ?>
                     <div style='color:red;'>
-                        Make bundle first then change its contents.
+                        Create the bundle first then change its contents.
                     </div>
                 <?php else : ?>
                     <?php foreach ($inBundle as $product) : ?>
-                        <input type="checkbox" name="inBundle[]" value="<?php echo "{$product->id}" ?>" checked><?php echo "{$product->name}" ?>
+                        <label><input type="checkbox" name="inBundle[]" value="<?php echo "{$product->id}" ?>" checked><?php echo "{$product->name}" ?></label>
                         </br>
                     <?php endforeach ?>
                     <?php foreach ($notInBundle as $product) : ?>
-                        <input type="checkbox" name="inBundle[]" value="<?php echo "{$product->id}" ?>"><?php echo "{$product->name}" ?>
+                        <label><input type="checkbox" name="inBundle[]" value="<?php echo "{$product->id}" ?>"><?php echo "{$product->name}" ?></label>
                         </br>
                     <?php endforeach ?>
                 <?php endif ?>

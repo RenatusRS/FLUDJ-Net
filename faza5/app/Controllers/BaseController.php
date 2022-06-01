@@ -190,7 +190,7 @@ class BaseController extends Controller {
         echo view('template/essential', $data);
         echo view('template/header', $data);
         echo view("pages/$page", $data);
-        echo view('template/footer', $data);
+        // echo view('template/footer', $data);
     }
 
     protected function getUser() {
