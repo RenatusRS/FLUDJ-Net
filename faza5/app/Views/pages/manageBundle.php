@@ -66,40 +66,25 @@ if (!isset($bundle)) {
         <input type="hidden" name="id" value="<?php echo $bundle->id ?>" />
         <div style="display:flex;flex-wrap: wrap;">
             <div style="flex:50%; padding: 0 200px">
-                <h3>Remove products from bundle:</h3>
+                <h3 style="display: inline-block; margin: 0;">Change bundle contents:
+                    <input type="submit" value="Apply bundle content change" <?php if ($bundle->id == -1) echo "hidden" ?>>
+                </h3>
+                <br>
                 <?php if ($bundle->id == -1) : ?>
                     <div style='color:red;'>
-                        Make bundle first then remove products.
+                        Make bundle first then change its contents.
                     </div>
-                <?php elseif (count($inBundle) != 0) : ?>
+                <?php else : ?>
                     <?php foreach ($inBundle as $product) : ?>
+                        <input type="checkbox" name="inBundle[]" value="<?php echo "{$product->id}" ?>" checked><?php echo "{$product->name}" ?>
+                        </br>
+                    <?php endforeach ?>
+                    <?php foreach ($notInBundle as $product) : ?>
                         <input type="checkbox" name="inBundle[]" value="<?php echo "{$product->id}" ?>"><?php echo "{$product->name}" ?>
                         </br>
                     <?php endforeach ?>
-                <?php else : ?>
-                    <div style='color:red;'>
-                        Bundle is empty.
-                    </div>
                 <?php endif ?>
             </div>
-            <div style="flex:50%; padding: 0 200px">
-                <h3>Add products to bundle:</h3>
-                <?php if ($bundle->id == -1) : ?>
-                    <div style='color:red;'>
-                        Make bundle first then add products.
-                    </div>
-                <?php elseif (count($notInBundle) != 0) : ?>
-                    <?php foreach ($notInBundle as $product) : ?>
-                        <input type="checkbox" name="notInBundle[]" value="<?php echo "{$product->id}" ?>"><?php echo "{$product->name}" ?>
-                        </br>
-                    <?php endforeach ?>
-                <?php else : ?>
-                    <div style='color:red;'>
-                        Bundle has every product??????? easter egg
-                    </div>
-                <?php endif ?>
-            </div>
-            <input type="submit" value="Apply bundle content change" class="btn" <?php if ($bundle->id == -1) echo "hidden" ?>>
         </div>
     </form>
 

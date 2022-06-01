@@ -271,12 +271,11 @@ class Admin extends BaseController {
     public function updateBundleProducts() {
         $idBundle = $this->request->getVar('id');
 
-        $in =  $this->request->getVar('inBundle')    ?? [];
-        $out = $this->request->getVar('notInBundle') ?? [];
+        BundledProductsM::clearBundle($idBundle);
+
+        $in =  $this->request->getVar('inBundle') ?? [];
 
         foreach ($in as $idProduct)
-            BundledProductsM::removeFromBundle($idBundle, $idProduct);
-        foreach ($out as $idProduct)
             BundledProductsM::addToBundle($idBundle, $idProduct);
 
         return redirect()->to(site_url("admin/manageBundle/" . $idBundle));
