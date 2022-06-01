@@ -44,6 +44,7 @@ class OwnershipM extends Model {
 
         foreach ($ownedList as $own) {
             $product = $productM->find($own->id_product);
+            $own->text = explode(PHP_EOL, $own->text);
 
             $owned[$own->id_product] = [
                 'product' => $product,

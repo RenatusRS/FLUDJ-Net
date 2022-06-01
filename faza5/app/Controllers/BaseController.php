@@ -126,6 +126,7 @@ class BaseController extends Controller {
 
         foreach ($posterScore as $poster => $score) {
             $review = $ownershipM->where('id_product', $id)->where('id_user', $poster)->first();
+            $review->text = explode(PHP_EOL, $review->text);
             $user = $userM->find($poster);
             array_push($reviews, ["user" => $user, "avatar" => $userM->getAvatar($user->id), "review" => $review, "positive" => $posterPosNeg[$poster]["positive"], "negative" => $posterPosNeg[$poster]["negative"]]);
         }

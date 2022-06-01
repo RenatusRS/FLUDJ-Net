@@ -34,8 +34,20 @@ class UserM extends Model {
             'admin_rights' => $admin
         ]);
     }
-    public static function banUser($idUser) { self::setBan($idUser, 1); }
-    public static function unbanUser($idUser) { self::setBan($idUser, 0); }
-    public static function promoteUser($idUser) { self::setPrivilege($idUser, 1); }
-    public static function demoteUser($idUser) { self::setPrivilege($idUser, 0); }
+
+    public static function banUser($idUser) {
+        self::setBan($idUser, 1);
+    }
+
+    public static function unbanUser($idUser) {
+        self::setBan($idUser, 0);
+    }
+
+    public static function promoteUser($idUser) {
+        self::setPrivilege($idUser, 1);
+    }
+
+    public static function demoteUser($idUser) {
+        self::setPrivilege($idUser, 0);
+    }
 }
