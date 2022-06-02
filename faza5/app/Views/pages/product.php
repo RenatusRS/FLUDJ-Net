@@ -8,10 +8,6 @@ use App\Models\ProductM;
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
 
 <style>
-    img {
-        vertical-align: middle;
-    }
-
     /* Hide the images by default */
     .mySlides {
         display: none;
@@ -48,7 +44,7 @@ use App\Models\ProductM;
     }
 </style>
 
-<title><?php echo $product->name; ?></title>
+
 <div id="main">
     <div style="margin-bottom: 10px;">
         <select class="search" name="search" style="width: 300px; color: black;"></select>
@@ -151,7 +147,7 @@ use App\Models\ProductM;
             </div>
         </div>
         <div style="flex: 2; margin-left: 35px; margin-bottom: 15px; min-width: 180px;">
-            <img style="width:100%" src="<?php echo base_url('uploads/product/' . $product->id . '/banner.jpg')  ?>" />
+            <img style="width:100%; margin-bottom: 15px;" src="<?php echo base_url('uploads/product/' . $product->id . '/banner.jpg')  ?>" />
             <br>
             <?php
 
@@ -161,9 +157,9 @@ use App\Models\ProductM;
             $discountedPrice = $productM->getDiscountedPrice($product->id);
 
             if ($discount != 0) { ?>
-                <span class="discount"><?php echo $discount ?>%</span> <span class="price-original"><?php echo number_format($product->price, 2) ?></span>
+                <span class="discount"><?php echo $discount ?>%</span> <span class="price-original">$<?php echo number_format($product->price, 2) ?></span>
             <?php } ?>
-            <span class="price"><?php echo number_format($discountedPrice, 2) ?></span>
+            <span class="price">$<?php echo number_format($discountedPrice, 2) ?></span>
             <form action="<?= site_url("user/buyproduct/{$product->id}") ?>" method="POST">
                 <input type="submit" class="btn" value="BUY">
             </form>
@@ -260,14 +256,16 @@ use App\Models\ProductM;
                 $name = $review['user']->nickname;
                 $id = $review['user']->id;
         ?>
-                <div style="color: rgb(255, 196, 0); background-color:black; border-radius: 5px; margin-bottom: 10px">
-                    <div style="display:flex">
-                        <div style="flex: 1">
-                            <img width=70px class=smooth-border style="padding-right: 13px; border-radius: 5px 0 0 0;vertical-align: middle;" src="<?php echo $review['avatar'] ?>">
-                            <span style="vertical-align: middle;"><?php echo $name ?></span>
-                        </div>
-                        <div style="flex: 1;vertical-align: middle; text-align: right;">
-                            <span style="vertical-align: middle;font-size: 28px; margin-right: 5px">
+                <div style="color: rgb(255, 196, 0); background-color:rgb(0,0,0,0.6); border-radius: 5px; margin-bottom: 10px">
+                    <div style="display:flex; align-items: center;">
+                        <a href="<?php echo site_url($controller . "/profile/" . $id) ?>">
+                            <div style="flex: 1">
+                                <img width=70px class=smooth-border style="padding-right: 13px; border-radius: 5px 0 0 0;vertical-align: middle;" src="<?php echo $review['avatar'] ?>">
+                                <span><?php echo $name ?></span>
+                            </div>
+                        </a>
+                        <div style="flex: 1; text-align: right;">
+                            <span style="font-size: 28px; margin-right: 5px">
                                 <?php
                                 for ($i = 1; $i <= 5; $i++) {
                                     echo $i <= $review['review']->rating ? "★" : "☆";
@@ -275,13 +273,13 @@ use App\Models\ProductM;
                             </span>
                             <?php if (isset($user) && $user->admin_rights != 0) { ?>
                                 <form style="display:inline-block" action="<?= site_url("admin/DeleteReviewAdminSubmit/{$product->id}/{$id}") ?>" method="POST">
-                                    <input style="width: 57px; height: 57px;margin: 0; vertical-align: middle; border-radius: 0 5px 0 0" type="submit" class="btn" name="action" value="🗑️">
+                                    <input style="width: 57px; height: 57px;margin: 0;border-radius: 0 5px 0 0" type="submit" class="btn" name="action" value="🗑️">
                                 </form>
                             <?php } ?>
                         </div>
 
                     </div>
-                    <div style="padding: 10px;background-color: rgb(64,64,64);text-align: justify;">
+                    <div style="padding: 10px;background-color: rgb(64,64,64, 0.6);text-align: justify;">
                         <?php foreach ($review["review"]->text as $line) { ?>
                             <p>
                                 <?php echo $line ?>
@@ -328,18 +326,14 @@ use App\Models\ProductM;
         if (n != 1) video.pause();
         else video.play();
 
-        if (n > slides.length) {
-            slideIndex = 1
-        }
-        if (n < 1) {
-            slideIndex = slides.length
-        }
-        for (i = 0; i < slides.length; i++) {
-            slides[i].style.display = "none";
-        }
-        for (i = 0; i < dots.length; i++) {
-            dots[i].className = dots[i].className.replace(" activet", "");
-        }
+        if (n > slides.length) slideIndex = 1;
+
+        if (n < 1) slideIndex = slides.length;
+
+        for (i = 0; i < slides.length; i++) slides[i].style.display = "none";
+
+        for (i = 0; i < dots.length; i++) dots[i].className = dots[i].className.replace(" activet", "");
+
         slides[slideIndex - 1].style.display = "block";
         dots[slideIndex - 1].className += " activet";
     }

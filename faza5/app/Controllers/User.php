@@ -45,7 +45,7 @@ class User extends BaseController {
      * @return void   
      */
     public function addFunds() {
-        $this->show('addFunds');
+        $this->show('addFunds', ['title' => 'Add Funds']);
     }
 
     /**
@@ -84,7 +84,7 @@ class User extends BaseController {
         $productM = new ProductM();
         $product = $productM->find($id);
 
-        $this->show('buyProduct', ['product' => $product, 'friends' => $friends]);
+        $this->show('buyProduct', ['product' => $product, 'friends' => $friends, 'title' => "Buy: {$product->name}"]);
     }
 
     /**
@@ -138,17 +138,32 @@ class User extends BaseController {
         if ($product->base_game != null) {
             $baseGameForDLC = $ownershipM->where('id_user', $user->id)->where('id_product', $product->base_game)->findAll();
             if ($baseGameForDLC == null) {
-                return  $this->show('buyProduct', ['product' => $product, 'friends' => $friends, 'message' => "User doesn't own the base product."]);
+                return  $this->show('buyProduct', [
+                    'product' => $product,
+                    'friends' => $friends,
+                    'message' => "User doesn't own the base product.",
+                    'title' => 'Buy Product'
+                ]);
             }
         }
 
         foreach ($userProducts as $userProduct) {
             if ($userProduct->id_product == $product->id) {
-                return  $this->show('buyProduct', ['product' => $product, 'friends' => $friends, 'message' => 'User already owns this product.']);
+                return  $this->show('buyProduct', [
+                    'product' => $product,
+                    'friends' => $friends,
+                    'message' => 'User already owns this product.',
+                    'title' => 'Buy Product'
+                ]);
             }
         }
         if ($userFrom->balance <  $productPrice) {
-            return  $this->show('buyProduct', ['product' => $product, 'friends' => $friends, 'message' => 'You have insufficient funds.']);
+            return  $this->show('buyProduct', [
+                'product' => $product,
+                'friends' => $friends,
+                'message' => 'You have insufficient funds.',
+                'title' => 'Buy Product'
+            ]);
         }
 
         $userFrom->balance -=  $productPrice;
@@ -176,7 +191,7 @@ class User extends BaseController {
      * @return void
      */
     public function editProfile() {
-        $this->show('editProfile.php');
+        $this->show('editProfile.php', ['title' => 'Edit Profile']);
     }
 
     /**
@@ -191,7 +206,11 @@ class User extends BaseController {
         $requesters = $relationshipM->getIncoming($user);
         $requestedTo = $relationshipM->getSent($user);
 
-        $this->show('friendRequests.php', ['requesters' => $requesters, 'requestedTo' => $requestedTo]);
+        $this->show('friendRequests.php', [
+            'requesters' => $requesters,
+            'requestedTo' => $requestedTo,
+            'title' => "Friend Requests"
+        ]);
     }
 
     /**
@@ -268,7 +287,6 @@ class User extends BaseController {
     public function awardUserSubmit($idUser) {
         $user = $this->getUser();
         $userM = new UserM();
-        $couponM = new CouponM();
 
         $receiver = $userM->find($idUser);
         $sender = $userM->find($user->id);
@@ -290,7 +308,7 @@ class User extends BaseController {
         $data = [
             'currentPoints' => $sender->points - $pointsAwarded,
             'pointsAwarded' => $pointsAwarded,
-            'awardeePoints' => $overflow
+            'awardeePoints' => $overflow,
         ];
 
         while ($receiverPoints >= COUPON_POINTS) {
@@ -298,7 +316,7 @@ class User extends BaseController {
             $receiverPoints -= COUPON_POINTS;
         }
 
-        $this->show('awardedSuccess', $data);
+        redirect()->to(site_url("user/profile/{$idUser}"));
     }
 
     /**
@@ -329,14 +347,6 @@ class User extends BaseController {
         return base_url("user/profile/" . $myUsr->id);
     }
 
-    /**
-     * Prikaz stranice za pretragu proizvoda
-     * 
-     * @return void
-     */
-    public function searchProduct() {
-        $this->show('searchProduct.php');
-    }
 
     /** 
      * Procesiranje brisanja recenzije
@@ -369,7 +379,12 @@ class User extends BaseController {
             'final'    => $this->request->getVar('final'),
         ];
 
-        $this->show('buyBundle', ['bundle' => $bundle, 'price' => $price]);
+        $this->show('buyBundle', [
+            'bundle' => $bundle,
+            'price' => $price,
+            'title' =>
+            "Buy {$bundle->name}"
+        ]);
     }
 
     public function buyBundleSubmit($id) {
@@ -393,7 +408,7 @@ class User extends BaseController {
 
         CouponM::awardPoints($user->id, $finalPrice);
 
-        // TODO redirect
+        return redirect()->to(site_url("user/bundle/{$id}"));
     }
 
     private function validateUser($profile_pic) {
@@ -425,5 +440,14 @@ class User extends BaseController {
         }
 
         return redirect()->to(site_url("user/profile/"));
+    }
+
+    public function coupons() {
+        $user = $this->getUser();
+
+        $this->show('coupons', [
+            'coupons' => iterator_to_array((new CouponM())->getAllCoupons($user->id)),
+            'title' => "Coupons"
+        ]);
     }
 }

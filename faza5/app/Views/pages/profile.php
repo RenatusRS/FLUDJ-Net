@@ -8,13 +8,9 @@ Ako je tudji profil - mogucnost dodavanja, uklanjanja, odbijanja i prihvatanja z
 
 -->
 
-<title><?php echo $user_profile->nickname ?></title>
-
 <?php
 ob_start();
 
-use App\Models\OwnershipM;
-use App\Models\ProductM;
 use App\Models\UserM;
 use App\Models\RelationshipM;
 
@@ -119,7 +115,7 @@ if ($user != null && $user->id != $user_profile->id) {
         </div>
         <div style="flex:1;background-color:rgb(0,0,0,0.6);border-radius: 5px;padding: 0 10px 10px 10px; margin-left: 15px">
             <h2>Friends</h2>
-            <div style="max-height: 700px; overflow-y: auto">
+            <div style="max-height: 550px; overflow-y: auto">
 
                 <?php if (count($friends) > 0) {
                     foreach ($friends as $friend) { ?>

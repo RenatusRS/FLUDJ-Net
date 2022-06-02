@@ -31,6 +31,7 @@ class Admin extends BaseController {
         $data['product'] = $product;
         $data['genres']  = $genres;
         $data['background'] = $background;
+        $data['title'] = 'Manage Product';
 
         $this->show('manageProduct', $data);
     }
@@ -106,7 +107,7 @@ class Admin extends BaseController {
 
         // ažuriraj bazu
         if ($productM->save($data) === false) {
-            return $this->show('manageProduct', ['errors' => $productM->errors()]);
+            return $this->show('manageProduct', ['errors' => $productM->errors(), 'title' => 'Manage Product']);
         }
 
         if ($id != -1) // otklanjamo stare žanrove iz baze jer će biti zamenjeni novim
@@ -162,6 +163,7 @@ class Admin extends BaseController {
         $data['bundle'] = $bundle;
         $data['inBundle'] = $inBundle;
         $data['notInBundle'] = $notInBundle;
+        $data['title'] = 'Manage Bundle';
 
         $this->show('manageBundle', $data);
     }
@@ -202,9 +204,10 @@ class Admin extends BaseController {
         ];
 
         $bundleM = new BundleM();
+
         if ($bundleM->save($data) === false) { // ako čuvanje u bazu nije prošlo validaciju
             // TODO
-            return $this->show('manageBundle', ['errors' => $bundleM->errors()]);
+            return $this->show('manageBundle', ['errors' => $bundleM->errors(), 'title' => "Manage Bundle"]);
         }
 
         if ($id == -1)
@@ -214,7 +217,7 @@ class Admin extends BaseController {
 
         $this->upload($targetDir, 'banner', 'banner');
 
-        return redirect()->to(site_url("user/bundle/" . $id));
+        return redirect()->to(site_url("user/managebundle/" . $id));
     }
 
     /** 
@@ -234,7 +237,7 @@ class Admin extends BaseController {
      * @return void
      */
     public function setDiscount($id) {
-        $this->show('setDiscount', ["productId" => $id]);
+        $this->show('setDiscount', ["productId" => $id, 'title' => "Set Discount"]);
     }
 
     /** 

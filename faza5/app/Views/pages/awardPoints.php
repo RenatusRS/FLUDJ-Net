@@ -1,6 +1,3 @@
-<title>Award user <?php echo $awardee->nickname ?></title>
-
-
 <form name='awardUser' action="<?= site_url("User/awardUserSubmit/{$awardee->id}") ?>" method="POST">
     <br><br>
 

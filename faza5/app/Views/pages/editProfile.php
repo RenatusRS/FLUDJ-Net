@@ -7,8 +7,6 @@ Opis: Stranica za podesavanje podataka na svom profilu
 
 -->
 
-<title>Edit Profile</title>
-
 <?php
 
 use App\Models\OwnershipM;
@@ -43,7 +41,7 @@ $us = (new UserM())->where('id', $user->id)->first();
         <h3>Featured Review</h3>
         <?php $os = (new OwnershipM())->where('id_user', $us->id)->where('rating !=', null)->findAll(); ?>
         <select name="f_review" id="feat_reviews">
-        <option value="none">None</option>
+            <option value="none">None</option>
             <?php foreach ($os as $osr) {
                 $pr = (new ProductM())->where('id', $osr->id_product)->first(); ?>
                 <option value="<?php echo $pr->id ?>"><?php echo $pr->name ?></option>

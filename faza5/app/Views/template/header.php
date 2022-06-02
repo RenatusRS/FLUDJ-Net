@@ -1,4 +1,6 @@
 <header>
+    <title><?php echo $title; ?></title>
+
     <ul>
         <li><a href="http://localhost:8080/" id="logo"><img src=http://localhost:8080/assets/logo.png height=40px></a></li>
         <li><a href="http://localhost:8080/">STORE</a></li>
