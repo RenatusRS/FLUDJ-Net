@@ -363,11 +363,8 @@ class User extends BaseController {
             return redirect()->to(site_url());
         }
 
-        $price = [
-            'price'    => $this->request->getVar('price'),
-            'discount' => $this->request->getVar('discount'),
-            'final'    => $this->request->getVar('final'),
-        ];
+        $products = iterator_to_array((new BundleM())->bundleProducts($id));
+        $price = (new BundleM())->bundlePrice($products, $bundle->discount, $user->id);
 
         $this->show('buyBundle', ['bundle' => $bundle, 'price' => $price]);
     }
