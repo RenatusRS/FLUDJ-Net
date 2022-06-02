@@ -74,7 +74,7 @@ if ($user != null && $user->id != $user_profile->id) {
                 <form name='friend_button' action="<?= site_url("user/profile/" . $user_profile->id); ?>" method="POST" style="margin: 0">
                     <input type="submit" name="frnd_btn" class="btn" value="<?= $buttonName ?>" style="margin:0px;border-radius: 0 5px 0 0; height: 50%;">
                 </form>
-                <a href="http://localhost:8080/user/reward/<?php echo $user_profile->id ?>"><input type="button" class="btn" value="Reward User" style="margin:0px;border-radius: 0 0 5px 0; height: 50%;"></a>
+                <a href="http://localhost:8080/user/awardUser/<?php echo $user_profile->id ?>"><input type="button" class="btn" value="Reward User" style="margin:0px;border-radius: 0 0 5px 0; height: 50%;"></a>
             <?php } ?>
         </div>
     </div>

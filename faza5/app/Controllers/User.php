@@ -281,7 +281,7 @@ class User extends BaseController {
         $user = $this->getUser();
         $awardee = (new UserM())->find($idUser);
 
-        $this->show('awardPoints', ['currentUser' => $user, 'awardee' => $awardee]);
+        $this->show('awardPoints', ['currentUser' => $user, 'awardee' => $awardee, 'title' => 'Award User']);
     }
 
     public function awardUserSubmit($idUser) {
