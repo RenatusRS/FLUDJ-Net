@@ -172,11 +172,14 @@ class BaseController extends Controller {
             -1;
         $result = (new BundleM())->bundlePrice($products, $bundle->discount, $id);
 
+        $bundle->description = explode(PHP_EOL, $bundle->description);
+
         return $this->show('bundle', [
             'bundle' => $bundle,
             'bundledProducts' => $products,
             'price' => $result,
             'background' => $background,
+            'title' => "{$bundle->name}"
         ]);
     }
 
@@ -227,6 +230,7 @@ class BaseController extends Controller {
             'similar_products' => $productM->getSimilarProducts($id, $userId, 0, 4),
             'product_bundle' => (new BundleM)->getBundles($id),
             'friends' => (new RelationshipM())->getFriendsWhoOwn($userId, $id),
+            'title' => "{$product->name}"
         ];
 
         $this->show('product', array_merge($res, $userRes));
@@ -242,12 +246,13 @@ class BaseController extends Controller {
 
         if ($user == null) return $this->show('registration');
 
-        $this->show('user', [
+        $this->show('profile', [
             'user_profile' => $user,
             'friends' => (new RelationshipM())->getFriends($user->id),
             'avatar' => $userM->getAvatar($user->id),
             'background' => $userM->getBackground($user->id),
             'products' => (new OwnershipM())->getOwned($user->id),
+            'title' => $user->nickname,
         ]);
     }
 
@@ -281,7 +286,8 @@ class BaseController extends Controller {
         $productM = new ProductM();
 
         $heroP = $productM->getHeroProduct($idUser);
-        # $heroP->description = explode(".", $heroP->description, 2)[0] . ".";
+        $heroP->description = preg_replace('/([^?!.]*.).*/', '\\1', $heroP->description);
+        $heroP->description = strlen($heroP->description) > 175 ? substr($heroP->description, 0, 175) . "..." : $heroP->description;
 
         $this->show(
             'index',
@@ -294,6 +300,8 @@ class BaseController extends Controller {
                 'couponP' => $productM->getCouponProducts($idUser),
                 'userLikeP' => $productM->getProductsUserLike($idUser),
                 'friendsLikeP' => $productM->getProductsUserFriendsLike($idUser),
+                'title' => "FLUDJ Net",
+                'background' => $productM->getBackground($heroP->id)
             ]
         );
     }

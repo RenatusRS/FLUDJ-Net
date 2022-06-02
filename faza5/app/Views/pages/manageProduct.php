@@ -1,9 +1,3 @@
-<title>
-    <?php
-    echo isset($product) ? "EDIT: " . $product->name : "Add New Product";
-    ?>
-</title>
-
 <?php
 if (!isset($product)) {
     $product = (object)[
@@ -53,7 +47,7 @@ if (!isset($product)) {
             Genres (space separated)
             <input type="text" name="genres" placeholder="Action Puzzle Rythm" value="<?php if (isset($genres)) echo implode(' ', $genres) ?>" class=full>
 
-            Price €
+            Price $
             <input type="text" name="price" placeholder="29.99" value="<?php echo $product->price ?>" class=full>
 
         </div>

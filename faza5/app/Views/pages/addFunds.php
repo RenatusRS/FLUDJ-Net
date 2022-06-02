@@ -8,8 +8,6 @@ Autori:
 
 -->
 
-<title>Add Funds</title>
-
 <div id=short-main>
   <form name='addFundsForm' action="<?= site_url("User/addFundsSubmit/") ?>" method="POST">
     <span class="input-label">Add Funds</span>

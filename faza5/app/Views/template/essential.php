@@ -24,6 +24,7 @@
     }
 </style>
 
+
 <script type="text/javascript">
     $(document).ready(function() {
         // Images loaded is zero because we're going to process a new set of images.
@@ -42,13 +43,17 @@
         // loaded, call the allImagesLoaded() function.
         function imageLoaded() {
             imagesLoaded++;
+
             if (imagesLoaded == totalImages) {
                 allImagesLoaded();
             }
         }
 
         function allImagesLoaded() {
-            $('body').show();
+            $("#loading").hide();
+            $('#main').show();
+            $('#middle-main').show();
+            $('#short-main').show();
         }
     });
 </script>

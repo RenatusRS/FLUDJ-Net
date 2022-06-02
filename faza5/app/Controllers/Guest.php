@@ -14,7 +14,7 @@ class Guest extends BaseController {
     }
 
     public function login($message = null) {
-        $this->show('login', ['message' => $message]);
+        $this->show('login', ['message' => $message, 'title' => "Login"]);
     }
 
     public function loginSubmit() {
@@ -32,12 +32,12 @@ class Guest extends BaseController {
     }
 
     public function registration() {
-        $this->show('registration');
+        $this->show('registration', ['title' => 'Registration']);
     }
 
     public function registrationSubmit() {
         if (!$this->validate(['username' => 'required', 'password' => 'required']))
-            return $this->show('registration', ['errors' => $this->validator->getErrors()]);
+            return $this->show('registration', ['errors' => $this->validator->getErrors(), 'title' => 'Registration']);
 
         $userM = new UserM();
         $data = [
