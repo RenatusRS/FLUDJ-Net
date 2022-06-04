@@ -44,7 +44,9 @@ use App\Models\ProductM;
         <?php } ?>
       </select>
     </div>
-    <?php if (isset($message)) echo "$message" ?>
+    <?php if (isset($message)) { ?>
+      <span id="msg"><?php echo $message ?></span>
+    <?php } ?>
     <input type="submit" class="btn" value="Confirm Purchase">
   </form>
 </div>
