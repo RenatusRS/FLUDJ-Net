@@ -1,3 +1,14 @@
+<!--
+Autori:
+	Uros Loncar 2019/0691
+	Fedja Mladenovic 2019/0613
+	
+Opis: Stranica za izmenu ili dodavanje produkta
+
+@version 1.1
+
+-->
+
 <?php
 if (!isset($product)) {
     $product = (object)[

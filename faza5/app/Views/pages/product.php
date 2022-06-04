@@ -1,3 +1,15 @@
+<!--
+Autori:
+    Uros Loncar 2019/0691
+	Djordje Stanojevic 2019/0288
+    Luka Cvijan 2019/0154
+	
+Opis: Stranica za prikaz produkta
+
+@version 1.1
+
+-->
+
 <?php
 
 use App\Models\UserM;
@@ -8,12 +20,10 @@ use App\Models\ProductM;
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
 
 <style>
-    /* Add a pointer when hovering over the thumbnail images */
     .cursor {
         cursor: pointer;
     }
 
-    /* Add a transparency effect for thumnbail images */
     .demo {
         opacity: 0.6;
         transition: 0.2s;

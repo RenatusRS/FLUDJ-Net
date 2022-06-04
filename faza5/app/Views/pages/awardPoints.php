@@ -1,3 +1,15 @@
+<!--
+Autori:
+	Uros Loncar 2019/0691
+	Djorđe Stanojevic 2019/0288
+	Fedja Mladenovic 2019/0613
+	
+Opis: Stranica za nagradjivanje korisnika
+
+@version 1.1
+
+-->
+
 <?php
 
 use App\Models\UserM;

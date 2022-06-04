@@ -1,11 +1,15 @@
 <?php
-/*
-Autori:
-	Uros Loncar 2019/0691
-    Djordje Stanojevic 2019/0288
 
-Opis: Bazicni kontroler
-*/
+/**
+ * @author
+ * 	Uros Loncar 2019/0691
+ *  Djordje Stanojevic 2019/0288
+ *  Fedja Mladenovic 2019/0613
+ * 
+ * Opis: Bazicni kontroler
+ * 
+ * @version 1.3
+ */
 
 namespace App\Controllers;
 

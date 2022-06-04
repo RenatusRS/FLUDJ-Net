@@ -6,6 +6,8 @@ Autori:
 Opis: Stranica profila korisnika, sa ispisanom listom prijatelja (sopstveni profil ili tudji)
 Ako je tudji profil - mogucnost dodavanja, uklanjanja, odbijanja i prihvatanja zahteva za prijatelja
 
+@version 1.1
+
 -->
 
 <?php

@@ -1,3 +1,14 @@
+<!--
+Autori:
+    Uros Loncar 2019/0691
+    Fedja Mladenovic 2019/0613
+	
+Opis: Stranica za registraciju
+
+@version 1.1
+
+-->
+
 <title>Registration</title>
 
 <div id="short-main">

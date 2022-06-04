@@ -1,3 +1,13 @@
+<!--
+Autori:
+	Uros Loncar 2019/0691
+	
+Opis: Header template
+
+@version 1.1
+
+-->
+
 <header>
     <ul>
         <li><a href="http://localhost:8080/" id="logo"><img src=http://localhost:8080/assets/logo.png height=40px></a></li>

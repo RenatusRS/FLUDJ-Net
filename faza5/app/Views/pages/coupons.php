@@ -1,3 +1,13 @@
+<!--
+Autori:
+	Uros Loncar 2019/0691
+	
+Opis: Stranica za prikaz kupona
+
+@version 1.1
+
+-->
+
 <title>My Coupons</title>
 
 <div id=short-main>

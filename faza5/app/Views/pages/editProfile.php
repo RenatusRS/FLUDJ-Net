@@ -5,6 +5,8 @@ Autori:
 
 Opis: Stranica za podesavanje podataka na svom profilu
 
+@version 1.1
+
 -->
 
 <?php

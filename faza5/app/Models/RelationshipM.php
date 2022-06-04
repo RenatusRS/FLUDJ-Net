@@ -1,15 +1,16 @@
 <?php
-/*
-Autori:
-	Djordje Stanojevic 2019/0288
-	
-Opis: Model za vezu (prijateljski zahtev) izmedju korisnika 
 
-
-@version 1.3
-@return object RelationshipM
-
-*/
+/**
+ * @author
+ * Uros Loncar 2019/0691
+ * Fedja Mladenovic 2019/0613
+ * Luka Cvijan 2019/0154
+ * 
+ * Opis: Model za produkte
+ * 
+ * @version 1.0
+ * 
+ */
 
 namespace App\Models;
 

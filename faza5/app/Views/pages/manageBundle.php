@@ -1,3 +1,14 @@
+<!--
+Autori:
+	Uros Loncar 2019/0691
+	Fedja Mladenovic 2019/0613
+	
+Opis: Stranica za izmenu ili dodavanje bundla
+
+@version 1.1
+
+-->
+
 <?php
 if (!isset($bundle)) {
     $bundle = (object)[

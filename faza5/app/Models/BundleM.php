@@ -1,5 +1,15 @@
 <?php
 
+/**
+ * @author
+ * Fedja Mladenovic 2019/0613
+ * 
+ * Opis: Model za bundlove
+ * 
+ * @version 1.0
+ * 
+ */
+
 namespace App\Models;
 
 use CodeIgniter\Model;

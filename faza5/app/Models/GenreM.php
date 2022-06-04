@@ -1,5 +1,15 @@
 <?php
 
+/**
+ * @author
+ * Fedja Mladenovic 2019/0613
+ * 
+ * Opis: Model za zanrove
+ * 
+ * @version 1.0
+ * 
+ */
+
 namespace App\Models;
 
 use CodeIgniter\Model;
@@ -16,7 +26,7 @@ class GenreM extends Model {
 
     public function getGenres($productId) {
         $rows = $this->where($this->primaryKey, $productId)
-                      ->findAll();
+            ->findAll();
 
         $genres = [];
         foreach ($rows as $row) {
@@ -67,9 +77,9 @@ class GenreM extends Model {
 
         $builder = $this->db->table($this->table);
         $result = $builder->select('id_product')
-                          ->where('id_product', $productId)
-                          ->where('genre_name', $genreName)
-                          ->countAllResults();
+            ->where('id_product', $productId)
+            ->where('genre_name', $genreName)
+            ->countAllResults();
 
         return ($result > 0);
     }
@@ -89,7 +99,8 @@ class GenreM extends Model {
         if ($this->compositeExists($productId, $genreName))
             return false;
 
-        $this->db->query("INSERT INTO $this->table
+        $this->db->query(
+            "INSERT INTO $this->table
                           (id_product, genre_name) VALUES
                           ('$productId', '$genreName')"
         );
