@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\UserM;
+
 if (!function_exists('product_banner')) {
     function product_banner($id) {
         echo base_url("uploads/product/{$id}/banner.jpg");
@@ -32,7 +34,7 @@ if (!function_exists('bundle_banner')) {
 
 if (!function_exists('user_avatar')) {
     function user_avatar($id) {
-        echo base_url("uploads/user/{$id}.jpg");
+        echo (new UserM())->getAvatar($id);
     }
 }
 
