@@ -45,7 +45,7 @@ class User extends BaseController {
      * @return void   
      */
     public function addFunds() {
-        $this->show('addFunds', ['title' => 'Add Funds']);
+        $this->show('addFunds');
     }
 
     /**
@@ -84,7 +84,7 @@ class User extends BaseController {
         $productM = new ProductM();
         $product = $productM->find($id);
 
-        $this->show('buyProduct', ['product' => $product, 'friends' => $friends, 'title' => "Buy: {$product->name}"]);
+        $this->show('buyProduct', ['product' => $product, 'friends' => $friends]);
     }
 
     /**
@@ -142,7 +142,6 @@ class User extends BaseController {
                     'product' => $product,
                     'friends' => $friends,
                     'message' => "User doesn't own the base product.",
-                    'title' => 'Buy Product'
                 ]);
             }
         }
@@ -153,7 +152,6 @@ class User extends BaseController {
                     'product' => $product,
                     'friends' => $friends,
                     'message' => 'User already owns this product.',
-                    'title' => 'Buy Product'
                 ]);
             }
         }
@@ -162,7 +160,6 @@ class User extends BaseController {
                 'product' => $product,
                 'friends' => $friends,
                 'message' => 'You have insufficient funds.',
-                'title' => 'Buy Product'
             ]);
         }
 
@@ -191,7 +188,7 @@ class User extends BaseController {
      * @return void
      */
     public function editProfile() {
-        $this->show('editProfile.php', ['title' => 'Edit Profile']);
+        $this->show('editProfile.php');
     }
 
     /**
@@ -209,7 +206,6 @@ class User extends BaseController {
         $this->show('friendRequests.php', [
             'requesters' => $requesters,
             'requestedTo' => $requestedTo,
-            'title' => "Friend Requests"
         ]);
     }
 
@@ -281,7 +277,7 @@ class User extends BaseController {
         $user = $this->getUser();
         $awardee = (new UserM())->find($idUser);
 
-        $this->show('awardPoints', ['currentUser' => $user, 'awardee' => $awardee, 'title' => 'Award User']);
+        $this->show('awardPoints', ['currentUser' => $user, 'awardee' => $awardee]);
     }
 
     public function awardUserSubmit($idUser) {
@@ -379,8 +375,6 @@ class User extends BaseController {
         $this->show('buyBundle', [
             'bundle' => $bundle,
             'price' => $price,
-            'title' =>
-            "Buy {$bundle->name}"
         ]);
     }
 
@@ -444,7 +438,6 @@ class User extends BaseController {
 
         $this->show('coupons', [
             'coupons' => iterator_to_array((new CouponM())->getAllCoupons($user->id)),
-            'title' => "Coupons"
         ]);
     }
 }

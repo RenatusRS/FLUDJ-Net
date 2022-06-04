@@ -1,3 +1,5 @@
+<title>My Coupons</title>
+
 <div id=short-main>
     <h2>My Coupons</h2>
 

@@ -12,6 +12,8 @@ Autori:
 use App\Models\ProductM;
 ?>
 
+<title>Buy Product</title>
+
 <div id=short-main>
   <img style="width:100%; border-radius: 5px" src="<?php product_banner($product->id)  ?>" />
   <h2><?php echo $product->name ?></h2>

@@ -3,6 +3,8 @@
 use App\Models\UserM;
 ?>
 
+<title>Award Points</title>
+
 <div id="short-main">
     <!-- <h2>Award Points</h2> -->
     <form name='awardUser' action="<?= site_url("User/awardUserSubmit/{$awardee->id}") ?>" method="POST">

@@ -16,6 +16,8 @@ use App\Models\UserM;
 $us = (new UserM())->where('id', $user->id)->first();
 ?>
 
+<title>Edit Profile</title>
+
 <div id="main" style="margin: 100px auto; width: 325px; padding: 15px; border-radius: 9px;">
     <?php if (!empty($errors)) : ?>
         <div style='color:red;'>

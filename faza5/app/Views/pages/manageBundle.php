@@ -9,6 +9,10 @@ if (!isset($bundle)) {
 }
 ?>
 
+<title>
+    <?php echo isset($bundle) ? "Edit: " . $bundle->name : "Add New Bundle"; ?>
+</title>
+
 <div id=main style="display:flex">
     <form style="flex: 3; margin-right: 16px" name='manageBundleForm' action="<?= site_url("Admin/manageBundleSubmit") ?>" method="POST" enctype="multipart/form-data">
 

@@ -1,6 +1,4 @@
 <header>
-    <title><?php echo $title; ?></title>
-
     <ul>
         <li><a href="http://localhost:8080/" id="logo"><img src=http://localhost:8080/assets/logo.png height=40px></a></li>
         <li><a href="http://localhost:8080/">STORE</a></li>
@@ -31,10 +29,16 @@
                 <a href="http://localhost:8080/admin/setdiscount/<?php echo $product->id ?>">
                     <div><i class="bi bi-cash-coin"></i><br />Set Discount</div>
                 </a>
+                <a href="http://localhost:8080/admin/deleteproduct/<?php echo $product->id ?>">
+                    <div><i class="bi bi-trash"></i><br />Delete Product</div>
+                </a>
             <?php } ?>
             <?php if (isset($bundle)) { ?>
                 <a href="http://localhost:8080/admin/managebundle/<?php echo $bundle->id ?>">
                     <div><i class="bi bi-pencil"></i><br />Edit Bundle</div>
+                </a>
+                <a href="http://localhost:8080/admin/deletebundle/<?php echo $bundle->id ?>">
+                    <div><i class="bi bi-trash"></i><br />Delete Bundle</div>
                 </a>
             <?php } ?>
             <?php if (isset($user_profile) && $user != $user_profile) { ?>
@@ -56,6 +60,9 @@
                         <div><i class="bi bi-circle"></i><br />Review Unban</div>
                     </a>
                 <?php } ?>
+                <a href="http://localhost:8080/admin/deleteuser/<?php echo $user_profile->id ?>">
+                    <div><i class="bi bi-trash"></i><br />Delete User</div>
+                </a>
             <?php } ?>
         </div>
     <?php } ?>

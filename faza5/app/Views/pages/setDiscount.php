@@ -1,3 +1,5 @@
+<title>Set Discount</title>
+
 <div id=short-main>
   <form name='setDiscountForm' action="<?= site_url("Admin/setDiscountSubmit/{$productId}") ?>" method="POST">
     <span class="input-label">Set Discount</span>

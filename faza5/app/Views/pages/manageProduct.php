@@ -25,6 +25,10 @@ if (!isset($product)) {
 }
 ?>
 
+<title>
+    <?php echo isset($product) ? "EDIT: " . $product->name : "Add New Product"; ?>
+</title>
+
 <form name='manageProductForm' action="<?= site_url("Admin/manageProductSubmit") ?>" method="POST" enctype="multipart/form-data">
     <input type="hidden" name="id" value="<?php echo $product->id ?>" />
 

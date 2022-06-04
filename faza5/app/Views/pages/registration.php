@@ -1,3 +1,5 @@
+<title>Registration</title>
+
 <div id="short-main">
     <?php if (!empty($errors)) : ?>
         <div style='color:red;'>

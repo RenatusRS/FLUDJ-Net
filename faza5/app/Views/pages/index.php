@@ -9,11 +9,7 @@ Opis: Indeksna stranica
 <?= link_tag('search.css') ?>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
 
-<?php
-
-use App\Models\ProductM;
-
-?>
+<title>FLUDJ Net</title>
 
 <div id=main>
 	<div style="margin-bottom: 10px;">

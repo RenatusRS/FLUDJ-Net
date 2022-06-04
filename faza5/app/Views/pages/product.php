@@ -8,27 +8,9 @@ use App\Models\ProductM;
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
 
 <style>
-    /* Hide the images by default */
-    .mySlides {
-        display: none;
-    }
-
     /* Add a pointer when hovering over the thumbnail images */
     .cursor {
         cursor: pointer;
-    }
-
-
-
-    .row:after {
-        content: "";
-        display: table;
-        clear: both;
-    }
-
-    /* Six columns side by side */
-    .column {
-        width: 16.66%;
     }
 
     /* Add a transparency effect for thumnbail images */
@@ -53,21 +35,21 @@ use App\Models\ProductM;
     <div style="display: flex; margin-bottom: 0px">
         <div style="flex: 6">
             <div style="margin-bottom: 10px;">
-                <div class="mySlides">
+                <div class="mySlides" style="display:none">
                     <video id="video" style="width: 100%; color: yellow" autoplay muted loop controls poster="assets/thumbnail.png">
                         <source src="<?php echo base_url('uploads/product/' . $product->id . '/video.webm')  ?>" type="video/webm">
                     </video>
                 </div>
 
-                <div class="mySlides">
+                <div class="mySlides" style="display:none">
                     <img src="<?php echo base_url('uploads/product/' . $product->id . '/ss1.jpg')  ?>" style="width:100%">
                 </div>
 
-                <div class="mySlides">
+                <div class="mySlides" style="display:none">
                     <img src="<?php echo base_url('uploads/product/' . $product->id . '/ss2.jpg')  ?>" style="width:100%">
                 </div>
 
-                <div class="mySlides">
+                <div class="mySlides" style="display:none">
                     <img src="<?php echo base_url('uploads/product/' . $product->id . '/ss3.jpg')  ?>" style="width:100%">
                 </div>
             </div>

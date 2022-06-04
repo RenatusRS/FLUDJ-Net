@@ -20,6 +20,8 @@ $userM = new UserM();
 
 ?>
 
+<title>Friend Requests</title>
+
 <div id=main>
     <div>
         <select class="search" name="search" style="width: 300px; color: black;"></select>
