@@ -1,3 +1,5 @@
+<title>Buy Bundle</title>
+
 <div id="short-main">
   <img style="width:100%; border-radius: 5px" src="<?php bundle_banner($bundle->id)  ?>" />
   <h2><?php echo $bundle->name ?></h2>

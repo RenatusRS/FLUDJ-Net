@@ -18,7 +18,7 @@ use App\Models\UserM;
 
     <?php
     if (isset($_POST["points"])) echo $_POST["points"];
-    else echo "Please slide the bar and press award user.";
+    else echo "Please slide the bar and press Award User.";
     ?>
 
 </div>
