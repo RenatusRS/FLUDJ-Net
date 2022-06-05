@@ -1,11 +1,16 @@
 <?php
-/*
-Autori:
-	Uros Loncar 2019/0691
-    Djordje Stanojevic 2019/0288
 
-Opis: Bazicni kontroler
-*/
+/**
+ * @author
+ * 	Uros Loncar 2019/0691
+ *  Djordje Stanojevic 2019/0288
+ *  Fedja Mladenovic 2019/0613
+ * 
+ * Opis: Bazicni kontroler
+ * 
+ * @version 1.3
+ * 
+ */
 
 namespace App\Controllers;
 
@@ -179,7 +184,6 @@ class BaseController extends Controller {
             'bundledProducts' => $products,
             'price' => $result,
             'background' => $background,
-            'title' => "{$bundle->name}"
         ]);
     }
 
@@ -230,7 +234,6 @@ class BaseController extends Controller {
             'similar_products' => $productM->getSimilarProducts($id, $userId, 0, 4),
             'product_bundle' => (new BundleM)->getBundles($id),
             'friends' => (new RelationshipM())->getFriendsWhoOwn($userId, $id),
-            'title' => "{$product->name}"
         ];
 
         $this->show('product', array_merge($res, $userRes));
@@ -252,7 +255,6 @@ class BaseController extends Controller {
             'avatar' => $userM->getAvatar($user->id),
             'background' => $userM->getBackground($user->id),
             'products' => (new OwnershipM())->getOwned($user->id),
-            'title' => $user->nickname,
         ]);
     }
 
@@ -300,7 +302,6 @@ class BaseController extends Controller {
                 'couponP' => $productM->getCouponProducts($idUser),
                 'userLikeP' => $productM->getProductsUserLike($idUser),
                 'friendsLikeP' => $productM->getProductsUserFriendsLike($idUser),
-                'title' => "FLUDJ Net",
                 'background' => $productM->getBackground($heroP->id)
             ]
         );

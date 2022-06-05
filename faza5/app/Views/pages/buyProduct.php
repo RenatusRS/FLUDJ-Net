@@ -1,16 +1,19 @@
 <!-- 
-
 Autori:
-  Luka Cvijan 2019/0154
+    Luka Cvijan 2019/0154
+    Uros Loncar 2019/0691
 	
-  Opis: Stranica za kupovinu proizvoda
-  @version 1.3
+Opis: Stranica za kupovinu proizvoda
+
+@version 1.1
 
 -->
 <?php
 
 use App\Models\ProductM;
 ?>
+
+<title>Buy Product</title>
 
 <div id=short-main>
   <img style="width:100%; border-radius: 5px" src="<?php product_banner($product->id)  ?>" />

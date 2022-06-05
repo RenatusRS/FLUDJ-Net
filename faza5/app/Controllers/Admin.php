@@ -1,5 +1,17 @@
 <?php
 
+/**
+ * @author
+ * 	Uros Loncar 2019/0691
+ *  Luka Cvijan 2019/01548
+ *  Fedja Mladenovic 2019/0613
+ * 
+ * Opis: Bazicni kontroler
+ * 
+ * @version 1.3
+ * 
+ */
+
 namespace App\Controllers;
 
 use App\Models\GenreM;
@@ -9,6 +21,8 @@ use App\Models\UserM;
 use App\Models\OwnershipM;
 use App\Models\ReviewVoteM;
 use App\Models\BundledProductsM;
+use App\Models\CouponM;
+use App\Models\RelationshipM;
 
 class Admin extends BaseController {
     public function manageProduct($id = null) {
@@ -31,7 +45,6 @@ class Admin extends BaseController {
         $data['product'] = $product;
         $data['genres']  = $genres;
         $data['background'] = $background;
-        $data['title'] = 'Manage Product';
 
         $this->show('manageProduct', $data);
     }
@@ -107,7 +120,7 @@ class Admin extends BaseController {
 
         // ažuriraj bazu
         if ($productM->save($data) === false) {
-            return $this->show('manageProduct', ['errors' => $productM->errors(), 'title' => 'Manage Product']);
+            return $this->show('manageProduct', ['errors' => $productM->errors()]);
         }
 
         if ($id != -1) // otklanjamo stare žanrove iz baze jer će biti zamenjeni novim
@@ -163,7 +176,6 @@ class Admin extends BaseController {
         $data['bundle'] = $bundle;
         $data['inBundle'] = $inBundle;
         $data['notInBundle'] = $notInBundle;
-        $data['title'] = 'Manage Bundle';
 
         $this->show('manageBundle', $data);
     }
@@ -207,7 +219,7 @@ class Admin extends BaseController {
 
         if ($bundleM->save($data) === false) { // ako čuvanje u bazu nije prošlo validaciju
             // TODO
-            return $this->show('manageBundle', ['errors' => $bundleM->errors(), 'title' => "Manage Bundle"]);
+            return $this->show('manageBundle', ['errors' => $bundleM->errors()]);
         }
 
         if ($id == -1)
@@ -217,7 +229,7 @@ class Admin extends BaseController {
 
         $this->upload($targetDir, 'banner', 'banner');
 
-        return redirect()->to(site_url("user/managebundle/" . $id));
+        return redirect()->to(site_url("admin/managebundle/" . $id));
     }
 
     /** 
@@ -237,7 +249,7 @@ class Admin extends BaseController {
      * @return void
      */
     public function setDiscount($id) {
-        $this->show('setDiscount', ["productId" => $id, 'title' => "Set Discount"]);
+        $this->show('setDiscount', ["productId" => $id]);
     }
 
     /** 
@@ -282,6 +294,46 @@ class Admin extends BaseController {
             BundledProductsM::addToBundle($idBundle, $idProduct);
 
         return redirect()->to(site_url("admin/manageBundle/" . $idBundle));
+    }
+
+    public function deleteProduct($id) {
+        (new UserM())
+            ->where('featured_review', $id)
+            ->set(['featured_review' => NULL])
+            ->update();
+
+        (new GenreM())->where('id_product', $id)->delete();
+
+        (new ReviewVoteM())->where('id_product', $id)->delete();
+
+        (new OwnershipM())->where('id_product', $id)->delete();
+
+        (new CouponM())->where('id_product', $id)->delete();
+
+        (new ProductM())->delete($id);
+
+        return redirect()->to(base_url());
+    }
+
+    public function deleteUser($id) {
+        (new CouponM())->where('id_owner', $id)->delete();
+
+        (new ReviewVoteM())->where('id_user', $id)->delete();
+
+        (new OwnershipM())->where('id_user', $id)->delete();
+
+        (new RelationShipM())->where('id_user1', $id)->OrWhere('id_user2', $id)->delete();
+
+        (new UserM)->delete($id);
+
+        return redirect()->to(base_url());
+    }
+
+    public function deleteBundle($id) {
+        (new BundledProductsM())->where('id_bundle', $id)->delete();
+        (new BundleM)->delete($id);
+
+        return redirect()->to(base_url());
     }
 
     public function ban($idUser) {

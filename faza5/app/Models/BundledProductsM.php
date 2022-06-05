@@ -1,5 +1,15 @@
 <?php
 
+/**
+ * @author
+ * Fedja Mladenovic 2019/0613
+ * 
+ * Opis: Model za produkte u bundlu
+ * 
+ * @version 1.0
+ * 
+ */
+
 namespace App\Models;
 
 use CodeIgniter\Model;
@@ -24,8 +34,8 @@ class BundledProductsM extends Model {
      */
     public static function removeFromBundle($idBundle, $idProduct) {
         (new BundledProductsM())->where('id_bundle', $idBundle)
-                                ->where('id_product', $idProduct)
-                                ->delete();
+            ->where('id_product', $idProduct)
+            ->delete();
     }
     /**
      * otklanja sve proizvode iz kolekcije sa id-jem $idBundle
@@ -35,7 +45,7 @@ class BundledProductsM extends Model {
      */
     public static function clearBundle($idBundle) {
         (new BundledProductsM())->where('id_bundle', $idBundle)
-                                ->delete();
+            ->delete();
     }
     /**
      * dodaj proizvod sa id-jem $idProduct u kolekciju sa id-jem $idBundle
@@ -58,7 +68,7 @@ class BundledProductsM extends Model {
      */
     public function findBundledProducts($id) { // TODO ovo je isti kod kao traženje žanrova. napraviti u nadklasi apstrakciju ova dva
         $rows = $this->where($this->primaryKey, $id)
-                     ->findAll();
+            ->findAll();
 
         $result = [];
         foreach ($rows as $row) {
@@ -78,8 +88,8 @@ class BundledProductsM extends Model {
      */
     public function inBundle($idBundle, $idProduct) {
         $query = $this->where('id_product', $idProduct)
-                      ->where('id_bundle', $idBundle)
-                      ->first();
+            ->where('id_bundle', $idBundle)
+            ->first();
 
         return (isset($query));
     }

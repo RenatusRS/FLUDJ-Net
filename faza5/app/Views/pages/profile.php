@@ -6,6 +6,8 @@ Autori:
 Opis: Stranica profila korisnika, sa ispisanom listom prijatelja (sopstveni profil ili tudji)
 Ako je tudji profil - mogucnost dodavanja, uklanjanja, odbijanja i prihvatanja zahteva za prijatelja
 
+@version 1.1
+
 -->
 
 <?php
@@ -57,6 +59,8 @@ if ($user != null && $user->id != $user_profile->id) {
         header("Refresh:0");
     }
 } ?>
+
+<title><?php echo $user_profile->nickname ?></title>
 
 <div id=main>
     <div id=profile-head style="display:flex;background-color:rgb(0,0,0,0.6);border-radius: 5px; max-height: 250px; min-width: 770px; margin: 0 0 15px 0">
