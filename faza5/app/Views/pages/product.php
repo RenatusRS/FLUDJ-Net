@@ -36,6 +36,10 @@ use App\Models\ProductM;
     }
 </style>
 
+<title>
+    <?php echo $product->name ?>
+</title>
+
 
 <div id="main">
     <div style="margin-bottom: 10px;">

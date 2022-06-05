@@ -9,6 +9,10 @@ Opis: Stranica za prikaz bundla
 
 -->
 
+<title>
+    <?php echo $bundle->name ?>
+</title>
+
 <div id=middle-main>
     <h1><?php echo $bundle->name ?></h1>
     <img class=smooth-border style="width:100%" src=" <?php echo base_url('uploads/bundle/' . $bundle->id . '/banner.jpg')  ?>">
