@@ -387,7 +387,7 @@ class User extends BaseController {
         $user = $this->getUser();
 
         if ($user->balance < $finalPrice) {
-            return;
+            return redirect()->to(site_url("user/bundle/{$id}"));
         }
 
         $products = (new BundleM())->bundleProducts($id);

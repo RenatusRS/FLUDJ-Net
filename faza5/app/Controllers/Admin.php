@@ -229,7 +229,7 @@ class Admin extends BaseController {
 
         $this->upload($targetDir, 'banner', 'banner');
 
-        return redirect()->to(site_url("user/managebundle/" . $id));
+        return redirect()->to(site_url("admin/managebundle/" . $id));
     }
 
     /** 
