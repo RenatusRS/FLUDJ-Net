@@ -69,7 +69,7 @@ if ($user != null && $user->id != $user_profile->id) {
             <h3 style="margin: 7px 0px"><?php echo $user_profile->nickname ?></h3>
             <i><?php echo $user_profile->real_name ?></i>
             <br><br>
-            <?php echo $user_profile->description ?>
+            <span id="desc"><?php echo $user_profile->description ?></span>
         </div>
         <div style="flex: 1; text-align: right;">
             <?php if ($user != null && $user_profile == $user) { ?>
