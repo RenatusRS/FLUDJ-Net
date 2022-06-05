@@ -52,7 +52,7 @@ $userM = new UserM();
                 <div style="margin: 15px 15px 0 0; min-width: 330px;">
                     <a href="http://localhost:8080/user/profile/<?php echo $requester->id ?>">
                         <div style="width:75%; float:left;background-color: black;border-radius: 5px 0 0 5px">
-                            <img src=" <?php echo $userM->getAvatar($requester->id) ?>" style="width:70px; vertical-align: middle;border-radius: 5px 0 0 5px" /> <span style=" vertical-align: middle; font-size: 22px;"><?php echo $requester->username ?></span>
+                            <img src=" <?php echo $userM->getAvatar($requester->id) ?>" style="width:70px; vertical-align: middle;border-radius: 5px 0 0 5px" /> <span style=" vertical-align: middle; font-size: 22px;"><?php echo $requester->nickname ?></span>
                         </div>
                     </a>
                     <div style="width:25%;float:left;">
@@ -83,7 +83,7 @@ $userM = new UserM();
                 <div style="margin: 15px 15px 0 0; min-width: 330px;">
                     <a href="http://localhost:8080/user/profile/<?php echo $requestedToUser->id ?>">
                         <div style="width:87%; float:left;background-color: black;border-radius: 5px 0 0 5px">
-                            <img src="<?php echo $userM->getAvatar($requestedToUser->id) ?>" style="width:70px; vertical-align: middle;border-radius: 5px 0 0 5px" /> <span style="vertical-align: middle; font-size: 22px;"><?php echo $requestedToUser->username ?></span>
+                            <img src="<?php echo $userM->getAvatar($requestedToUser->id) ?>" style="width:70px; vertical-align: middle;border-radius: 5px 0 0 5px" /> <span style="vertical-align: middle; font-size: 22px;"><?php echo $requestedToUser->nickname ?></span>
                         </div>
                     </a>
                     <div style="width:13%;float:left;">
