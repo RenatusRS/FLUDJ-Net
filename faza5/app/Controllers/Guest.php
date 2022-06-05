@@ -2,14 +2,15 @@
 
 /**
  * @author
- * 	Djordje Stanojevic 2019/0288
- * 	Uros Loncar 2019/0691
- * 	Luka Cvijan 2019/0154
+ *  Djordje Stanojevic 2019/0288
+ *  Uros Loncar 2019/0691
+ *  Luka Cvijan 2019/0154
  *  Fedja Mladenovic 2019/0613
  * 
  * Opis: Kontroler za gosta
  * 
  * @version 1.3
+ * 
  */
 
 namespace App\Controllers;

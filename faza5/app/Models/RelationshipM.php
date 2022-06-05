@@ -2,11 +2,9 @@
 
 /**
  * @author
- * Uros Loncar 2019/0691
- * Fedja Mladenovic 2019/0613
- * Luka Cvijan 2019/0154
+ * Djorđe Stanojević 2019/0288
  * 
- * Opis: Model za produkte
+ * Opis: Model za veze izmedju korisnika
  * 
  * @version 1.0
  * 

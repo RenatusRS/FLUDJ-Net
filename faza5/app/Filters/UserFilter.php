@@ -2,7 +2,7 @@
 
 /**
  * @author
- * 	Uros Loncar 2019/0691
+ *  Uros Loncar 2019/0691
  * 
  * Opis: Filter za /user/ stranice
  * 
