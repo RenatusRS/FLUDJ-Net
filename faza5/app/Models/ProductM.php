@@ -22,6 +22,21 @@ class ProductM extends Model {
 
     protected $allowedFields = ['name', 'price', 'base_game', 'discount', 'discount_expire', 'description', 'developer', 'publisher', 'release_date', 'os_min', 'ram_min', 'gpu_min', 'cpu_min', 'mem_min', 'os_rec', 'ram_rec', 'gpu_rec', 'cpu_rec', 'mem_rec', 'rev_cnt', 'rev_sum'];
 
+    /**
+     * vraća true ako postoji proizvod sa imenom $name koji nema id = $id.
+     *
+     * @param  string $name
+     * @param  integer $id
+     * @return boolean
+     */
+    public function productNameExists($name, $id = -1) {
+        $query = $this->where('name', $name)
+                      ->where('id !=', $id)
+                      ->first();
+
+        return (isset($query));
+    }
+
     /** 
      * Poredjenje unetog i trenutnog datuma
      * @return bool
