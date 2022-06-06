@@ -32,6 +32,21 @@ class BundleM extends Model {
     ];
 
     /**
+     * vraća true ako postoji kolekcija sa imenom $name koja nema id = $id.
+     *
+     * @param  string $name
+     * @param  integer $id
+     * @return boolean
+     */
+    public function bundleNameExists($name, $id = -1) {
+        $query = $this->where('name', $name)
+                      ->where('id !=', $id)
+                      ->first();
+
+        return (isset($query));
+    }
+
+    /**
      * određuje početnu cenu, sniženje i finalnu cenu kolekcije za trenutnog korisnika
      *
      * @param  array $products niz modela dohvaćenih iz baze sa ProductM->find($id)

@@ -118,9 +118,13 @@ class Admin extends BaseController {
         $genreM = new GenreM();
         $productM = new ProductM();
 
-        // ažuriraj bazu
-        if ($productM->save($data) === false) {
-            return $this->show('manageProduct', ['errors' => $productM->errors()]);
+        // ažuriraj bazu. ako ime već postoji u bazi, izbaci grešku; ako izmenjujemo proizvod ažuriraj bazu; ako dodajemo proizvod sačuvaj ga.
+        if ($productM->productNameExists($data['name'], $id)) {
+            return $this->show('manageProduct', ['errors' => ["Name for product '{$data['name']}' already exists."], 'title' => 'Manage Product']);
+        } else if ($id != -1) {
+            $productM->update($id, $data);
+        } else {
+            $productM->save($data);
         }
 
         if ($id != -1) // otklanjamo stare žanrove iz baze jer će biti zamenjeni novim
@@ -217,9 +221,12 @@ class Admin extends BaseController {
 
         $bundleM = new BundleM();
 
-        if ($bundleM->save($data) === false) { // ako čuvanje u bazu nije prošlo validaciju
-            // TODO
-            return $this->show('manageBundle', ['errors' => $bundleM->errors()]);
+        if ($bundleM->bundleNameExists($data['name'], $id)) {
+            return $this->show('manageBundle', ['errors' => ["Name for bundle '{$data['name']}' already exists."], 'title' => "Manage Bundle"]);
+        } else if ($id != -1) {
+            $bundleM->update($id, $data);
+        } else {
+            $bundleM->save($data);
         }
 
         if ($id == -1)
@@ -228,6 +235,7 @@ class Admin extends BaseController {
         $targetDir = 'uploads/bundle/' . $id;
 
         $this->upload($targetDir, 'banner', 'banner');
+
 
         return redirect()->to(site_url("admin/managebundle/" . $id));
     }
