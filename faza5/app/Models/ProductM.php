@@ -22,6 +22,12 @@ class ProductM extends Model {
 
     protected $allowedFields = ['name', 'price', 'base_game', 'discount', 'discount_expire', 'description', 'developer', 'publisher', 'release_date', 'os_min', 'ram_min', 'gpu_min', 'cpu_min', 'mem_min', 'os_rec', 'ram_rec', 'gpu_rec', 'cpu_rec', 'mem_rec', 'rev_cnt', 'rev_sum'];
 
+    protected $validationRules = [
+        'name' => [
+            'rules'  => 'required|is_unique[product.name]',
+        ]
+    ];
+
     /** 
      * Poredjenje unetog i trenutnog datuma
      * @return bool

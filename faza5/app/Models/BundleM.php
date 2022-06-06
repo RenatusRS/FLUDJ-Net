@@ -17,7 +17,7 @@ class BundleM extends Model {
 
     protected $validationRules = [
         'name' => [
-            'rules'  => 'required',
+            'rules'  => 'required|is_unique[bundle.name]',
         ]
     ];
 
