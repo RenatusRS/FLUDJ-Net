@@ -1,4 +1,13 @@
-<!-- Icons -->
+<!--
+Autori:
+	Uros Loncar 2019/0691
+	
+Opis: Template koji se ucitava na svakoj stranici
+
+@version 1.1
+
+-->
+
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.2/font/bootstrap-icons.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 

@@ -1,5 +1,17 @@
 <?php
 
+/**
+ * @author
+ * Uros Loncar 2019/0691
+ * Fedja Mladenovic 2019/0613
+ * Luka Cvijan 2019/0154
+ * 
+ * Opis: Model za produkte
+ * 
+ * @version 1.0
+ * 
+ */
+
 namespace App\Models;
 
 use CodeIgniter\Model;

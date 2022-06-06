@@ -1,5 +1,15 @@
 <?php
 
+/**
+ * @author
+ *  Uros Loncar 2019/0691
+ * 
+ * Opis: Filter za /user/ stranice
+ * 
+ * @version 1.0
+ * 
+ */
+
 namespace App\Filters;
 
 use CodeIgniter\HTTP\RequestInterface;

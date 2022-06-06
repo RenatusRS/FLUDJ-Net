@@ -1,5 +1,16 @@
 <?php
 
+/**
+ * @author
+ * 	Uros Loncar 2019/0691
+ *  Fedja Mladenovic 2019/0613
+ * 
+ * Opis: Model za korisnike
+ * 
+ * @version 1.3
+ * 
+ */
+
 namespace App\Models;
 
 use CodeIgniter\Model;

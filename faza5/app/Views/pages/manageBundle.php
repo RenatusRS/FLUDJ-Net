@@ -1,3 +1,14 @@
+<!--
+Autori:
+	Uros Loncar 2019/0691
+	Fedja Mladenovic 2019/0613
+	
+Opis: Stranica za izmenu ili dodavanje bundla
+
+@version 1.1
+
+-->
+
 <?php
 if (!isset($bundle)) {
     $bundle = (object)[
@@ -8,6 +19,10 @@ if (!isset($bundle)) {
     ];
 }
 ?>
+
+<title>
+    <?php echo isset($bundle) ? "Edit: " . $bundle->name : "Add New Bundle"; ?>
+</title>
 
 <div id=main style="display:flex">
     <form style="flex: 3; margin-right: 16px" name='manageBundleForm' action="<?= site_url("Admin/manageBundleSubmit") ?>" method="POST" enctype="multipart/form-data">
