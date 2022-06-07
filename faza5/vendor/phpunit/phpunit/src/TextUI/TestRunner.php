@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 /*
  * This file is part of PHPUnit.
  *
@@ -7,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace PHPUnit\TextUI;
 
 use const PHP_EOL;
@@ -86,8 +89,7 @@ use SebastianBergmann\Timer\Timer;
 /**
  * @internal This class is not covered by the backward compatibility promise for PHPUnit
  */
-final class TestRunner extends BaseTestRunner
-{
+final class TestRunner extends BaseTestRunner {
     public const SUCCESS_EXIT = 0;
 
     public const FAILURE_EXIT = 1;
@@ -124,8 +126,7 @@ final class TestRunner extends BaseTestRunner
      */
     private $timer;
 
-    public function __construct(TestSuiteLoader $loader = null, CodeCoverageFilter $filter = null)
-    {
+    public function __construct(TestSuiteLoader $loader = null, CodeCoverageFilter $filter = null) {
         if ($filter === null) {
             $filter = new CodeCoverageFilter;
         }
@@ -140,8 +141,7 @@ final class TestRunner extends BaseTestRunner
      * @throws \PHPUnit\TextUI\XmlConfiguration\Exception
      * @throws Exception
      */
-    public function run(TestSuite $suite, array $arguments = [], array $warnings = [], bool $exit = true): TestResult
-    {
+    public function run(TestSuite $suite, array $arguments = [], array $warnings = [], bool $exit = true): TestResult {
         if (isset($arguments['configuration'])) {
             $GLOBALS['__PHPUNIT_CONFIGURATION_FILE'] = $arguments['configuration'];
         }
@@ -329,11 +329,8 @@ final class TestRunner extends BaseTestRunner
         if ($arguments['colors'] !== DefaultResultPrinter::COLOR_NEVER) {
             $this->write(
                 'PHPUnit ' .
-                Version::id() .
-                ' ' .
-                Color::colorize('bg-blue', '#StandWith') .
-                Color::colorize('bg-yellow', 'Ukraine') .
-                "\n"
+                    Version::id() .
+                    "\n"
             );
         } else {
             $this->write(Version::getVersionString() . "\n");
@@ -453,8 +450,10 @@ final class TestRunner extends BaseTestRunner
 
         if ($codeCoverageReports > 0) {
             try {
-                if (isset($codeCoverageConfiguration) &&
-                    ($codeCoverageConfiguration->pathCoverage() || (isset($arguments['pathCoverage']) && $arguments['pathCoverage'] === true))) {
+                if (
+                    isset($codeCoverageConfiguration) &&
+                    ($codeCoverageConfiguration->pathCoverage() || (isset($arguments['pathCoverage']) && $arguments['pathCoverage'] === true))
+                ) {
                     $codeCoverageDriver = (new Selector)->forLineAndPathCoverage($this->codeCoverageFilter);
                 } else {
                     $codeCoverageDriver = (new Selector)->forLineCoverage($this->codeCoverageFilter);
@@ -842,8 +841,7 @@ final class TestRunner extends BaseTestRunner
     /**
      * Returns the loader to be used.
      */
-    public function getLoader(): TestSuiteLoader
-    {
+    public function getLoader(): TestSuiteLoader {
         if ($this->loader === null) {
             $this->loader = new StandardTestSuiteLoader;
         }
@@ -851,8 +849,7 @@ final class TestRunner extends BaseTestRunner
         return $this->loader;
     }
 
-    public function addExtension(Hook $extension): void
-    {
+    public function addExtension(Hook $extension): void {
         $this->extensions[] = $extension;
     }
 
@@ -860,20 +857,17 @@ final class TestRunner extends BaseTestRunner
      * Override to define how to handle a failed loading of
      * a test suite.
      */
-    protected function runFailed(string $message): void
-    {
+    protected function runFailed(string $message): void {
         $this->write($message . PHP_EOL);
 
         exit(self::FAILURE_EXIT);
     }
 
-    private function createTestResult(): TestResult
-    {
+    private function createTestResult(): TestResult {
         return new TestResult;
     }
 
-    private function write(string $buffer): void
-    {
+    private function write(string $buffer): void {
         if (PHP_SAPI !== 'cli' && PHP_SAPI !== 'phpdbg') {
             $buffer = htmlspecialchars($buffer);
         }
@@ -889,8 +883,7 @@ final class TestRunner extends BaseTestRunner
      * @throws \PHPUnit\TextUI\XmlConfiguration\Exception
      * @throws Exception
      */
-    private function handleConfiguration(array &$arguments): void
-    {
+    private function handleConfiguration(array &$arguments): void {
         if (!isset($arguments['configurationObject']) && isset($arguments['configuration'])) {
             $arguments['configurationObject'] = (new Loader)->load($arguments['configuration']);
         }
@@ -1152,13 +1145,14 @@ final class TestRunner extends BaseTestRunner
         }
     }
 
-    private function processSuiteFilters(TestSuite $suite, array $arguments): void
-    {
-        if (!$arguments['filter'] &&
+    private function processSuiteFilters(TestSuite $suite, array $arguments): void {
+        if (
+            !$arguments['filter'] &&
             empty($arguments['groups']) &&
             empty($arguments['excludeGroups']) &&
             empty($arguments['testsCovering']) &&
-            empty($arguments['testsUsing'])) {
+            empty($arguments['testsUsing'])
+        ) {
             return;
         }
 
@@ -1182,8 +1176,7 @@ final class TestRunner extends BaseTestRunner
             $filterFactory->addFilter(
                 new ReflectionClass(IncludeGroupFilterIterator::class),
                 array_map(
-                    static function (string $name): string
-                    {
+                    static function (string $name): string {
                         return '__phpunit_covers_' . $name;
                     },
                     $arguments['testsCovering']
@@ -1195,8 +1188,7 @@ final class TestRunner extends BaseTestRunner
             $filterFactory->addFilter(
                 new ReflectionClass(IncludeGroupFilterIterator::class),
                 array_map(
-                    static function (string $name): string
-                    {
+                    static function (string $name): string {
                         return '__phpunit_uses_' . $name;
                     },
                     $arguments['testsUsing']
@@ -1214,8 +1206,7 @@ final class TestRunner extends BaseTestRunner
         $suite->injectFilter($filterFactory);
     }
 
-    private function writeMessage(string $type, string $message): void
-    {
+    private function writeMessage(string $type, string $message): void {
         if (!$this->messagePrinted) {
             $this->write("\n");
         }
@@ -1231,8 +1222,7 @@ final class TestRunner extends BaseTestRunner
         $this->messagePrinted = true;
     }
 
-    private function createPrinter(string $class, array $arguments): ResultPrinter
-    {
+    private function createPrinter(string $class, array $arguments): ResultPrinter {
         $object = new $class(
             (isset($arguments['stderr']) && $arguments['stderr'] === true) ? 'php://stderr' : null,
             $arguments['verbose'],
@@ -1247,8 +1237,7 @@ final class TestRunner extends BaseTestRunner
         return $object;
     }
 
-    private function codeCoverageGenerationStart(string $format): void
-    {
+    private function codeCoverageGenerationStart(string $format): void {
         $this->write(
             sprintf(
                 "\nGenerating code coverage report in %s format ... ",
@@ -1259,8 +1248,7 @@ final class TestRunner extends BaseTestRunner
         $this->timer->start();
     }
 
-    private function codeCoverageGenerationSucceeded(): void
-    {
+    private function codeCoverageGenerationSucceeded(): void {
         $this->write(
             sprintf(
                 "done [%s]\n",
@@ -1269,8 +1257,7 @@ final class TestRunner extends BaseTestRunner
         );
     }
 
-    private function codeCoverageGenerationFailed(\Exception $e): void
-    {
+    private function codeCoverageGenerationFailed(\Exception $e): void {
         $this->write(
             sprintf(
                 "failed [%s]\n%s\n",
