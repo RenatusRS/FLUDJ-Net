@@ -40,12 +40,11 @@ class OwnershipM extends Model {
     }
 
     /**
-     * Proverava da li korisnik sa id-jem $idUser poseduje
-     * proizvod sa id-jem $idProduct
+     * vraća sve proizvode i njihove ocene korisnika sa id-jem $idUser
+     *
      *
      * @param  integer $idUser
-     * @param  integer $idProduct
-     * @return boolean korisnik poseduje proizvod
+     * @return array niz ['product' => proizvod, 'rating' => ocena, 'review' => recenzija]
      */
     public function getOwned($idUser) {
         $ownedList = $this->where('id_user', $idUser)->findAll();
@@ -103,7 +102,7 @@ class OwnershipM extends Model {
             ->first();
 
         return (isset($query)) ?
-            ($query->rating ?? 0) :
+            ((int)$query->rating ?? 0) :
             0;
     }
 
