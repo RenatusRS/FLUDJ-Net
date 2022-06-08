@@ -11,7 +11,6 @@ Ako je tudji profil - mogucnost dodavanja, uklanjanja, odbijanja i prihvatanja z
 -->
 
 <?php
-ob_start();
 
 use App\Models\UserM;
 use App\Models\RelationshipM;

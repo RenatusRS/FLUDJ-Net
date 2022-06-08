@@ -270,15 +270,15 @@ class Admin extends BaseController {
         if (!$this->validate(['discount' => 'required|greater_than_equal_to[5]|less_than_equal_to[90]|integer']))
             return $this->show('setDiscount', ['productId' => $id, 'errors' => $this->validator->getErrors()]);
 
-        $expDate = date($_POST['expDate']);
+        $expDate = date($this->request->getPost('expDate'));
 
-        $future_date = ProductM::future_date($_POST['expDate']);
+        $future_date = ProductM::future_date($this->request->getPost('expDate'));
 
         if (!($future_date))
             return $this->show('setDiscount', ['productId' => $id, 'message' => "Discount must last at least one day."]);
 
         (new ProductM())->update($id, [
-            'discount' => $this->request->getVar('discount'),
+            'discount' => $this->request->getPost('discount'),
             'discount_expire' => $expDate
         ]);
 
