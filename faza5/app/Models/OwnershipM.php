@@ -40,12 +40,11 @@ class OwnershipM extends Model {
     }
 
     /**
-     * Proverava da li korisnik sa id-jem $idUser poseduje
-     * proizvod sa id-jem $idProduct
+     * vraća sve proizvode i njihove ocene korisnika sa id-jem $idUser
+     *
      *
      * @param  integer $idUser
-     * @param  integer $idProduct
-     * @return boolean korisnik poseduje proizvod
+     * @return array niz ['product' => proizvod, 'rating' => ocena, 'review' => recenzija]
      */
     public function getOwned($idUser) {
         $ownedList = $this->where('id_user', $idUser)->findAll();
@@ -70,8 +69,8 @@ class OwnershipM extends Model {
     /**
      * korisnik sa id-jem $idUser dobija proizvod sa id-jem $idProduct ako ga već nije imao.
      *
-     * @param  mixed $idUser
-     * @param  mixed $idProduct
+     * @param  integer $idUser
+     * @param  integer $idProduct
      * @return boolean vraća true ako ga je dobio, a false ako nije
      */
     public function acquire($idUser, $idProduct) {
@@ -103,13 +102,13 @@ class OwnershipM extends Model {
             ->first();
 
         return (isset($query)) ?
-            ($query->rating ?? 0) :
+            ((int)$query->rating ?? 0) :
             0;
     }
 
     /**
      * nalazi sve proizvode koje se pojavljuju najviše puta, odnosno proizvodi
-     * koje najviše ljudi ima
+     * koje najviše ljudi ima (SORTIRANO)
      *
      * $limit ograničava koliko će biti proizvoda u povratnoj vrednosti, po podrazumevanom
      * je "beskonačno" (konačno je ali nedostižan broj) jer ne može drugačije sa mysql
@@ -188,6 +187,7 @@ class OwnershipM extends Model {
      * @param  boolean $filterDLCs ako je truthy, DLC-evi se ne vraćaju u generatoru
      */
     public function friendsLikes($idUser, $filterDLCs = true) {
+        // TODO valjalo bi ovde dodati da se kroz query dohvataju proizvodi a ne samo id-jevi
         $this->db = \Config\Database::connect();
         $res = $this->db->query(
             "SELECT id_product, sum(rating) AS rev_sum, count(*) AS rev_cnt

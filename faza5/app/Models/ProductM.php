@@ -5,11 +5,11 @@
  * Uros Loncar 2019/0691
  * Fedja Mladenovic 2019/0613
  * Luka Cvijan 2019/0154
- * 
+ *
  * Opis: Model za produkte
- * 
+ *
  * @version 1.0
- * 
+ *
  */
 
 namespace App\Models;
@@ -49,8 +49,10 @@ class ProductM extends Model {
         return (isset($query));
     }
 
-    /** 
-     * Poredjenje unetog i trenutnog datuma
+    /**
+     * Poredjenje unetog i trenutnog datuma. true ako je uneti datum u budućnosti, u suprotnom false
+     *
+     * @param string $date
      * @return bool
      */
     public static function future_date($date) {
@@ -62,12 +64,19 @@ class ProductM extends Model {
         return $date1 < $date2;
     }
 
-    /** 
-     * Vracanje popusta
+    /**
+     * dohvata popust za proizvod sa id-jem $id.
+     * ima verovatno zanemarljiv sporedni efekat ažuriranja discount i discount_expire kolona
+     * tj. resetovanje njih ako je popust istekao. ako ne postoji proizvod, vraća 0.
+     *
+     * @param int $id id proizvoda
      * @return int
      */
     public function getDiscount($id) {
         $product = $this->find($id);
+        if (!(isset($product)))
+            return 0;
+
         $discountExpired = self::future_date($product->discount_expire);
 
         if (!$discountExpired) {
@@ -79,15 +88,21 @@ class ProductM extends Model {
             return 0;
         }
 
-        return $product->discount;
+        return (int)($product->discount);
     }
 
-    /** 
-     * Vracanje cene sa popustom
-     * @return double
+    /**
+     * dohvata cenu proizvoda sa id-jem $id nakon, sa popustom
+     *
+     * @param integer $id id proizvoda
+     * @return double krajnja cena proizvoda
      */
     public function getDiscountedPrice($id) {
-        return ((100 - $this->getDiscount($id)) / 100) * $this->find($id)->price;
+        $product = $this->find($id);
+        if (!isset($product))
+            return 0;
+
+        return ((100 - $this->getDiscount($id)) / 100) * $product->price;
     }
 
 
@@ -98,14 +113,16 @@ class ProductM extends Model {
      */
     public function getAllProducts($filterDLCs = true) {
         $this->db = \Config\Database::connect();
+
+        $filter = ($filterDLCs) ? 1 : 0;
         $res = $this->db->query(
             "SELECT *
-                                 FROM $this->table;"
+             FROM $this->table
+             WHERE (($filter = 1 AND base_game IS NULL)
+                 OR ($filter = 0));"
         );
 
         foreach ($res->getResult('object') as $product) {
-            if ($filterDLCs && isset($product->base_game))
-                continue;
             yield $product;
         }
     }
@@ -128,15 +145,23 @@ class ProductM extends Model {
         return $score * $base;
     }
 
+    /**
+     * izračunava rejting proizvoda $product.
+     *
+     * @param  object $product
+     * @return double
+     */
     public static function getProductRating($product) {
-        if ($product->rev_cnt == 0)
-            return 0;
-        $average = (float)($product->rev_sum / (5 * $product->rev_cnt));
-        $score = $average - ($average - 0.5) * 2 ** -log10($product->rev_cnt + 1);
-        // malo je previše pristrasna formula u regresiji ka proseku
-        return $score * 5;
+        return self::getRating($product->rev_cnt, $product->rev_sum, 5);
     }
 
+    /**
+     * izračunava rejting proizvoda u zavisnosti od njegovog sniženja i ocene
+     *
+     * @param  object $product
+     * @param  integer|null $couponDiscount u slučaju da se radi o kuponu a ne o sniženju
+     * @return double
+     */
     public static function getDiscountRating($product, $couponDiscount = null) {
         $discount = ($couponDiscount == null) ?
             $product->discount :
@@ -147,16 +172,19 @@ class ProductM extends Model {
         return $score;
     }
 
+    /**
+     * izračunava rejting proizvoda u zavisnosti od kupona korisnika i ocene
+     *
+     * @param  object $product
+     * @param  integer $coupon
+     * @return double
+     */
     public static function getCouponRating($product, $coupon) {
         return ProductM::getDiscountRating($product, $coupon);
     }
 
-    public static function getTopProducts() {
-        $products = iterator_to_array((new ProductM())->getAllProducts());
-
-        usort($products, fn ($p1, $p2) => (ProductM::getProductRating($p2) <=> ProductM::getProductRating($p1)));
-
-        return $products;
+    private static function owns($idUser, $idProduct) {
+        return (isset($idUser) && (new OwnershipM())->owns($idUser, $idProduct));
     }
 
     // ====================== front page algoritmi ==================
@@ -192,20 +220,24 @@ class ProductM extends Model {
      * @param  integer $idUser id trenutnog korisnika (NULL za gosta)
      * @param  integer $offset objašnjeno u opisu funkcije
      * @param  integer $limit objašnjeno u opisu funkcije
-     * @return array vraća niz objekta proizvoda poređanih po ocenama
+     * @return object[] vraća niz objekta proizvoda poređanih po ocenama
      */
     public function getHighRatingProducts($idUser = null, $offset = 0, $limit = 0) {
-        $results = $this->getTopProducts();
+        $generator = $this->getAllProducts();
+        $products = [];
+        foreach ($generator as $product) {
+            if (self::owns($idUser, $product->id))
+                continue;
 
-        if (isset($idUser)) { // ako korisnik nije ulogovan prikazuju mu se svi proizvodi jer ni jedan ne poseduje
-            $results = array_filter($results, function ($product) use (&$idUser) {
-                return !((new OwnershipM())->owns($idUser, $product->id));
-            }); // lambda za filtriranje niza kaže: "ako ulogovan korisnik ne poseduje proizvod, ubaci proizvod u niz"
+            $product->rating = ProductM::getProductRating($product);
+            array_push($products, $product);
         }
 
+        usort($products, fn ($p1, $p2) => $p2->rating <=> $p1->rating);
+
         return array_values(($limit <= 0) ?
-            $results :
-            array_slice($results, ($offset * $limit), $limit));
+            $products :
+            array_slice($products, ($offset * $limit), $limit));
     }
 
     /**
@@ -222,20 +254,21 @@ class ProductM extends Model {
      * @param  integer $idUser id trenutnog korisnika (NULL za gosta)
      * @param  integer $offset objašnjeno u opisu funkcije
      * @param  integer $limit objašnjeno u opisu funkcije
-     * @return array vraća niz objekta proizvoda poređanih količini prodanih kopija
+     * @return object[] vraća niz objekta proizvoda poređanih količini prodanih kopija
      */
     public function getTopSellersProducts($idUser = null, $offset = 0, $limit = 0) {
-        $results = iterator_to_array((new OwnershipM())->ownedSum());
+        $generator = (new OwnershipM())->ownedSum();
+        $products = [];
+        foreach ($generator as $product) {
+            if (self::owns($idUser, $product->id))
+                continue;
 
-        if (isset($idUser)) {
-            $results = array_filter($results, function ($temp) use (&$idUser) {
-                return !((new OwnershipM())->owns($idUser, $temp->id));
-            });
+            array_push($products, $product);
         }
 
         return array_values(($limit <= 0) ?
-            $results :
-            array_slice($results, ($offset * $limit), $limit));
+            $products :
+            array_slice($products, ($offset * $limit), $limit));
     }
 
     /**
@@ -251,22 +284,26 @@ class ProductM extends Model {
      * @param  integer $idUser
      * @param  integer $offset
      * @param  integer $limit
-     * @return array
+     * @return object[]
      */
     public function getDiscountedProducts($idUser = null, $offset = 0, $limit = 0) {
-        $results = iterator_to_array($this->getAllProducts());
+        $generator = ($this->getAllProducts());
+        $products = [];
+        foreach ($generator as $product) {
+            if (self::owns($idUser, $product->id))
+                continue;
+            if (! self::future_date($product->discount_expire))
+                continue;
 
-        $results = array_filter($results, function ($product) use (&$idUser) {
-            return (ProductM::future_date($product->discount_expire)) &&
-                (!isset($idUser) || !((new OwnershipM())->owns($idUser, $product->id)));
-        }); // lambda kaže "ako je proizvod na sniženju + ako korisnik nije ulogovan, ili ako ulogovan ne poseduje proizvod, ostavi ga u nizu"
+            $product->discRating = self::getDiscountRating($product);
+            array_push($products, $product);
+        }
 
-        usort($results, fn ($p1, $p2) =>
-        ProductM::getDiscountRating($p2) <=> ProductM::getDiscountRating($p1));
+        usort($products, fn ($p1, $p2) => $p2->discRating <=> $p1->discRating);
 
         return array_values(($limit <= 0) ?
-            $results :
-            array_slice($results, ($offset * $limit), $limit));
+            $products :
+            array_slice($products, ($offset * $limit), $limit));
     }
 
     /**
@@ -274,7 +311,7 @@ class ProductM extends Model {
      * prijatelji korisnika vole.
      *
      * @param  integer $idUser
-     * @return array
+     * @return object[]
      */
     public function getDiscoveryProducts($idUser = null) {
         if ($idUser == null)
@@ -317,19 +354,20 @@ class ProductM extends Model {
      * @param  integer $idUser
      * @param  integer $offset
      * @param  integer $limit
-     * @return array
+     * @return object[]
      */
     public function getCouponProducts($idUser = null, $offset = 0, $limit = 0) {
         if ($idUser == null)
             return [];
 
-        $products = iterator_to_array((new CouponM())->getAllCoupons($idUser));
+        $generator = (new CouponM())->getAllCoupons($idUser);
+        $products = [];
+        foreach ($generator as $p) {
+            $p->coupRating = self::getCouponRating($p, $p->coupon);
+            array_push($products, $p);
+        }
 
-        usort($products, function ($p1, $p2) {
-            $c1 = $p1->coupon;
-            $c2 = $p2->coupon;
-            return ProductM::getCouponRating($p2, $c2) <=> ProductM::getCouponRating($p1, $c1);
-        });
+        usort($products, fn($p1, $p2) => $p2->coupRating <=> $p1->coupRating);
 
         return array_values(($limit <= 0) ?
             $products :
@@ -349,7 +387,7 @@ class ProductM extends Model {
      * @param  integer $idUser
      * @param  integer $offset
      * @param  integer $limit
-     * @return array
+     * @return object[]
      */
     public function getProductsUserLike($idUser = null, $offset = 0, $limit = 0) {
         if ($idUser == null)
@@ -364,8 +402,8 @@ class ProductM extends Model {
             array_push($products, $product);
         }
 
-        usort($products, fn ($p1, $p2) => // TODO za sada je jedini kriterijum sortiranja koliko žanrova se matchuje
-        $p2->matching <=> $p1->matching);
+        // TODO za sada je jedini kriterijum sortiranja koliko žanrova se matchuje
+        usort($products, fn ($p1, $p2) => $p2->matching <=> $p1->matching);
 
         return array_values(($limit <= 0) ?
             $products :
@@ -384,7 +422,7 @@ class ProductM extends Model {
      * @param  integer $idUser
      * @param  integer $offset
      * @param  integer $limit
-     * @return array
+     * @return object[]
      */
     public function getProductsUserFriendsLike($idUser = null, $offset = 0, $limit = 0) {
         if ($idUser == null)
@@ -422,27 +460,38 @@ class ProductM extends Model {
      * @param  integer $productId id proizvoda za koje se traže slični
      * @param  integer $offset objašnjeno u opisu funkcije
      * @param  integer $limit objašnjeno u opisu funkcije
-     * @return array vraća niz objekta proizvoda poređanih po sličnosti opadajuće
+     * @return object[] vraća niz objekta proizvoda poređanih po sličnosti opadajuće
      */
     public function getSimilarProducts($productId, $idUser = null, $offset = 0, $limit = 0) {
         $similar = (new GenreM())->getSimilarProducts($productId);
 
         $products = [];
         foreach ($similar as $p) {
-            if ($idUser != null && ((new OwnershipM())->owns($idUser, $p->id)))
+            if (self::owns($idUser, $p->id))
                 continue;
 
+            $p->rating = ProductM::getProductRating($p);
             array_push($products, $p);
         }
 
-        usort($products, fn ($p1, $p2) => // za sada usort samo radi po tome ko se više puta pojavljuje, TODO
-        $p2->match_count <=> $p1->match_count);
+        // sortiramo po dve stvari - prvo po match_count a onda po rejtingu
+        usort($products, function($p1, $p2) {
+            if ($p1->match_count != $p2->match_count)
+                return $p2->match_count <=> $p1->match_count;
+            return $p2->rating <=> $p1->rating;
+        });
 
         return array_values(($limit <= 0) ?
             $products :
             array_slice($products, ($offset * $limit), $limit));
     }
 
+    /**
+     * dohvata lokaciju slike pozadine proizvoda sa id-jem $id. vraća null ako ne postoji
+     *
+     * @param  integer $id
+     * @return string|null
+     */
     public function getBackground($id) {
         $background = $this->getAsset('uploads/product/' . $id . '/background.png');
 

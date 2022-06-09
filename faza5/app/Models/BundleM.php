@@ -50,7 +50,7 @@ class BundleM extends Model {
      * određuje početnu cenu, sniženje i finalnu cenu kolekcije za trenutnog korisnika
      *
      * @param  array $products niz modela dohvaćenih iz baze sa ProductM->find($id)
-     * @param  mixed $discount sniženje kolekcije
+     * @param  integer $discount sniženje kolekcije
      * @return array 'price' => puna cena, 'discount' => sniženje,
      * 'final' => finalna cena kada se primeni sniženje
      *
@@ -93,18 +93,23 @@ class BundleM extends Model {
         ];
     }
 
+    /**
+     * vraća sve proizvode u generatoru iz kolekcije sa id-jem $id
+     *
+     * @param  integer $id
+     */
     public function bundleProducts($id) {
-        $iter = (new BundledProductsM())
-            ->where('id_bundle', $id)
-            ->findAll();
-
-        foreach ($iter as $bundle) {
-            yield ((new ProductM())->find($bundle->id_product));
-        }
+        return (new BundledProductsM())->productsInBundle($id);
     }
 
+    /**
+     * dohvata lokaciju pozadine za kolekciju sa id-jem $id
+     *
+     * @param  integer $id
+     * @return string
+     */
     public function getBackground($id) {
-        $products = iterator_to_array($this->bundleProducts($id));
+        $products = $this->bundleProducts($id);
         $productM = new ProductM();
 
         $background = null;
@@ -116,8 +121,16 @@ class BundleM extends Model {
         return $background;
     }
 
-    public function getBundles($product_id) {
-        $bundlesList = (new BundledProductsM())->where('id_product', $product_id)->findAll();
+    /**
+     * dohvata sve kolekcije u kojima se nalazi proizvod sa id-jem $productId
+     *
+     * @param  integer $productId
+     * @return array
+     */
+    public function getBundles($productId) {
+        $bundlesList = (new BundledProductsM())
+            ->where('id_product', $productId)
+            ->findAll();
         $bundles = [];
 
         foreach ($bundlesList as $bundled) {

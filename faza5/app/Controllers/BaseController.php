@@ -216,8 +216,9 @@ class BaseController extends Controller {
 
     /**
      *
-     * Prikaz stranice proizvoda
+     * Prikaz stranice proizvoda sa id-jem $id
      *
+     * @param  integer $id id proizvoda
      * @return void
      */
     public function product($id) {
@@ -248,8 +249,10 @@ class BaseController extends Controller {
         $this->show('product', array_merge($res, $userRes));
     }
 
-    /** 
-     * Prikaz svog ili tudjeg profila
+    /**
+     * Prikaz profila korisnika sa id-jem $id
+     *
+     * @param  integer $id id korisnika
      * @return void
      */
     public function profile($id = null) {

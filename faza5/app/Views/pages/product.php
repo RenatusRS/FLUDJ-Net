@@ -405,8 +405,8 @@ use App\Models\ProductM;
                 url: "<?= site_url("admin/deleteReviewAjax") ?>",
                 type: 'POST',
                 data: {
-                    product: <?php echo $product->id ?>,
-                    user: id
+                    idProduct: <?php echo $product->id ?>,
+                    idUser: id
                 },
                 dataType: "JSON",
                 success: function(response) {

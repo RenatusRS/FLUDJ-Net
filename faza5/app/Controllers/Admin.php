@@ -240,33 +240,36 @@ class Admin extends BaseController {
         return redirect()->to(site_url("admin/managebundle/" . $id));
     }
 
-    /** 
-     * Procesiranje brisanja recenzije od strane administratora
-     * 
+    /**
+     * funkcija admina za brisanje recenzije. Informacija o tome koja recenzija je u pitanju se dobija
+     * iz requesta, dok se request pravi u Views/pages/product.php
+     *
      * @return void
      */
     public function deleteReviewAjax() {
         $data = $this->request->getVar();
 
-        $this->deleteReview($data['product'], $data['user'], false);
+        $this->deleteReview($data['idProduct'], $data['idUser'], false);
 
         echo json_encode(array(
             "state" => 1,
         ));
     }
 
-    /** 
-     * Prikaz stranice za dodavanje popusta
-     * 
+    /**
+     * Prikaz stranice za dodavanje popusta za proizvod sa id-jem $id
+     *
+     * @param  integer $id id proizvoda
      * @return void
      */
     public function setDiscount($id) {
         $this->show('setDiscount', ["productId" => $id]);
     }
 
-    /** 
-     * Procesiranje popusta
-     * 
+    /**
+     * Procesiranje popusta za proizvod sa id-jem $id
+     *
+     * @param  integer $id id proizvoda
      * @return void
      */
     public function setDiscountSubmit($id) {

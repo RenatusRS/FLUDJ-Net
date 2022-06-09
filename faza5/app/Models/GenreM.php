@@ -24,6 +24,12 @@ class GenreM extends Model {
 
     public $db;
 
+    /**
+     * dohvata niz žanrova
+     *
+     * @param  integer $productId
+     * @return string[]
+     */
     public function getGenres($productId) {
         $rows = $this->where($this->primaryKey, $productId)
             ->findAll();
@@ -72,7 +78,7 @@ class GenreM extends Model {
      * @param  string $genreName
      * @return boolean
      */
-    private function compositeExists($productId, $genreName) {
+    public function compositeExists($productId, $genreName) {
         $this->db = \Config\Database::connect();
 
         $builder = $this->db->table($this->table);

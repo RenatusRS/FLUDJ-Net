@@ -69,7 +69,7 @@ class CouponM extends Model {
             ->first();
 
         return (isset($coupon)) ?
-            $coupon->discount :
+            (int)($coupon->discount) :
             0;
     }
 
@@ -98,6 +98,13 @@ class CouponM extends Model {
         ]);
     }
 
+    /**
+     * uklanja kupon korisnika sa id-jem $idOwner za proizvod sa id-jem $idProduct
+     *
+     * @param  integer $idOwner
+     * @param  integer $idProduct
+     * @return void
+     */
     public static function removeCoupon($idOwner, $idProduct) {
         (new CouponM())->where('id_product', $idProduct)
             ->where('id_owner', $idOwner)
@@ -126,6 +133,13 @@ class CouponM extends Model {
         return true;
     }
 
+    /**
+     * dodeli poenu korisniku sa id-jem $idUser na osnovu toga koliko je para potrošio
+     *
+     * @param  integer $idUser
+     * @param  integer $spent
+     * @return void
+     */
     public static function awardPoints($idUser, $spent) {
         $points = (int)($spent * POINTS_PRODUCT);
 
