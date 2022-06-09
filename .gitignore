@@ -83,12 +83,10 @@ user_guide_src/cilexer/pycilexer.egg-info/*
 tests/coverage*
 
 # Don't save phpunit under version control.
-phpunit
 
 #-------------------------
 # Composer
 #-------------------------
-vendor/
 
 #-------------------------
 # IDE / Development Files
@@ -130,3 +128,4 @@ nb-configuration.xml
 /phpunit*.xml
 /.phpunit.*.cache
 
+faza5/.phpunit.result.cache

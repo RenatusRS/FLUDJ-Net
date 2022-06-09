@@ -50,7 +50,7 @@ use App\Models\ProductM;
         <div style="flex: 6">
             <div style="margin-bottom: 10px;">
                 <div class="mySlides" style="display:none">
-                    <video id="video" style="width: 100%; color: yellow" autoplay muted loop controls poster="assets/thumbnail.png">
+                    <video id="video" style="width: 100%" autoplay muted loop controls poster="assets/thumbnail.png">
                         <source src="<?php echo base_url('uploads/product/' . $product->id . '/video.webm')  ?>" type="video/webm">
                     </video>
                 </div>
@@ -252,7 +252,7 @@ use App\Models\ProductM;
                 $name = $review['user']->nickname;
                 $id = $review['user']->id;
         ?>
-                <div style="color: rgb(255, 196, 0); background-color:rgb(0,0,0,0.6); border-radius: 5px; margin-bottom: 10px">
+                <div id=<?php echo $id ?> style="color: rgb(255, 196, 0); background-color:rgb(0,0,0,0.6); border-radius: 5px; margin-bottom: 10px">
                     <div style="display:flex; align-items: center;">
                         <a href="<?php echo site_url($controller . "/profile/" . $id) ?>">
                             <div style="flex: 1">
@@ -268,9 +268,7 @@ use App\Models\ProductM;
                                 } ?>
                             </span>
                             <?php if (isset($user) && $user->admin_rights != 0) { ?>
-                                <form style="display:inline-block" action="<?= site_url("admin/DeleteReviewAdminSubmit/{$product->id}/{$id}") ?>" method="POST">
-                                    <input style="width: 57px; height: 57px;margin: 0;border-radius: 0 5px 0 0" type="submit" class="btn" name="action" value="🗑️">
-                                </form>
+                                <input id=<?php echo $id ?> style="width: 57px; height: 57px;margin: 0;border-radius: 0 5px 0 0" type="submit" class="btn delete-review" name="action" value="🗑️">
                             <?php } ?>
                         </div>
 
@@ -286,14 +284,8 @@ use App\Models\ProductM;
                         <form style="flex: 1;" action=" <?= site_url("user/awardUser/$id/") ?>" method="POST">
                             <input style="border-radius: 0 0 0 5px; margin: 0" type="submit" class="btn" name="action" value="🌟">
                         </form>
-                        <form style="flex: 1;" action=" <?= site_url("user/LikeDislikeSubmit/{$product->id}/{$id}") ?>" method="POST">
-                            <input style="border-radius: 0; margin: 0" type="submit" class="btn" name="action" value="👍 <?php echo $review["positive"] ?>">
-                            <input type="hidden" name="like" value="1">
-                        </form>
-                        <form style="flex: 1" action="<?= site_url("user/LikeDislikeSubmit/{$product->id}/{$id}") ?>" method="POST">
-                            <input style="border-radius: 0 0 5px 0; margin: 0" type="submit" class="btn" name="action" value="👎 <?php echo $review["negative"] ?>">
-                            <input type="hidden" name="like" value="0">
-                        </form>
+                        <input id=<?php echo $id ?> style="flex: 1; border-radius: 0; margin: 0" type="submit" class="btn like" name="action" value="👍 <?php echo $review["positive"] ?>">
+                        <input id=<?php echo $id ?> style="flex: 1; border-radius: 0 0 5px 0; margin: 0" type="submit" class="btn dislike" name="action" value="👎 <?php echo $review["negative"] ?>">
                     </div>
                 </div>
         <?php }
@@ -368,5 +360,61 @@ use App\Models\ProductM;
                 }
             });
         })
+
+        function update(response) {
+            $("#" + id + ".like").attr("value", "👍 " + response['votes'][0]['pos'])
+            $("#" + id + ".dislike").attr("value", "👎 " + response['votes'][0]['neg'])
+        }
+
+        $(document).on("click", ".like", function() {
+            id = $(this).attr('id')
+
+            $.ajax({
+                url: "<?= site_url("user/likeajax") ?>",
+                type: 'POST',
+                data: {
+                    like: 1,
+                    product: <?php echo $product->id ?>,
+                    user: id
+                },
+                dataType: "JSON",
+                success: update,
+            })
+        })
+
+        $(document).on("click", ".dislike", function() {
+            id = $(this).attr('id')
+
+            $.ajax({
+                url: "<?= site_url("user/likeajax") ?>",
+                type: 'POST',
+                data: {
+                    like: 0,
+                    product: <?php echo $product->id ?>,
+                    user: $(this).attr('id')
+                },
+                dataType: "JSON",
+                success: update,
+            })
+        })
+
+        $(document).on("click", ".delete-review", function() {
+            id = $(this).attr('id')
+
+            $.ajax({
+                url: "<?= site_url("admin/deleteReviewAjax") ?>",
+                type: 'POST',
+                data: {
+                    product: <?php echo $product->id ?>,
+                    user: id
+                },
+                dataType: "JSON",
+                success: function(response) {
+                    $("#" + id).hide(500);
+                }
+            })
+        })
+
+
     });
 </script>
