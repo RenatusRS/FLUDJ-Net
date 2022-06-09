@@ -49,19 +49,19 @@ $userM = new UserM();
                     header("Refresh:0");
                 } ?>
 
-                <div style="margin: 15px 15px 0 0; min-width: 330px;">
+                <div id=<?= $requester->id ?> style="margin: 15px 15px 0 0; min-width: 330px;">
                     <a href="http://localhost:8080/user/profile/<?php echo $requester->id ?>">
                         <div style="width:75%; float:left;background-color: black;border-radius: 5px 0 0 5px">
                             <img src=" <?php echo $userM->getAvatar($requester->id) ?>" style="width:70px; vertical-align: middle;border-radius: 5px 0 0 5px" /> <span style=" vertical-align: middle; font-size: 22px;"><?php echo $requester->nickname ?></span>
                         </div>
                     </a>
                     <div style="width:25%;float:left;">
-                        <form name='fr_accept_btn' action="<?= site_url("user/friendrequests"); ?>" method="POST" style="float:left">
-                            <input type="submit" name=<?= $requester->id . "ACCEPT" ?> class="btn" value="✔" style="border-radius:0; height: 70px; margin: 0">
-                        </form>
-                        <form name='fr_reject_btn' action="<?= site_url("user/friendrequests"); ?>" method="POST" style="float:left">
-                            <input type="submit" name=<?= $requester->id . "REJECT" ?> class="btn" value="✘" style="border-radius:0; height: 70px; margin: 0">
-                        </form>
+                        <div style="float:left">
+                            <input type="button" id=<?= $requester->id ?> class="btn accept-button" value="✔" style="border-radius:0; height: 70px; margin: 0">
+                        </div>
+                        <div style="float:left">
+                            <input type="button" id=<?= $requester->id ?> class="btn reject-button" value="✘" style="border-radius:0; height: 70px; margin: 0">
+                        </div>
                     </div>
                 </div>
             <?php } ?>
@@ -80,16 +80,16 @@ $userM = new UserM();
                     header("Refresh:0");
                 } ?>
 
-                <div style="margin: 15px 15px 0 0; min-width: 330px;">
+                <div id=<?= $requestedToUser->id ?> style="margin: 15px 15px 0 0; min-width: 330px;">
                     <a href="http://localhost:8080/user/profile/<?php echo $requestedToUser->id ?>">
                         <div style="width:87%; float:left;background-color: black;border-radius: 5px 0 0 5px">
                             <img src="<?php echo $userM->getAvatar($requestedToUser->id) ?>" style="width:70px; vertical-align: middle;border-radius: 5px 0 0 5px" /> <span style="vertical-align: middle; font-size: 22px;"><?php echo $requestedToUser->nickname ?></span>
                         </div>
                     </a>
                     <div style="width:13%;float:left;">
-                        <form name='fr_cancel_btn' action="<?= site_url("user/friendrequests"); ?>" method="POST" style="float:left;">
-                            <input type="submit" name=<?= $requestedToUser->id . "CANCEL" ?> class="btn" value="✘" style="border-radius:0; height: 70px; margin: 0">
-                        </form>
+                        <div style="float:left;">
+                            <input type="button" id=<?= $requestedToUser->id ?> class="btn cancel-button" value="✘" style="border-radius:0; height: 70px; margin: 0">
+                        </div>
                     </div>
                 </div>
             <?php } ?>
@@ -129,6 +129,57 @@ $userM = new UserM();
                     window.location.href = response;
                 }
             });
+        })
+
+        $(document).on("click", ".cancel-button", function() {
+            id = $(this).attr("id");
+
+            $.ajax({
+                url: "<?= site_url("user/friendajax") ?>",
+                type: 'POST',
+                data: {
+                    user: id,
+                    relationship: 0,
+                },
+                dataType: "JSON",
+                success: function(response) {
+                    $("#" + id).hide(900);
+                },
+            })
+        })
+
+        $(document).on("click", ".accept-button", function() {
+            id = $(this).attr("id");
+
+            $.ajax({
+                url: "<?= site_url("user/friendajax") ?>",
+                type: 'POST',
+                data: {
+                    user: id,
+                    relationship: 2,
+                },
+                dataType: "JSON",
+                success: function(response) {
+                    $("#" + id).hide(900);
+                },
+            })
+        })
+
+        $(document).on("click", ".reject-button", function() {
+            id = $(this).attr("id");
+
+            $.ajax({
+                url: "<?= site_url("user/friendajax") ?>",
+                type: 'POST',
+                data: {
+                    user: id,
+                    relationship: 3,
+                },
+                dataType: "JSON",
+                success: function(response) {
+                    $("#" + id).hide(900);
+                },
+            })
         })
     });
 </script>

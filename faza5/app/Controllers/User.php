@@ -28,7 +28,6 @@ use App\Models\CouponM;
 class User extends BaseController {
     public function index() {
         $user = $this->getUser();
-
         $this->frontpage($user->id);
     }
 
@@ -245,43 +244,6 @@ class User extends BaseController {
         return redirect()->to(site_url("user/product/{$product->id}"));
     }
 
-    /**
-     *
-     * Procesiranje lajkovanja recenzije korisnika sa id-jem $posterId za proizvod sa id-jem $id
-     *
-     * @param  integer $id id proizvoda na koji se odnosi recenzija
-     * @param  integer $posterId id korisnika koji je napisao recenziju
-     * @return void
-     */
-    public function LikeDislikeSubmit($id, $posterId) {
-        $poster = (new UserM())->find($posterId);
-        $user = $this->getUser();
-
-        if ($poster->id == $user->id) return redirect()->to(site_url("User/Product/{$id}"));
-
-        $review_voteM = new ReviewVoteM();
-
-        $vote = $review_voteM->where("id_user", $user->id)->where("id_poster", $poster->id)->where("id_product", $id)->first();
-
-        $like = $this->request->getVar('like');
-
-        if ($vote) {
-            if ($vote->like == $like)
-                $review_voteM->where('id_product', $id)->where('id_user', $user->id)->where("id_poster", $poster->id)->delete();
-            else
-                $review_voteM->where('id_product', $id)->where('id_user', $user->id)->where("id_poster", $poster->id)->set(['like' => $like])->update();
-        } else {
-            $review_voteM->insert([
-                'id_user' => $user->id,
-                'id_poster' => $poster->id,
-                'id_product' => $id,
-                'like' => $like
-            ]);
-        }
-
-        return redirect()->to(site_url("user/product/{$id}"));
-    }
-
     public function awardUser($idUser) {
         $user = $this->getUser();
         $awardee = (new UserM())->find($idUser);
@@ -449,5 +411,85 @@ class User extends BaseController {
         $this->show('coupons', [
             'coupons' => iterator_to_array((new CouponM())->getAllCoupons($user->id)),
         ]);
+    }
+
+    public function likeAjax() {
+        $data = $this->request->getVar();
+
+        $poster = (new UserM())->find($data['user']);
+        $user = $this->getUser();
+        $id = $data['product'];
+        $like = $data['like'];
+
+        if ($poster->id == $user->id) return redirect()->to(site_url("User/Product/{$id}"));
+
+        $review_voteM = new ReviewVoteM();
+
+        $vote = $review_voteM->where("id_user", $user->id)->where("id_poster", $poster->id)->where("id_product", $id)->first();
+
+        if ($vote) {
+            if ($vote->like == $like)
+                $review_voteM->where('id_product', $id)->where('id_user', $user->id)->where("id_poster", $poster->id)->delete();
+            else
+                $review_voteM->where('id_product', $id)->where('id_user', $user->id)->where("id_poster", $poster->id)->set(['like' => $like])->update();
+        } else {
+            $review_voteM->insert([
+                'id_user' => $user->id,
+                'id_poster' => $poster->id,
+                'id_product' => $id,
+                'like' => $like
+            ]);
+        }
+
+        $votes = (new ReviewVoteM())->getVotes($id, $poster->id);
+
+        echo json_encode(array(
+            "state" => 1,
+            "votes" => $votes,
+        ));
+    }
+
+    public function friendAjax() {
+        $data = $this->request->getVar();
+        $relationshipM = new RelationshipM();
+        $userMe = $this->getUser()->id;
+        $userThem = $data['user'];
+        $remove = false;
+
+        switch ($data['relationship']) {
+            case (-1):
+                $relationshipM->insert([
+                    'id_user1' => $userMe,
+                    'id_user2' => $userThem,
+                    'status' => 0
+                ]);
+                $state = 0;
+                break;
+            case (0):
+                $relationshipM->where('id_user1', $userMe)->where('id_user2', $userThem)->delete();
+                $state = -1;
+                break;
+
+            case (1):
+                $relationshipM->where('id_user1', $userMe)->where('id_user2', $userThem)->OrWhere('id_user1', $userThem)->where('id_user2', $userMe)->delete();
+                $state = -1;
+                $remove = true;
+                break;
+
+            case (2):
+                $relationshipM->set('status', 1)->where('id_user1', $userThem)->where('id_user2', $userMe)->update();
+                $state = 1;
+                break;
+            case (3):
+                $relationshipM->where('id_user1', $userThem)->where('id_user2', $userMe)->delete();
+                $state = -1;
+                break;
+            default:
+        }
+
+        echo json_encode(array(
+            "state" => $state,
+            "remove" => $remove,
+        ));
     }
 }

@@ -241,20 +241,19 @@ class Admin extends BaseController {
     }
 
     /**
-     * funkcija admina za brisanje recenzije za proizvod $idProduct
-     * koju je postavio korisnik sa imenom $posterUsername
+     * funkcija admina za brisanje recenzije. Informacija o tome koja recenzija je u pitanju se dobija
+     * iz requesta, dok se request pravi u Views/pages/product.php
      *
-     * @param  integer $id id proizvoda na koji se odnosi recenzija
-     * @param  string $posterUsername korisničko ime osobe koja je ostavila recenziju
      * @return void
      */
-    public function DeleteReviewAdminSubmit($id, $posterUsername) {
-        $poster = (new UserM())->where('username', $posterUsername)->first();
+    public function deleteReviewAjax() {
+        $data = $this->request->getVar();
 
-        if ($poster == null)
-            return;
+        $this->deleteReview($data['idProduct'], $data['idUser'], false);
 
-        return $this->deleteReview($id, $poster->id, false);
+        echo json_encode(array(
+            "state" => 1,
+        ));
     }
 
     /**
@@ -278,15 +277,15 @@ class Admin extends BaseController {
         if (!$this->validate(['discount' => 'required|greater_than_equal_to[5]|less_than_equal_to[90]|integer']))
             return $this->show('setDiscount', ['productId' => $id, 'errors' => $this->validator->getErrors()]);
 
-        $expDate = date($_POST['expDate']);
+        $expDate = date($this->request->getPost('expDate'));
 
-        $future_date = ProductM::future_date($_POST['expDate']);
+        $future_date = ProductM::future_date($this->request->getPost('expDate'));
 
         if (!($future_date))
             return $this->show('setDiscount', ['productId' => $id, 'message' => "Discount must last at least one day."]);
 
         (new ProductM())->update($id, [
-            'discount' => $this->request->getVar('discount'),
+            'discount' => $this->request->getPost('discount'),
             'discount_expire' => $expDate
         ]);
 
@@ -352,27 +351,31 @@ class Admin extends BaseController {
         return redirect()->to(base_url());
     }
 
-    public function ban($idUser) {
-        UserM::banUser($idUser);
+    public function banajax() {
+        $data = $this->request->getVar();
+        $userM = new UserM();
 
-        $this->profile($idUser);
+        $user = $userM->find($data['user']);
+
+        if ($user->review_ban == 0) $userM->banUser($user->id);
+        else $userM->unbanUser($user->id);
+
+        echo json_encode(array(
+            "state" => $user->review_ban,
+        ));
     }
 
-    public function unban($idUser) {
-        UserM::unbanUser($idUser);
+    public function promoteajax() {
+        $data = $this->request->getVar();
+        $userM = new UserM();
 
-        $this->profile($idUser);
-    }
+        $user = $userM->find($data['user']);
 
-    public function promote($idUser) {
-        UserM::promoteUser($idUser);
+        if ($user->admin_rights == 0) $userM->promoteUser($user->id);
+        else $userM->demoteUser($user->id);
 
-        $this->profile($idUser);
-    }
-
-    public function demote($idUser) {
-        UserM::demoteUser($idUser);
-
-        $this->profile($idUser);
+        echo json_encode(array(
+            "state" => !$user->admin_rights,
+        ));
     }
 }

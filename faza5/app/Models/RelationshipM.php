@@ -133,4 +133,22 @@ class RelationshipM extends Model {
 
         return $requestedTo;
     }
+
+    /**
+     * Dohvatanje statusa izmedju dva korisnika
+     * 
+     * @return int
+     */
+    public function getStatus($userId1, $userId2) {
+        if ($userId1 == null || $userId2 == null) return -1;
+
+        $stateLR = $this->where("id_user1", $userId1)->where("id_user2", $userId2)->first();
+        $stateRL = $this->where("id_user2", $userId1)->where("id_user1", $userId2)->first();
+
+        if (!isset($stateLR) && !isset($stateRL)) return -1;
+
+        if (isset($stateLR)) return $stateLR->status;
+
+        return $stateRL->status == 0 ? 2 : 1;
+    }
 }

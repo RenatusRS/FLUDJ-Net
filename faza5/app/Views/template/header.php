@@ -52,24 +52,20 @@ Opis: Header template
                 </a>
             <?php } ?>
             <?php if (isset($user_profile) && $user != $user_profile) { ?>
-                <?php if (!$user_profile->admin_rights) { ?>
-                    <a href="http://localhost:8080/admin/promote/<?php echo $user_profile->id ?>">
-                        <div><i class="bi bi-chevron-double-up"></i><br />Promote Admin</div>
-                    </a>
-                <?php } else { ?>
-                    <a href="http://localhost:8080/admin/demote/<?php echo $user_profile->id ?>">
-                        <div><i class="bi bi-chevron-double-down"></i><br />Demote Admin</div>
-                    </a>
-                <?php } ?>
-                <?php if (!$user_profile->review_ban) { ?>
-                    <a href="http://localhost:8080/admin/ban/<?php echo $user_profile->id ?>">
-                        <div><i class="bi bi-slash-circle"></i><br />Review Ban</div>
-                    </a>
-                <?php } else { ?>
-                    <a href="http://localhost:8080/admin/unban/<?php echo $user_profile->id ?>">
-                        <div><i class="bi bi-circle"></i><br />Review Unban</div>
-                    </a>
-                <?php } ?>
+                <div id="admin-promote" class="not-selectable" style="cursor: pointer;">
+                    <?php if ($user_profile->admin_rights) { ?>
+                        <i class="bi bi-chevron-double-down"></i><br />Demote Admin
+                    <?php } else { ?>
+                        <i class="bi bi-chevron-double-up"></i><br />Promote Admin
+                    <?php } ?>
+                </div>
+                <div id="admin-ban" class="not-selectable" style="cursor: pointer;">
+                    <?php if (!$user_profile->review_ban) { ?>
+                        <i class=" bi bi-slash-circle"></i><br />Review Ban
+                    <?php } else { ?>
+                        <i class="bi bi-circle"></i><br />Review Unban
+                    <?php } ?>
+                </div>
                 <a href="http://localhost:8080/admin/deleteuser/<?php echo $user_profile->id ?>">
                     <div><i class="bi bi-trash"></i><br />Delete User</div>
                 </a>
@@ -79,3 +75,39 @@ Opis: Header template
 
 
 </header>
+
+<?php if (isset($user_profile) && ($user != null) && ($user->admin_rights) && ($user != $user_profile)) { ?>
+    <script>
+        $(function() {
+            $(document).on("click", "#admin-ban", function() {
+                $.ajax({
+                    url: "<?= site_url("admin/banajax") ?>",
+                    type: 'POST',
+                    data: {
+                        user: <?php echo $user_profile->id ?>
+                    },
+                    dataType: "JSON",
+                    success: function(response) {
+                        if (response['state'] == 1) $("#admin-ban").html("<i class='bi bi-slash-circle'></i><br />Review Ban");
+                        else $("#admin-ban").html("<i class='bi bi-circle'></i><br />Review Unban");
+                    },
+                })
+            })
+
+            $(document).on("click", "#admin-promote", function() {
+                $.ajax({
+                    url: "<?= site_url("admin/promoteajax") ?>",
+                    type: 'POST',
+                    data: {
+                        user: <?php echo $user_profile->id ?>
+                    },
+                    dataType: "JSON",
+                    success: function(response) {
+                        if (response['state'] == 1) $("#admin-promote").html("<i class='bi bi-chevron-double-down'></i><br />Demote Admin");
+                        else $("#admin-promote").html("<i class='bi bi-chevron-double-up'></i><br />Promote Admin");
+                    },
+                })
+            })
+        })
+    </script>
+<?php } ?>
