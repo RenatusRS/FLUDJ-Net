@@ -27,7 +27,7 @@ class GenreM extends Model {
     /**
      * dohvata niz žanrova
      *
-     * @param  mixed $productId
+     * @param  integer $productId
      * @return string[]
      */
     public function getGenres($productId) {

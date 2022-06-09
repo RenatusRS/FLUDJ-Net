@@ -240,29 +240,37 @@ class Admin extends BaseController {
         return redirect()->to(site_url("admin/managebundle/" . $id));
     }
 
-    /** 
-     * Procesiranje brisanja recenzije od strane administratora
-     * 
+    /**
+     * funkcija admina za brisanje recenzije za proizvod $idProduct
+     * koju je postavio korisnik sa imenom $posterUsername
+     *
+     * @param  integer $id id proizvoda na koji se odnosi recenzija
+     * @param  string $posterUsername korisničko ime osobe koja je ostavila recenziju
      * @return void
      */
     public function DeleteReviewAdminSubmit($id, $posterUsername) {
         $poster = (new UserM())->where('username', $posterUsername)->first();
 
+        if ($poster == null)
+            return;
+
         return $this->deleteReview($id, $poster->id, false);
     }
 
-    /** 
-     * Prikaz stranice za dodavanje popusta
-     * 
+    /**
+     * Prikaz stranice za dodavanje popusta za proizvod sa id-jem $id
+     *
+     * @param  integer $id id proizvoda
      * @return void
      */
     public function setDiscount($id) {
         $this->show('setDiscount', ["productId" => $id]);
     }
 
-    /** 
-     * Procesiranje popusta
-     * 
+    /**
+     * Procesiranje popusta za proizvod sa id-jem $id
+     *
+     * @param  integer $id id proizvoda
      * @return void
      */
     public function setDiscountSubmit($id) {

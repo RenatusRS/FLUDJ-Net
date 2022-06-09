@@ -34,7 +34,7 @@ class User extends BaseController {
 
     /**
      * Odjavljivanje korisnika
-     * 
+     *
      * @return void
      */
     public function logout() {
@@ -43,20 +43,20 @@ class User extends BaseController {
     }
 
     /**
-     * 
+     *
      * Prikaz stranice za uplacivanje novca
-     * 
-     * @return void   
+     *
+     * @return void
      */
     public function addFunds() {
         $this->show('addFunds');
     }
 
     /**
-     * 
+     *
      * Procesiranje uplacivanja novca
-     * 
-     * @return void   
+     *
+     * @return void
      */
     public function addFundsSubmit() {
         if (!$this->validate(['funds' => 'required|numeric|greater_than[0]']))
@@ -75,10 +75,11 @@ class User extends BaseController {
     }
 
     /**
-     * 
-     * Prikaz stranice za kupovanje proizvoda
-     * 
-     * @return void   
+     *
+     * Prikaz stranice za kupovanje proizvoda sa id-jem $id
+     *
+     * @param  integer $id id proizvoda
+     * @return void
      */
     public function buyProduct($id) {
         $user = $this->getUser();
@@ -110,10 +111,11 @@ class User extends BaseController {
     }
 
     /**
-     * 
-     * Procesiranje kupovine proizvoda
-     * 
-     * @return void   
+     *
+     * Procesiranje kupovine proizvoda sa id-jem $id
+     *
+     * @param  integer $id id proizvoda
+     * @return void
      */
     public function buyProductSubmit($id) {
         $userFrom = $this->getUser();
@@ -188,7 +190,7 @@ class User extends BaseController {
 
     /**
      * Prikaz stranice sa opcijama za izmenu/unos podataka
-     * 
+     *
      * @return void
      */
     public function editProfile() {
@@ -197,7 +199,7 @@ class User extends BaseController {
 
     /**
      * Prikaz stranice sa listom zahteva prijateljsva (odlazeci i dolazeci)
-     * 
+     *
      * @return void
      */
     public function friendRequests() {
@@ -214,10 +216,11 @@ class User extends BaseController {
     }
 
     /**
-     * 
-     * Procesiranje pravljenja recenzije
-     * 
-     * @return void   
+     *
+     * Procesiranje pravljenja recenzije za proizvod sa id-jem $id
+     *
+     * @param  integer $id id proizvoda
+     * @return void
      */
     public function makeReviewSubmit($id) {
         $text = $this->request->getVar('text');
@@ -243,10 +246,12 @@ class User extends BaseController {
     }
 
     /**
-     * 
-     * Procesiranje lajkovanja recenzija
-     * 
-     * @return void   
+     *
+     * Procesiranje lajkovanja recenzije korisnika sa id-jem $posterId za proizvod sa id-jem $id
+     *
+     * @param  integer $id id proizvoda na koji se odnosi recenzija
+     * @param  integer $posterId id korisnika koji je napisao recenziju
+     * @return void
      */
     public function LikeDislikeSubmit($id, $posterId) {
         $poster = (new UserM())->find($posterId);
@@ -348,9 +353,10 @@ class User extends BaseController {
     }
 
 
-    /** 
-     * Procesiranje brisanja recenzije
-     * 
+    /**
+     * Procesiranje brisanja recenzije koja se odnosi na proizvod sa id-jem $id
+     *
+     * @param  integer $id id proizvoda
      * @return void
      */
     public function deleteReviewSubmit($id) {

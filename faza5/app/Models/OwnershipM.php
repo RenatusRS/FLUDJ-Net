@@ -69,8 +69,8 @@ class OwnershipM extends Model {
     /**
      * korisnik sa id-jem $idUser dobija proizvod sa id-jem $idProduct ako ga već nije imao.
      *
-     * @param  mixed $idUser
-     * @param  mixed $idProduct
+     * @param  integer $idUser
+     * @param  integer $idProduct
      * @return boolean vraća true ako ga je dobio, a false ako nije
      */
     public function acquire($idUser, $idProduct) {

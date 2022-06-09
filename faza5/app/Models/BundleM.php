@@ -50,7 +50,7 @@ class BundleM extends Model {
      * određuje početnu cenu, sniženje i finalnu cenu kolekcije za trenutnog korisnika
      *
      * @param  array $products niz modela dohvaćenih iz baze sa ProductM->find($id)
-     * @param  mixed $discount sniženje kolekcije
+     * @param  integer $discount sniženje kolekcije
      * @return array 'price' => puna cena, 'discount' => sniženje,
      * 'final' => finalna cena kada se primeni sniženje
      *
