@@ -9,7 +9,7 @@ use CodeIgniter\Config\Factories;
 
 use App\Models\GenreM;
 
-class GenreT extends CIUnitTestCase {
+class GenreTest extends CIUnitTestCase {
     use ControllerTestTrait;
     use DatabaseTestTrait;
 

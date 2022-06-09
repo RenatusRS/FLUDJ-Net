@@ -10,7 +10,7 @@ use CodeIgniter\Config\Factories;
 use App\Models\BundleM;
 use App\Models\BundledProductsM;
 
-class BundleT extends CIUnitTestCase {
+class BundleTest extends CIUnitTestCase {
     use ControllerTestTrait;
     use DatabaseTestTrait;
 

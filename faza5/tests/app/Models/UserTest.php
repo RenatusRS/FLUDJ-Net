@@ -9,7 +9,7 @@ use CodeIgniter\Config\Factories;
 
 use App\Models\UserM;
 
-class UserT extends CIUnitTestCase {
+class UserTest extends CIUnitTestCase {
     use ControllerTestTrait;
     use DatabaseTestTrait;
 

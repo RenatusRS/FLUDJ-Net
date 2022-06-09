@@ -9,7 +9,7 @@ use CodeIgniter\Config\Factories;
 
 use App\Models\OwnershipM;
 
-class OwnershipT extends CIUnitTestCase {
+class OwnershipTest extends CIUnitTestCase {
     use ControllerTestTrait;
     use DatabaseTestTrait;
 

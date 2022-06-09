@@ -9,7 +9,7 @@ use CodeIgniter\Config\Factories;
 
 use App\Models\CouponM;
 
-class CouponT extends CIUnitTestCase {
+class CouponTest extends CIUnitTestCase {
     use ControllerTestTrait;
     use DatabaseTestTrait;
 

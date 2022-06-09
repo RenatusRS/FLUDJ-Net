@@ -10,7 +10,7 @@ use CodeIgniter\Config\Factories;
 use App\Models\RelationshipM;
 use App\Models\UserM;
 
-class RelationshipT extends CIUnitTestCase {
+class RelationshipTest extends CIUnitTestCase {
     use ControllerTestTrait;
     use DatabaseTestTrait;
 
