@@ -229,10 +229,11 @@ class ProductM extends Model {
             if (self::owns($idUser, $product->id))
                 continue;
 
+            $product->rating = ProductM::getProductRating($product);
             array_push($products, $product);
         }
 
-        usort($products, fn ($p1, $p2) => (ProductM::getProductRating($p2) <=> ProductM::getProductRating($p1)));
+        usort($products, fn ($p1, $p2) => $p2->rating <=> $p1->rating);
 
         return array_values(($limit <= 0) ?
             $products :
@@ -294,10 +295,11 @@ class ProductM extends Model {
             if (! self::future_date($product->discount_expire))
                 continue;
 
+            $product->discRating = self::getDiscountRating($product);
             array_push($products, $product);
         }
 
-        usort($products, fn ($p1, $p2) => ProductM::getDiscountRating($p2) <=> ProductM::getDiscountRating($p1));
+        usort($products, fn ($p1, $p2) => $p2->discRating <=> $p1->discRating);
 
         return array_values(($limit <= 0) ?
             $products :
@@ -358,13 +360,14 @@ class ProductM extends Model {
         if ($idUser == null)
             return [];
 
-        $products = iterator_to_array((new CouponM())->getAllCoupons($idUser));
+        $generator = (new CouponM())->getAllCoupons($idUser);
+        $products = [];
+        foreach ($generator as $p) {
+            $p->coupRating = self::getCouponRating($p, $p->coupon);
+            array_push($products, $p);
+        }
 
-        usort($products, function ($p1, $p2) {
-            $c1 = $p1->coupon;
-            $c2 = $p2->coupon;
-            return ProductM::getCouponRating($p2, $c2) <=> ProductM::getCouponRating($p1, $c1);
-        });
+        usort($products, fn($p1, $p2) => $p2->coupRating <=> $p1->coupRating);
 
         return array_values(($limit <= 0) ?
             $products :

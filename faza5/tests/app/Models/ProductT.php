@@ -17,8 +17,7 @@ class ProductT extends CIUnitTestCase {
     private $model;
 
     // sledeći metodi iz modela neće biti testirani:
-    // getRating, getProductRating, getDiscountRating, getCouponRating,
-    // getDiscoveryProducts
+    // getRating, getProductRating, getDiscountRating, getCouponRating
     public function testModelFindAll() {
         $this->model = new ProductM();
 
@@ -32,6 +31,7 @@ class ProductT extends CIUnitTestCase {
         $this->assertGetHighRatingProducts();
         $this->assertGetTopSellersProducts();
         $this->assertGetDiscountedProducts();
+        $this->assertGetDiscoveryProducts();
         $this->assertGetCouponProducts();
         $this->assertGetProductsUserLike();
         $this->assertGetProductsUserFriendsLike();
@@ -136,17 +136,19 @@ class ProductT extends CIUnitTestCase {
         $userProducts = $model->getHighRatingProducts(1);
 
         $this->assertIsArray($guestProducts);
-        foreach ($guestProducts as $p)
+        foreach ($guestProducts as $p) {
             $this->assertIsObject($p);
-        $this->assertEquals(16, $guestProducts[0]->id);
-        $this->assertEquals(19, $guestProducts[4]->id);
+            $this->assertObjectHasAttribute('rating', $p);
+        }
+        $this->assertIsSorted($guestProducts, fn($p1, $p2) => $p1->rating - $p2->rating);
         $this->assertCount(41, $guestProducts);
 
         $this->assertIsArray($userProducts);
-        foreach ($userProducts as $p)
+        foreach ($userProducts as $p) {
             $this->assertIsObject($p);
-        $this->assertEquals(15, $userProducts[0]->id);
-        $this->assertEquals(19, $userProducts[4]->id);
+            $this->assertObjectHasAttribute('rating', $p);
+        }
+        $this->assertIsSorted($userProducts, fn($p1, $p2) => $p1->rating - $p2->rating);
         $this->assertCount(35, $userProducts);
     }
     private function assertGetTopSellersProducts() {
@@ -156,17 +158,19 @@ class ProductT extends CIUnitTestCase {
         $userProducts = $model->getTopSellersProducts(1);
 
         $this->assertIsArray($guestProducts);
-        foreach ($guestProducts as $p)
+        foreach ($guestProducts as $p) {
             $this->assertIsObject($p);
-        $this->assertEquals(8, $guestProducts[0]->id);
-        $this->assertEquals(39, $guestProducts[3]->id);
+            $this->assertObjectHasAttribute('cnt', $p);
+        }
+        $this->assertIsSorted($guestProducts, fn($p1, $p2) => $p1->cnt - $p2->cnt);
         $this->assertCount(41, $guestProducts);
 
         $this->assertIsArray($userProducts);
-        foreach ($userProducts as $p)
+        foreach ($userProducts as $p) {
             $this->assertIsObject($p);
-        $this->assertEquals(8, $userProducts[0]->id);
-        $this->assertEquals(13, $userProducts[3]->id);
+            $this->assertObjectHasAttribute('cnt', $p);
+        }
+        $this->assertIsSorted($userProducts, fn($p1, $p2) => $p1->cnt - $p2->cnt);
         $this->assertCount(35, $userProducts);
     }
     private function assertGetDiscountedProducts() {
@@ -176,18 +180,35 @@ class ProductT extends CIUnitTestCase {
         $userProducts = $model->getDiscountedProducts(2);
 
         $this->assertIsArray($guestProducts);
-        foreach ($guestProducts as $p)
+        foreach ($guestProducts as $p) {
             $this->assertIsObject($p);
-        $this->assertEquals(18, $guestProducts[0]->id);
-        $this->assertEquals(40, $guestProducts[3]->id);
+            $this->assertObjectHasAttribute('discRating', $p);
+        }
+        $this->assertIsSorted($guestProducts, fn($p1, $p2) => $p1->discRating - $p2->discRating);
         $this->assertCount(13, $guestProducts);
 
         $this->assertIsArray($userProducts);
-        foreach ($userProducts as $p)
+        foreach ($userProducts as $p) {
             $this->assertIsObject($p);
-        $this->assertEquals(18, $userProducts[0]->id);
-        $this->assertEquals(24, $userProducts[3]->id);
+            $this->assertObjectHasAttribute('discRating', $p);
+        }
+        $this->assertIsSorted($userProducts, fn($p1, $p2) => $p1->discRating - $p2->discRating);
         $this->assertCount(8, $userProducts);
+    }
+    private function assertGetDiscoveryProducts() {
+        $model = $this->model;
+
+        $userDiscovery = $model->getDiscoveryProducts(1);
+        $guestDiscovery = $model->getDiscoveryProducts();
+
+        $this->assertIsArray($userDiscovery);
+        foreach ($userDiscovery as $p)
+            $this->assertIsObject($p);
+        $this->assertLessThanOrEqual(DISCOVERY_LENGTH, count($userDiscovery));
+        $this->assertGreaterThanOrEqual(1, count($userDiscovery));
+
+        $this->assertIsArray($guestDiscovery);
+        $this->assertCount(0, $guestDiscovery);
     }
     private function assertGetCouponProducts() {
         $model = $this->model;
@@ -199,10 +220,11 @@ class ProductT extends CIUnitTestCase {
         $this->assertCount(0, $guestProducts);
 
         $this->assertIsArray($userProducts);
-        foreach ($userProducts as $p)
+        foreach ($userProducts as $p) {
             $this->assertIsObject($p);
-        $this->assertEquals(39, $userProducts[0]->id);
-        $this->assertEquals(31, $userProducts[1]->id);
+            $this->assertObjectHasAttribute('coupRating', $p);
+        }
+        $this->assertIsSorted($userProducts, fn($p1, $p2) => $p1->coupRating - $p2->coupRating);
         $this->assertCount(3, $userProducts);
     }
     private function assertGetProductsUserLike() {
@@ -215,10 +237,11 @@ class ProductT extends CIUnitTestCase {
         $this->assertCount(0, $guestProducts);
 
         $this->assertIsArray($userProducts);
-        foreach ($userProducts as $p)
+        foreach ($userProducts as $p) {
             $this->assertIsObject($p);
-        $this->assertEquals(6, $userProducts[0]->id);
-        $this->assertEquals(24, $userProducts[5]->id);
+            $this->assertObjectHasAttribute('matching', $p);
+        }
+        $this->assertIsSorted($userProducts, fn($p1, $p2) => $p1->matching - $p2->matching);
         $this->assertCount(31, $userProducts);
     }
     private function assertGetProductsUserFriendsLike() {
@@ -236,7 +259,7 @@ class ProductT extends CIUnitTestCase {
         $this->assertEquals(19, $userProducts[0]->id);
         $this->assertEquals(27, $userProducts[4]->id);
         $this->assertCount(41, $userProducts);
-    }
+    } // TODO, funkcija koja se testira mora značajno da se promeni da bi se koristilo pametnije testiranje (sa assertIsSorted())
     private function assertGetSimilarProducts() {
         $model = $this->model;
 
@@ -244,24 +267,21 @@ class ProductT extends CIUnitTestCase {
         $p2 = $model->getSimilarProducts(15);
         $p3 = $model->getSimilarProducts(41);
 
-        $this->assertIsArray($p1);
-        foreach ($p1 as $p)
-            $this->assertIsObject($p);
+        foreach ([$p1, $p2, $p3] as $array) {
+            $this->assertIsArray($array);
+            foreach ($array as $p) {
+                $this->assertIsObject($p);
+                $this->assertObjectHasAttribute('match_count', $p);
+                $this->assertObjectHasAttribute('rating', $p);
+            }
+            $this->assertIsSorted($array, function($p1, $p2) {
+                if ($p1->match_count != $p2->match_count)
+                    return $p1->match_count - $p2->match_count;
+                return $p1->rating - $p2->rating;
+            });
+        }
         $this->assertCount(17, $p1);
-        $this->assertEquals(10, $p1[0]->id);
-        $this->assertEquals(19, $p1[3]->id);
-
-        $this->assertIsArray($p2);
-        foreach ($p2 as $p)
-            $this->assertIsObject($p);
-        $this->assertEquals(10, $p2[0]->id);
-        $this->assertEquals(19, $p2[3]->id);
         $this->assertCount(24, $p2);
-
-        $this->assertIsArray($p3);
-        foreach ($p3 as $p)
-            $this->assertIsObject($p);
-        $this->assertEquals(38, $p3[0]->id);
         $this->assertCount(2, $p3);
     }
     private function assertGetBackground() {
@@ -277,6 +297,16 @@ class ProductT extends CIUnitTestCase {
         $this->assertIsString($background);
         $this->assertEquals(base_url('uploads/product/45/background.png'), $background);
         */
+    }
+    //
+    private function assertIsSorted($array, $comparator)
+    {
+        if (count($array) == 0)
+            return;
+
+        for ($i = 1; $i < count($array); $i++) {
+            $this->assertTrue($comparator($array[$i-1], $array[$i]) >= 0);
+        }
     }
 }
 
