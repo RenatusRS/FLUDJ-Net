@@ -25,18 +25,29 @@ class ReviewVoteM extends Model {
     public function getVotes($idProduct, $idPoster) {
         $this->db = \Config\Database::connect();
 
-        $res = $this->db->query("SELECT * from (
-            SELECT COUNT(*) AS pos
-            FROM review_vote
-            WHERE id_poster = $idPoster AND id_product = $idProduct AND `like` = 1
-            GROUP BY `like`
-          ) as t1 join (
-            SELECT COUNT(*) AS neg
-            FROM review_vote
-            WHERE id_poster = $idPoster AND id_product = $idProduct AND `like` = 0
-            GROUP BY `like`
-          ) as t2");
+        $res = (object)[
+            'pos' => 0,
+            'neg' => 0,
+        ];
 
-        return $res->getResult('object');
+        $query1 = $this->db->query(
+            "SELECT COUNT(*) AS pos
+             FROM review_vote
+             WHERE id_poster = $idPoster AND id_product = $idProduct AND `like` = 1
+             GROUP BY `like`;"
+        )->getFirstRow('object');
+        if (isset($query1))
+            $res->pos = $query1->pos;
+
+        $query2 = $this->db->query(
+            "SELECT COUNT(*) AS neg
+             FROM review_vote
+             WHERE id_poster = $idPoster AND id_product = $idProduct AND `like` = 0
+             GROUP BY `like`;"
+        )->getFirstRow('object');
+        if (isset($query2))
+            $res->neg = $query2->neg;
+
+        return $res;
     }
 }
