@@ -9,7 +9,7 @@ use CodeIgniter\Config\Factories;
 
 use App\Models\UserM;
 
-class UserTest extends CIUnitTestCase {
+class UserMTest extends CIUnitTestCase {
     use ControllerTestTrait;
     use DatabaseTestTrait;
 
@@ -52,12 +52,16 @@ class UserTest extends CIUnitTestCase {
         // $this->assertIsString($b2);
         // $this->assertEquals(base_url('assets/avatar.png'), $def);
     }
-    private function assertSetBan() {} // TODO
-    private function assertSetPrivilege() {} // TODO
-    private function assertBanUser() {} // TODO
-    private function assertUnbanUser() {} // TODO
-    private function assertPromoteUser() {} // TODO
-    private function assertDemoteUser() {} // TODO
+    private function assertSetBan() {
+    } // TODO
+    private function assertSetPrivilege() {
+    } // TODO
+    private function assertBanUser() {
+    } // TODO
+    private function assertUnbanUser() {
+    } // TODO
+    private function assertPromoteUser() {
+    } // TODO
+    private function assertDemoteUser() {
+    } // TODO
 }
-
-

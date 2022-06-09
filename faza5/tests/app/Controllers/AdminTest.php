@@ -21,7 +21,7 @@ class AdminTest extends CIUnitTestCase {
         $routes = [
             ['get', 'http://localhost:8080/', '\App\Controllers\Admin::class'],
         ];
-        
+
         return $this->withSession()->withRoutes($routes);
     }
 
@@ -46,71 +46,42 @@ class AdminTest extends CIUnitTestCase {
     }
 
     public function test_setDiscountSubmitSuccess() {
-        $myDiscount='45';
-        $result=$this->test()->call('post','admin/setdiscountsubmit/12', [ 'discount' => $myDiscount, 'expDate'  => '2022-06-14',]);
+        $myDiscount = '45';
+        $result = $this->test()->call('post', 'admin/setdiscountsubmit/12', ['discount' => $myDiscount, 'expDate'  => '2022-06-14',]);
         $product = (new ProductM())->find('12');
         $this->assertEquals($product->discount, $myDiscount);
     }
 
     public function test_setDiscountSubmitWrongDiscount() {
-        $myDiscount='a';
-        $result=$this->test()->call('post','admin/setdiscountsubmit/12', [ 'discount' => $myDiscount, 'expDate'  => '2022-06-14',]);
+        $myDiscount = 'a';
+        $result = $this->test()->call('post', 'admin/setdiscountsubmit/12', ['discount' => $myDiscount, 'expDate'  => '2022-06-14',]);
         $this->assertTrue($result->see("The discount field must contain a number greater than or equal to 5."));
     }
 
     public function test_setDiscountSubmitWrongDate() {
-        $myDiscount='45';
-        $result=$this->test()->call('post','admin/setdiscountsubmit/12', [ 'discount' => $myDiscount, 'expDate'  => '2022-06-08',]);
+        $myDiscount = '45';
+        $result = $this->test()->call('post', 'admin/setdiscountsubmit/12', ['discount' => $myDiscount, 'expDate'  => '2022-06-08',]);
         $this->assertTrue($result->see("Set Discount"));
     }
 
     public function test_deleteUser() {
-        $result=$this->test()->get('admin/deleteUser/15');
-        $user=(new UserM())->find('15');
+        $result = $this->test()->get('admin/deleteUser/15');
+        $user = (new UserM())->find('15');
         $this->assertNull($user);
-    }   
+    }
 
-    public function test_promoteUser() {
-        $result=$this->test()->get('admin/promote/16');
-        $user=(new UserM())->find('16');
-        $this->assertEquals($user->admin_rights, '1');
-    }   
-
-    public function test_profileUser() {
-            $result=$this->test()->get('admin/profile/16');
-            $this->assertTrue($result->see("Delete User"));
-    }   
-
-    public function test_demoteUser() {
-        $result=$this->test()->get('admin/demote/21');
-        $user=(new UserM())->find('21');
-        $this->assertEquals($user->admin_rights, '0');
-    }   
-
-    public function test_reviewBanUser() {
-        $result=$this->test()->get('admin/ban/16');
-        $user=(new UserM())->find('16');
-        $this->assertEquals($user->review_ban, '1');
-    }   
-
-    public function test_reviewUnbanUser() {
-        $result=$this->test()->get('admin/unban/16');
-        $user=(new UserM())->find('16');
-        $this->assertEquals($user->review_ban, '0');
-    } 
-    
-    public function test_deleteProduct(){
-        $result=$this->test()->get('admin/deleteProduct/33');
-        $prod=(new ProductM())->find('33');
+    public function test_deleteProduct() {
+        $result = $this->test()->get('admin/deleteProduct/33');
+        $prod = (new ProductM())->find('33');
         $this->assertNull($prod);
     }
 
-    public function test_deleteBundle(){
-        $result=$this->test()->get('admin/deleteBundle/2');
-        $prod=(new BundleM())->find('2');
+    public function test_deleteBundle() {
+        $result = $this->test()->get('admin/deleteBundle/2');
+        $prod = (new BundleM())->find('2');
         $this->assertNull($prod);
     }
-    
+
     // public function test_deleteReview() {
     //     $result=$this->test()->get('admin/DeleteReviewAdminSubmit/12/17');
     //     $res=(new OwnershipM())->asArray()->where('id_product', '12')->where('id_user','17')->findAll();
