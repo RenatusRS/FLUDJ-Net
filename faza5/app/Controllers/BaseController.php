@@ -245,7 +245,11 @@ class BaseController extends Controller {
      */
     public function profile($id = null) {
         $userM = new UserM();
-        $user = $id == null ? $this->getUser() : $userM->find($id);
+        $logged = $this->getUser();
+
+        $user = $id == null ? $logged : $userM->find($id);
+
+        $myId = $logged != null ? $logged->id : null;
 
         if ($user == null) return $this->show('registration');
 
@@ -255,6 +259,7 @@ class BaseController extends Controller {
             'avatar' => $userM->getAvatar($user->id),
             'background' => $userM->getBackground($user->id),
             'products' => (new OwnershipM())->getOwned($user->id),
+            'relationship' => (new RelationshipM())->getStatus($myId, $user->id),
         ]);
     }
 

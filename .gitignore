@@ -128,3 +128,4 @@ nb-configuration.xml
 /phpunit*.xml
 /.phpunit.*.cache
 
+faza5/.phpunit.result.cache

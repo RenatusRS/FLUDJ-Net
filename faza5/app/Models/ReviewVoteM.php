@@ -21,4 +21,22 @@ class ReviewVoteM extends Model {
     protected $returnType = 'object';
 
     protected $allowedFields = ['id_user', 'id_poster', 'id_product', 'like'];
+
+    public function getVotes($idProduct, $idPoster) {
+        $this->db = \Config\Database::connect();
+
+        $res = $this->db->query("SELECT * from (
+            SELECT COUNT(*) AS pos
+            FROM review_vote
+            WHERE id_poster = $idPoster AND id_product = $idProduct AND `like` = 1
+            GROUP BY `like`
+          ) as t1 join (
+            SELECT COUNT(*) AS neg
+            FROM review_vote
+            WHERE id_poster = $idPoster AND id_product = $idProduct AND `like` = 0
+            GROUP BY `like`
+          ) as t2");
+
+        return $res->getResult('object');
+    }
 }
