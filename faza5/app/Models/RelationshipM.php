@@ -3,11 +3,12 @@
 /**
  * @author
  * Djorđe Stanojević 2019/0288
- * 
+ * Luka Cvijan       2019/0154
+ *
  * Opis: Model za veze izmedju korisnika
- * 
+ *
  * @version 1.0
- * 
+ *
  */
 
 namespace App\Models;
@@ -29,35 +30,49 @@ class RelationshipM extends Model {
     protected $allowedFields = ['id_user1', 'id_user2', 'status'];
 
     /**
-     * 
-     * Dohvatanje prijatelja odredjenog korisnika
-     * 
-     * @return array(user)   
+     *
+     * Dohvatanje svih prijatelja odredjenog korisnika
+     *
+     * @param  integer $userId
+     * @return object[] niz objekta korisnika
      */
-    public function getFriends($user_id) {
+    public function getFriends($userId) {
         $userM = new UserM();
-        $friendRows = (new RelationshipM())->where("status", 1)->groupStart()->where("id_user1", $user_id)->orWhere("id_user2", $user_id)->groupEnd()->findAll();
+        $friendRows = (new RelationshipM())
+                ->where("status", 1)
+                ->groupStart()
+                ->where("id_user1", $userId)
+                ->orWhere("id_user2", $userId)
+                ->groupEnd()
+                ->findAll();
 
         $friends = [];
         foreach ($friendRows as $friendRow) {
-            if ($friendRow->id_user1 == $user_id) $friend = $userM->find($friendRow->id_user2);
-            else $friend = $userM->find($friendRow->id_user1);
-
-            array_push($friends, $friend);
+            array_push($friends, ($friendRow->id_user1 == $userId) ?
+                $userM->find($friendRow->id_user2) :
+                $userM->find($friendRow->id_user1));
         }
 
         return $friends;
     }
 
-    public function getFriendsWhoOwn($user_id, $product_id) {
-        $friends = $this->getFriends($user_id);
+    /**
+     * dohvati sve prijatelje korisnika sa id-jem $idUser koji poseduju proizvod sa id-jem $idProduct
+     *
+     * @param  integer $idUser
+     * @param  integer $idProduct
+     * @return object[] niz objekata korisnika
+     */
+    public function getFriendsWhoOwn($idUser, $idProduct) {
+        $friends = $this->getFriends($idUser);
 
         $friendsWhoOwn = [];
         $ownershipM = new OwnershipM();
 
-
         foreach ($friends as $friend) {
-            if ($ownershipM->owns($friend->id, $product_id)) array_push($friendsWhoOwn, $friend);
+            if ($ownershipM->owns($friend->id, $idProduct)) {
+                array_push($friendsWhoOwn, $friend);
+            }
         }
 
         return $friendsWhoOwn;
@@ -65,16 +80,25 @@ class RelationshipM extends Model {
 
 
     /**
-     * 
-     * Dohvatanje zahteva koji su poslati odredjenom korisniku
-     * 
-     * @return array(user)   
+     *
+     * Dohvatanje zahteva koji su poslati odredjenom korisniku $user
+     *
+     * @param  object $user objekat koji predstavlja korisnika
+     * @return object[] niz objekta korisnika
      */
     public function getIncoming($user) {
+        if (!isset($user))
+            return [];
+
         $userM = new UserM();
 
         $RelationshipM = new RelationshipM();
-        $requestersRows = $RelationshipM->where("status", 0)->groupStart()->where("id_user2", $user->id)->groupEnd()->findAll();
+        $requestersRows = $RelationshipM
+                ->where("status", 0)
+                ->groupStart()
+                ->where("id_user2", $user->id)
+                ->groupEnd()
+                ->findAll();
 
         $requesters = [];
         foreach ($requestersRows as $requestersRow) {
@@ -86,12 +110,16 @@ class RelationshipM extends Model {
     }
 
     /**
-     * 
-     * Dohvatanje zahteva koji je poslao odredjeni korisnik
-     * 
-     * @return array(user)   
+     *
+     * dohvatanje svih korisnika kojima je trenutni korisnik poslao zahtev
+     *
+     * @param  object $user korisnik koji traži svoje zahteve
+     * @return object[] niz korisnika kojima je poslat zahtev
      */
     public function getSent($user) {
+        if (!isset($user))
+            return [];
+
         $userM = new UserM();
 
         $RelationshipM = new RelationshipM();
