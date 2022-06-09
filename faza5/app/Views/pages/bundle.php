@@ -26,14 +26,18 @@ Opis: Stranica za prikaz bundla
     <h2>Products Included</h2>
     <div style="background-color: rgb(0,0,0,0.6);">
         <?php foreach ($bundledProducts as $product) { ?>
+            <?php $owned = (in_array($product->id, $ownedProducts)); ?>
             <a href="<?php product_url($controller, $product->id) ?>">
-                <div style="display: flex;align-items: center;">
+                <div style="display: flex;align-items: center; <?php if ($owned) echo 'opacity: 0.3;' ?>">
                     <div style="flex:6">
                         <img style="width: 200px;vertical-align: middle" src="<?php product_banner($product->id) ?>">
                         <span><?php echo $product->name ?></span>
                     </div>
-                    <div style="flex:1;text-align: right; padding: 15px">
-                        $<?php echo number_format($product->price, 2) ?>
+                    <div style="flex:1;text-align: right; padding: 15px; ">
+                        <?php if ($owned) echo 'already owned' ?>
+                        <div style="<?php if ($owned) echo 'text-decoration: line-through' ?>">
+                            $<?php echo number_format($product->price, 2) ?>
+                        </div>
                     </div>
                 </div>
             </a>
