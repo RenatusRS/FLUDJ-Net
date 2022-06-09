@@ -445,7 +445,8 @@ class User extends BaseController {
 
         echo json_encode(array(
             "state" => 1,
-            "votes" => $votes,
+            "pos"   => $votes->pos,
+            "neg"   => $votes->neg
         ));
     }
 

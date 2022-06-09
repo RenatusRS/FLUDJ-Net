@@ -362,8 +362,8 @@ use App\Models\ProductM;
         })
 
         function update(response) {
-            $("#" + id + ".like").attr("value", "👍 " + response['votes'][0]['pos'])
-            $("#" + id + ".dislike").attr("value", "👎 " + response['votes'][0]['neg'])
+            $("#" + id + ".like").attr("value", "👍 " + response['pos'])
+            $("#" + id + ".dislike").attr("value", "👎 " + response['neg'])
         }
 
         $(document).on("click", ".like", function() {
