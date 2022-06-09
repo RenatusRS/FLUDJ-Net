@@ -28,7 +28,6 @@ class ProductT extends CIUnitTestCase {
         $this->assertGetDiscountedPrice();
         $this->assertGetAllProducts();
         $this->assertGetRating();
-        $this->assertGetTopProducts();
         $this->getHeroProduct();
         $this->assertGetHighRatingProducts();
         $this->assertGetTopSellersProducts();
@@ -76,13 +75,13 @@ class ProductT extends CIUnitTestCase {
         $d3 = $model->getDiscount(1);
 
         $this->assertIsInt($d1);
-        $this->assertEquals(40, $d1);
+        $this->assertEquals($d1, 40);
 
         $this->assertIsInt($d2);
-        $this->assertEquals(0, $d2);
+        $this->assertEquals($d2, 0);
 
         $this->assertIsInt($d3);
-        $this->assertEquals(0, $d3);
+        $this->assertEquals($d3, 0);
     }
     private function assertGetDiscountedPrice() {
         $model = $this->model;
@@ -124,15 +123,6 @@ class ProductT extends CIUnitTestCase {
     } // TODO (možda potpuno nepotrebno uopšte testirati ovo).
     // isto važi za getProductRating, getDiscountRating, getCouponRating itd.
 
-    private function assertGetTopProducts() {
-        $model = $this->model;
-
-        $p = $model->getTopProducts();
-
-        $this->assertIsArray($p);
-        $this->assertTrue($p[0]->id == 16);
-        $this->assertCount(41, $p);
-    }
     private function getHeroProduct() {
         $model = $this->model;
 
@@ -148,15 +138,15 @@ class ProductT extends CIUnitTestCase {
         $this->assertIsArray($guestProducts);
         foreach ($guestProducts as $p)
             $this->assertIsObject($p);
-        $this->assertTrue($guestProducts[0]->id == 16);
-        $this->assertTrue($guestProducts[4]->id == 19);
+        $this->assertEquals(16, $guestProducts[0]->id);
+        $this->assertEquals(19, $guestProducts[4]->id);
         $this->assertCount(41, $guestProducts);
 
         $this->assertIsArray($userProducts);
         foreach ($userProducts as $p)
             $this->assertIsObject($p);
-        $this->assertTrue($userProducts[0]->id == 15);
-        $this->assertTrue($userProducts[4]->id == 10);
+        $this->assertEquals(15, $userProducts[0]->id);
+        $this->assertEquals(19, $userProducts[4]->id);
         $this->assertCount(35, $userProducts);
     }
     private function assertGetTopSellersProducts() {
@@ -168,15 +158,15 @@ class ProductT extends CIUnitTestCase {
         $this->assertIsArray($guestProducts);
         foreach ($guestProducts as $p)
             $this->assertIsObject($p);
-        $this->assertTrue($guestProducts[0]->id == 8);
-        $this->assertTrue($guestProducts[3]->id == 39);
+        $this->assertEquals(8, $guestProducts[0]->id);
+        $this->assertEquals(39, $guestProducts[3]->id);
         $this->assertCount(41, $guestProducts);
 
         $this->assertIsArray($userProducts);
         foreach ($userProducts as $p)
             $this->assertIsObject($p);
-        $this->assertTrue($userProducts[0]->id == 8);
-        $this->assertTrue($userProducts[3]->id == 13);
+        $this->assertEquals(8, $userProducts[0]->id);
+        $this->assertEquals(13, $userProducts[3]->id);
         $this->assertCount(35, $userProducts);
     }
     private function assertGetDiscountedProducts() {
@@ -188,15 +178,15 @@ class ProductT extends CIUnitTestCase {
         $this->assertIsArray($guestProducts);
         foreach ($guestProducts as $p)
             $this->assertIsObject($p);
-        $this->assertTrue($guestProducts[0]->id == 18);
-        $this->assertTrue($guestProducts[3]->id == 40);
+        $this->assertEquals(18, $guestProducts[0]->id);
+        $this->assertEquals(40, $guestProducts[3]->id);
         $this->assertCount(13, $guestProducts);
 
         $this->assertIsArray($userProducts);
         foreach ($userProducts as $p)
             $this->assertIsObject($p);
-        $this->assertTrue($userProducts[0]->id == 18);
-        $this->assertTrue($userProducts[3]->id == 24);
+        $this->assertEquals(18, $userProducts[0]->id);
+        $this->assertEquals(24, $userProducts[3]->id);
         $this->assertCount(8, $userProducts);
     }
     private function assertGetCouponProducts() {
@@ -211,8 +201,8 @@ class ProductT extends CIUnitTestCase {
         $this->assertIsArray($userProducts);
         foreach ($userProducts as $p)
             $this->assertIsObject($p);
-        $this->assertTrue($userProducts[0]->id == 39);
-        $this->assertTrue($userProducts[1]->id == 31);
+        $this->assertEquals(39, $userProducts[0]->id);
+        $this->assertEquals(31, $userProducts[1]->id);
         $this->assertCount(3, $userProducts);
     }
     private function assertGetProductsUserLike() {
@@ -227,8 +217,8 @@ class ProductT extends CIUnitTestCase {
         $this->assertIsArray($userProducts);
         foreach ($userProducts as $p)
             $this->assertIsObject($p);
-        $this->assertTrue($userProducts[0]->id == 6);
-        $this->assertTrue($userProducts[5]->id == 24);
+        $this->assertEquals(6, $userProducts[0]->id);
+        $this->assertEquals(24, $userProducts[5]->id);
         $this->assertCount(31, $userProducts);
     }
     private function assertGetProductsUserFriendsLike() {
@@ -243,8 +233,8 @@ class ProductT extends CIUnitTestCase {
         $this->assertIsArray($userProducts);
         foreach ($userProducts as $p)
             $this->assertIsObject($p);
-        $this->assertTrue($userProducts[0]->id == 19);
-        $this->assertTrue($userProducts[4]->id == 27);
+        $this->assertEquals(19, $userProducts[0]->id);
+        $this->assertEquals(27, $userProducts[4]->id);
         $this->assertCount(41, $userProducts);
     }
     private function assertGetSimilarProducts() {
@@ -258,20 +248,20 @@ class ProductT extends CIUnitTestCase {
         foreach ($p1 as $p)
             $this->assertIsObject($p);
         $this->assertCount(17, $p1);
-        $this->assertTrue($p1[0]->id == 10);
-        $this->assertTrue($p1[3]->id == 5);
+        $this->assertEquals(10, $p1[0]->id);
+        $this->assertEquals(19, $p1[3]->id);
 
         $this->assertIsArray($p2);
         foreach ($p2 as $p)
             $this->assertIsObject($p);
-        $this->assertTrue($p2[0]->id == 10);
-        $this->assertTrue($p2[3]->id == 28);
+        $this->assertEquals(10, $p2[0]->id);
+        $this->assertEquals(19, $p2[3]->id);
         $this->assertCount(24, $p2);
 
         $this->assertIsArray($p3);
         foreach ($p3 as $p)
             $this->assertIsObject($p);
-        $this->assertTrue($p3[0]->id == 37);
+        $this->assertEquals(38, $p3[0]->id);
         $this->assertCount(2, $p3);
     }
     private function assertGetBackground() {

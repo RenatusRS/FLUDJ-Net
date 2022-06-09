@@ -467,13 +467,16 @@ class ProductM extends Model {
             if (self::owns($idUser, $p->id))
                 continue;
 
+            $p->rating = ProductM::getProductRating($p);
             array_push($products, $p);
         }
 
-        // prvo sortiramo po rejtingu da bi kasnije bili bolje poređani kada se sortiraju po match_count
-        usort($products, fn($p1, $p2) => self::getProductRating($p2) <=> self::getProductRating($p1));
-        // za sada usort samo radi po tome ko se više puta pojavljuje, TODO
-        usort($products, fn($p1, $p2) => $p2->match_count <=> $p1->match_count);
+        // sortiramo po dve stvari - prvo po match_count a onda po rejtingu
+        usort($products, function($p1, $p2) {
+            if ($p1->match_count != $p2->match_count)
+                return $p2->match_count <=> $p1->match_count;
+            return $p2->rating <=> $p1->rating;
+        });
 
         return array_values(($limit <= 0) ?
             $products :
