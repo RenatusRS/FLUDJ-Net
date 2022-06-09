@@ -162,26 +162,35 @@ class BaseController extends Controller {
      */
     public function bundle($id) {
         $bundleM = new BundleM();
+        $ownershipM = new OwnershipM();
 
         $bundle = $bundleM->find($id);
 
         if (!isset($bundle))
             return redirect()->to(site_url());
 
-        $products = iterator_to_array($bundleM->bundleProducts($id));
-
-        $background = $bundleM->getBackground($id);
-
-        $id = ($this->getUser() !== null) ?
+        $idUser = ($this->getUser() !== null) ?
             $this->getUser()->id :
             -1;
-        $result = (new BundleM())->bundlePrice($products, $bundle->discount, $id);
+
+        $products = [];
+        $ownedProducts = [];
+        foreach ($bundleM->bundleProducts($id) as $p) {
+            if ($ownershipM->owns($idUser, $p->id)) {
+                array_push($ownedProducts, $p->id);
+            }
+            array_push($products, $p);
+        }
+
+        $background = $bundleM->getBackground($id);
+        $result = (new BundleM())->bundlePrice($products, $bundle->discount, $idUser);
 
         $bundle->description = explode(PHP_EOL, $bundle->description);
 
         return $this->show('bundle', [
             'bundle' => $bundle,
             'bundledProducts' => $products,
+            'ownedProducts' => $ownedProducts,
             'price' => $result,
             'background' => $background,
         ]);
