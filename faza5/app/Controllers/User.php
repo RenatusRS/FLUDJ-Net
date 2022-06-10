@@ -246,6 +246,13 @@ class User extends BaseController {
         return redirect()->to(site_url("user/product/{$product->id}"));
     }
 
+    /**
+     *
+     * Prikaz stranice za nagradjivanje
+     *
+     * @param  integer $id id korisnika
+     * @return void
+     */
     public function awardUser($idUser) {
         $user = $this->getUser();
         $awardee = (new UserM())->find($idUser);
@@ -253,6 +260,13 @@ class User extends BaseController {
         $this->show('awardPoints', ['currentUser' => $user, 'awardee' => $awardee]);
     }
 
+    /**
+     *
+     * Procesiranje nagradjivanja korisnika
+     * 
+     * @param  integer $id id korisnika
+     * @return void
+     */
     public function awardUserSubmit($idUser) {
         $user = $this->getUser();
         $userM = new UserM();
@@ -384,6 +398,13 @@ class User extends BaseController {
         return !$notValid;
     }
 
+    /**
+     *
+     * Procesiranje izmene profila
+     *
+     * 
+     * @return void
+     */
     public function editProfileSubmit() {
         $user = $this->getUser();
         $uploaded = (is_uploaded_file($_FILES['profile_pic']['tmp_name']));
