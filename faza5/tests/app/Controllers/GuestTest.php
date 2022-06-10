@@ -5,45 +5,55 @@ namespace CodeIgniter;
 use CodeIgniter\Test\CIUnitTestCase;
 use CodeIgniter\Test\ControllerTestTrait;
 use CodeIgniter\Test\DatabaseTestTrait;
+use CodeIgniter\Test\FeatureTestTrait;
 
 use App\Models\UserM;
 use App\Models\ProductM;
 use App\Models\BundleM;
 
 class GuestTest extends CIUnitTestCase {
-    use ControllerTestTrait;
     use DatabaseTestTrait;
+    use FeatureTestTrait;
 
     protected function test() {
-        return $this->withURI('http://localhost:8080/')
-            ->controller(\App\Controllers\Guest::class);
+        $routes = [
+            ['get', 'http://localhost:8080/', '\App\Controllers\Guest::class'],
+        ];
+
+        return $this->withRoutes($routes);
     }
 
     public function testIndex() {
-        $this->assertTrue($this->test()->execute('index')->isOK());
+        $result = $this->test()->get('guest/index');
+        $this->assertTrue($result->see("Popular Products"));
     }
 
     public function testLogin() {
-        $this->assertTrue($this->test()->execute('login')->isOK());
+        $result = $this->test()->get('guest/login');
+        $this->assertTrue($result->see("Password"));
     }
 
     public function testLoginSubmit() {
-        $this->assertTrue($this->test()->execute('loginSubmit')->isOK());
+        $result = $this->test()->call('post', 'guest/loginSubmit', ['username' => 'hose', 'password' => 'a']);
+        $this->assertFalse($result->see("SIGN-IN"));
     }
 
     public function testRegistration() {
-        $this->assertTrue($this->test()->execute('registration')->isOK());
+        $result = $this->test()->get('guest/registration');
+        $this->assertTrue($result->see("Password"));
     }
 
     public function testRegistrationSubmit() {
-        $this->assertTrue($this->test()->execute('registrationSubmit')->isOK());
+        $result = $this->test()->call('post', 'guest/registrationSubmit', ['username' => 'hosey1234', 'password' => 'a']);
+        $this->assertFalse($result->see("SIGN-IN"));
     }
 
     public function testProfile() {
         $users = (new UserM())->find();
 
         foreach ($users as $user) {
-            $this->assertTrue($this->test()->execute('profile', $user->id)->isOK());
+            $result = $this->test()->get("guest/profile/{$user->id}");
+            $this->assertTrue($result->see("{$user->nickname}"));
         }
     }
 
@@ -51,7 +61,8 @@ class GuestTest extends CIUnitTestCase {
         $products = (new ProductM())->find();
 
         foreach ($products as $product) {
-            $this->assertTrue($this->test()->execute('product', $product->id)->isOK());
+            $result = $this->test()->get("guest/product/{$product->id}");
+            $this->assertTrue($result->see("{$product->name}"));
         }
     }
 
@@ -59,7 +70,24 @@ class GuestTest extends CIUnitTestCase {
         $bundles = (new BundleM())->find();
 
         foreach ($bundles as $bundle) {
-            $this->assertTrue($this->test()->execute('bundle', $bundle->id)->isOK());
+            $result = $this->test()->get("guest/bundle/{$bundle->id}");
+            $this->assertTrue($result->see("{$bundle->name}"));
         }
+    }
+
+    public function testAjaxProductLoad() {
+        $name = 'DOOM';
+        $result = $this->test()->call('post', 'guest/ajaxProductLoad/guest', ['ime' => $name]);
+        $json = $result->getJSON();
+
+        $result->assertEquals('http://localhost:8080/guest/product/15', json_decode($json));
+    }
+
+    public function testAjaxProductSearch() {
+        $name = 'cs';
+        $result = $this->test()->call('post', 'guest/ajaxProductSearch', ['q' => $name]);
+        $json = $result->getJSON();
+
+        $result->assertEquals('CS: Global Offensive', json_decode(json_decode($json))[0]->text);
     }
 }
