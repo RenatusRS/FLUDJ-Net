@@ -119,7 +119,7 @@ $userM = new UserM();
             var korisnik = $(".search option:selected").text();
 
             $.ajax({
-                type: 'GET',
+                type: 'POST',
                 url: '<?php echo base_url('user/ajaxUserLoad'); ?>',
                 data: {
                     nadimak: korisnik
