@@ -1851,27 +1851,49 @@
       ],
       "value": ""
     }, {
-      "id": "75ba7e47-9317-4b45-9d1a-f0bed9a6278d",
+      "id": "0e0f565c-792b-4597-a7cb-02f791023e7e",
       "comment": "",
-      "command": "verifyValue",
-      "target": "xpath=(//input[@id='29'])[2]",
+      "command": "click",
+      "target": "xpath=(//input[@id='29'])[3]",
       "targets": [
-        ["xpath=(//input[@id='29'])[2]", "xpath:attributes"],
-        ["xpath=//div[@id='29']/div[3]/input", "xpath:idRelative"],
-        ["xpath=//div[3]/div[3]/input", "xpath:position"]
+        ["xpath=(//input[@id='29'])[3]", "xpath:attributes"],
+        ["xpath=//div[@id='29']/div[3]/input[2]", "xpath:idRelative"],
+        ["xpath=//div[2]/div[3]/input[2]", "xpath:position"]
       ],
-      "value": "👍 1"
+      "value": ""
     }, {
-      "id": "24bed647-454d-4fec-b823-2f10687fc373",
+      "id": "6d5ce7dc-7aa7-4be2-8adf-e50d37ca3c45",
       "comment": "",
       "command": "verifyValue",
-      "target": "xpath=(//input[@id='38'])[3]",
+      "target": "xpath=(//input[@id='29'])[3]",
       "targets": [
-        ["xpath=(//input[@id='38'])[3]", "xpath:attributes"],
-        ["xpath=//div[@id='38']/div[3]/input[2]", "xpath:idRelative"],
-        ["xpath=//div[4]/div[3]/input[2]", "xpath:position"]
+        ["xpath=(//input[@id='29'])[3]", "xpath:attributes"],
+        ["xpath=//div[@id='29']/div[3]/input[2]", "xpath:idRelative"],
+        ["xpath=//div[2]/div[3]/input[2]", "xpath:position"]
       ],
       "value": "👎 1"
+    }, {
+      "id": "0a8ca47e-ab1d-495a-9160-4e45a536cc56",
+      "comment": "",
+      "command": "click",
+      "target": "xpath=(//input[@id='29'])[3]",
+      "targets": [
+        ["xpath=(//input[@id='29'])[3]", "xpath:attributes"],
+        ["xpath=//div[@id='29']/div[3]/input[2]", "xpath:idRelative"],
+        ["xpath=//div[2]/div[3]/input[2]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "22df1f53-a5fc-4db8-bb34-e4ff103c4a5b",
+      "comment": "",
+      "command": "verifyValue",
+      "target": "xpath=(//input[@id='29'])[3]",
+      "targets": [
+        ["xpath=(//input[@id='29'])[3]", "xpath:attributes"],
+        ["xpath=//div[@id='29']/div[3]/input[2]", "xpath:idRelative"],
+        ["xpath=//div[2]/div[3]/input[2]", "xpath:position"]
+      ],
+      "value": "👎 0"
     }, {
       "id": "9c2a17d3-52d1-4db0-8d7f-785a5581ac42",
       "comment": "",
