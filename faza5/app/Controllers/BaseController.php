@@ -5,6 +5,7 @@
  * 	Uros Loncar 2019/0691
  *  Djordje Stanojevic 2019/0288
  *  Fedja Mladenovic 2019/0613
+ *  Luka Cvijan 2019/0154
  * 
  * Opis: Bazicni kontroler
  * 
