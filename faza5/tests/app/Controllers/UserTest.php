@@ -214,6 +214,7 @@ class UserTest extends CIUnitTestCase {
             $userProduct = $ownershipM->where('id_user', 21)->where('id_product', $product->id)->first();
             if (!$userProduct) $kupljen = false;
         }
+
         $this->assertEquals(true, $kupljen);
     }
 
@@ -227,6 +228,11 @@ class UserTest extends CIUnitTestCase {
         $result = $this->test()->call('post', 'user/buyBundleSubmit/5', ["final" => $price['final']]);
 
         $userProductNewCount = $ownershipM->where('id_user', 17)->countAllResults();
+        
+        $ownershipM->where('id_product', 26)->where('id_user', 21)->delete();
+        $ownershipM->where('id_product', 27)->where('id_user', 21)->delete();
+        $ownershipM->where('id_product', 28)->where('id_user', 21)->delete();
+        $ownershipM->where('id_product', 29)->where('id_user', 21)->delete();
 
         $this->assertEquals($userProductOldCount, $userProductNewCount);
     }

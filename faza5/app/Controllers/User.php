@@ -119,14 +119,14 @@ class User extends BaseController {
      * @return void
      */
     public function buyProductSubmit($id) {
+        $userM = new UserM();
         $userFrom = $this->getUser();
 
         $friends = (new RelationshipM())->getFriends($userFrom->id);
 
         $userFor = null;
 
-        if ($this->request->getVar('buyOptions') != $userFrom->id) {
-            $userM = new UserM();
+        if ($this->request->getVar('buyOptions') != $userFrom->id) {      
             $userFor = $userM->find($this->request->getVar('buyOptions'));
         }
         
