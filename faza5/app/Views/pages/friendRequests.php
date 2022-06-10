@@ -38,17 +38,7 @@ $userM = new UserM();
                     You don't have any incoming friend requests.
                 </p>
             <?php }
-            foreach ($requesters as $requester) {
-                if (isset($_POST[$requester->id . "ACCEPT"])) {
-                    $relationshipM->set('status', 1)->where('id_user2', $user->id)->where('id_user1', $requester->id)->update();
-                    header("Refresh:0");
-                }
-
-                if (isset($_POST[$requester->id . "REJECT"])) {
-                    $relationshipM->where('id_user1', $requester->id)->where('id_user2', $user->id)->delete();
-                    header("Refresh:0");
-                } ?>
-
+            foreach ($requesters as $requester) { ?>
                 <div id=<?= $requester->id ?> style="margin: 15px 15px 0 0; min-width: 330px;">
                     <a href="http://localhost:8080/user/profile/<?php echo $requester->id ?>">
                         <div style="width:75%; float:left;background-color: black;border-radius: 5px 0 0 5px">
