@@ -37,6 +37,7 @@ class User extends BaseController {
      * @return void
      */
     public function logout() {
+        $_SESSION['user_id'] = null;
         $this->session->destroy();
         return redirect()->to(site_url('/'));
     }
@@ -58,12 +59,13 @@ class User extends BaseController {
      * @return void
      */
     public function addFundsSubmit() {
-        if (!$this->validate(['funds' => 'required|numeric|greater_than[0]']))
+
+        if (!$this->validate(['funds' => 'required|greater_than[0]']))
             return $this->show('addFunds', ['errors' => $this->validator->getErrors()]);
 
         $user = $this->getUser();
 
-        $user->balance += $this->request->getVar('funds');
+        $user->balance += $this->request->getPost('funds');
 
         $userM = new UserM();
         $userM->update($user->id, [
@@ -127,7 +129,7 @@ class User extends BaseController {
             $userM = new UserM();
             $userFor = $userM->find($this->request->getVar('buyOptions'));
         }
-
+        
         $productM = new ProductM();
         $product = $productM->find($id);
 
@@ -309,7 +311,7 @@ class User extends BaseController {
      * @return String
      */
     public function ajaxUserLoad() {
-        $nickname = $_GET['nadimak'];
+        $nickname = $this->request->getPost('nadimak');
         $myUsr = (new UserM())->where('nickname', $nickname)->first();
         return base_url("user/profile/" . $myUsr->id);
     }
@@ -351,7 +353,7 @@ class User extends BaseController {
     }
 
     public function buyBundleSubmit($id) {
-        $finalPrice = $this->request->getVar('final');
+        $finalPrice = $this->request->getPost('final');
         $user = $this->getUser();
 
         if ($user->balance < $finalPrice) {
