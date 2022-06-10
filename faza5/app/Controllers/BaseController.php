@@ -297,7 +297,7 @@ class BaseController extends Controller {
      * @return String
      */
     public function ajaxProductLoad($controller) {
-        $name = $_GET['ime'];
+        $name = $this->request->getPost('ime');
         $myProduct = (new ProductM())->where('name', $name)->first();
         return base_url($controller . "/product/" . $myProduct->id);
     }

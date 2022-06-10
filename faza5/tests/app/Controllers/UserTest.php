@@ -60,20 +60,15 @@ class UserTest extends CIUnitTestCase {
         $this->assertTrue($result->see("Add Funds"));
     }
 
-    public function test_logout() {
-        $result = $this->test()->get('user/logout');
-        $this->assertNull($_SESSION["user_id"]);
-    }
-
-  //  public function test_addFundsSubmitSuccess() {
-   //     $user = (new UserM())->find(21);
-   //     $userBalanceOld = $user->balance;
-   //     $funds = 10;
-  //      $result = $this->test()->call('post', 'user/addFundsSubmit', ['funds' => $funds]);
-  //      $user = (new UserM())->find(21);
-   //     $userBalanceNew = $user->balance;
-  //      $this->assertEquals($userBalanceOld + $funds, $userBalanceNew);
-  //  }
+    //  public function test_addFundsSubmitSuccess() {
+    //     $user = (new UserM())->find(21);
+    //     $userBalanceOld = $user->balance;
+    //     $funds = 10;
+    //      $result = $this->test()->call('post', 'user/addFundsSubmit', ['funds' => $funds]);
+    //      $user = (new UserM())->find(21);
+    //     $userBalanceNew = $user->balance;
+    //      $this->assertEquals($userBalanceOld + $funds, $userBalanceNew);
+    //  }
 
     public function test_addFundsSubmitFailNegativeFund() {
         $funds = -10;
@@ -212,7 +207,9 @@ class UserTest extends CIUnitTestCase {
 
         foreach ($products as $product) {
             $userProduct = $ownershipM->where('id_user', 21)->where('id_product', $product->id)->first();
-            if (!$userProduct) $kupljen = false;
+            if (!$userProduct) {
+                $kupljen = false;
+            }
         }
 
         $this->assertEquals(true, $kupljen);
@@ -228,7 +225,7 @@ class UserTest extends CIUnitTestCase {
         $result = $this->test()->call('post', 'user/buyBundleSubmit/5', ["final" => $price['final']]);
 
         $userProductNewCount = $ownershipM->where('id_user', 17)->countAllResults();
-        
+
         $ownershipM->where('id_product', 26)->where('id_user', 21)->delete();
         $ownershipM->where('id_product', 27)->where('id_user', 21)->delete();
         $ownershipM->where('id_product', 28)->where('id_user', 21)->delete();
@@ -357,7 +354,7 @@ class UserTest extends CIUnitTestCase {
         $couponsCountOld = ((new CouponM))->where('id_owner', 25)->countAllResults();
         $result = $this->test()->call('post', 'user/awardUserSubmit/25', ['points' => $points]);
         $couponsCountNew = ((new CouponM))->where('id_owner', 25)->countAllResults();
-        $result->assertEquals($couponsCountOld + 1,$couponsCountNew);
+        $result->assertEquals($couponsCountOld + 1, $couponsCountNew);
     }
 
     public function test_awardUserSubmitNoCoupon() {
@@ -365,6 +362,11 @@ class UserTest extends CIUnitTestCase {
         $couponsCountOld = ((new CouponM))->where('id_owner', 25)->countAllResults();
         $result = $this->test()->call('post', 'user/awardUserSubmit/25', ['points' => $points]);
         $couponsCountNew = ((new CouponM))->where('id_owner', 25)->countAllResults();
-        $result->assertEquals($couponsCountOld,$couponsCountNew);
+        $result->assertEquals($couponsCountOld, $couponsCountNew);
+    }
+
+    public function test_logout() {
+        $result = $this->test()->get('user/logout');
+        $this->assertNull($_SESSION["user_id"]);
     }
 }
