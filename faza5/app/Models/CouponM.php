@@ -144,7 +144,8 @@ class CouponM extends Model {
         $points = (int)($spent * POINTS_PRODUCT);
 
         $userM = new UserM();
-        $currentPoints = $userM->points + $points;
+        $user = $userM->find($idUser);
+        $currentPoints = $user->points + $points;
 
         $userM->update($idUser, [
             'points' => $currentPoints
