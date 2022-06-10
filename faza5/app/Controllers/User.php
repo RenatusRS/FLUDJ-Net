@@ -67,6 +67,7 @@ class User extends BaseController {
 
         $user->balance += $this->request->getPost('funds');
 
+        $userM = new UserM();
         $userM->update($user->id, [
             'balance' => $user->balance
         ]);
@@ -118,15 +119,11 @@ class User extends BaseController {
      * @return void
      */
     public function buyProductSubmit($id) {
-        $userM = new UserM();
-
-
         $userFrom = $this->getUser();
 
         $friends = (new RelationshipM())->getFriends($userFrom->id);
 
         $userFor = null;
-
 
         if ($this->request->getVar('buyOptions') != $userFrom->id) {
             $userM = new UserM();
