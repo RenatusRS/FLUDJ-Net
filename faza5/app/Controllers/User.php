@@ -126,10 +126,10 @@ class User extends BaseController {
 
         $userFor = null;
 
-        if ($this->request->getVar('buyOptions') != $userFrom->id) {      
+        if ($this->request->getVar('buyOptions') != $userFrom->id) {
             $userFor = $userM->find($this->request->getVar('buyOptions'));
         }
-        
+
         $productM = new ProductM();
         $product = $productM->find($id);
 
@@ -285,7 +285,7 @@ class User extends BaseController {
             $receiverPoints -= COUPON_POINTS;
         }
 
-        redirect()->to(site_url("user/profile/{$idUser}"));
+        return redirect()->to(site_url("user/profile/{$idUser}"));
     }
 
     /**
