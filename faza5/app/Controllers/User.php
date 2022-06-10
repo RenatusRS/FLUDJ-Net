@@ -63,15 +63,9 @@ class User extends BaseController {
         if (!$this->validate(['funds' => 'required|greater_than[0]']))
             return $this->show('addFunds', ['errors' => $this->validator->getErrors()]);
 
-        $userM = new UserM();
-        $userM->update(22, [
-            'balance' => $this->request->getPost('funds')
-        ]);
-
         $user = $this->getUser();
 
         $user->balance += $this->request->getPost('funds');
-
 
         $userM->update($user->id, [
             'balance' => $user->balance
