@@ -33,7 +33,7 @@ class UserTest extends CIUnitTestCase {
     }
 
     protected function test2() {
-        $_SESSION['user_id'] = 22;
+        $_SESSION['user_id'] = 6;
         $routes = [
             ['get', 'http://localhost:8080/', '\App\Controllers\User::class'],
         ];
@@ -129,17 +129,17 @@ class UserTest extends CIUnitTestCase {
     }
 
     public function test_buyProductSubmitFailedAlreadyBoughtForAFriend() {
-        $result = $this->test()->get('user/buyProductSubmit/19', ['buyOptions' => 25]);
+        $result = $this->test2()->get('user/buyProductSubmit/19', ['buyOptions' => 25]);
         $this->assertTrue($result->see("User already owns this product."));
     }
 
     public function test_buyProductSubmitFailedNoMoney() {
-        $result = $this->test2()->get('user/buyProductSubmit/19', ['buyOptions' => 22]);
+        $result = $this->test2()->get('user/buyProductSubmit/20', ['buyOptions' => 6]);
         $this->assertTrue($result->see("You have insufficient funds."));
     }
 
     public function test_buyProductSubmitFailedNoMoneyForAFriend() {
-        $result = $this->test2()->get('user/buyProductSubmit/18', ['buyOptions' => 25]);
+        $result = $this->test2()->get('user/buyProductSubmit/20', ['buyOptions' => 24]);
         $this->assertTrue($result->see("You have insufficient funds."));
     }
 
@@ -338,7 +338,6 @@ class UserTest extends CIUnitTestCase {
         $nickname = 'cviki76';
         $result = $this->test()->call('post', 'user/ajaxUserLoad', ['nadimak' => $nickname]);
         $json = $result->getJSON();
-
         $result->assertEquals('http://localhost:8080/user/profile/21', json_decode($json));
     }
 
@@ -368,5 +367,28 @@ class UserTest extends CIUnitTestCase {
     public function test_logout() {
         $result = $this->test()->get('user/logout');
         $this->assertNull($_SESSION["user_id"]);
+    }
+
+    public function test_ajaxProductLoad() {
+        $name = 'DOOM';
+        $result = $this->test()->call('post', 'user/ajaxProductLoad/user', ['ime' => $name]);
+        $json = $result->getJSON();
+        $result->assertEquals('http://localhost:8080/user/product/15', json_decode($json));
+    }
+
+    public function test_ajaxProductSearch() {
+        $name = 'cs';
+        $result = $this->test()->call('post', 'user/ajaxProductSearch', ['q' => $name]);
+        $json = $result->getJSON();
+        $result->assertEquals('CS: Global Offensive', json_decode(json_decode($json))[0]->text);
+    }
+
+    public function test_profile() {
+        $users = (new UserM())->find();
+
+        foreach ($users as $user) {
+            $result = $this->test()->get("user/profile/{$user->id}");
+            $this->assertTrue($result->see("{$user->nickname}"));
+        }    
     }
 }
