@@ -6,21 +6,22 @@ Supergiant Games
 
 
 17-09-2020
+//2020-09-17
 
 Action Rougelike Indie RPG Mythology Story Isometric Singleplayer
 
 MINIMUM:
 OS: Windows 7 SP1
 Processor: Dual Core 2.4 GHz
-Memory: 4GB
 Graphics: 1GB VRAM
+Memory: 4GB
 Storage: 15GB
 
 RECOMMENDED:
 OS: Windows 10
 Processor: Dual Core 3.0 GHz+
-Memory: 8GB
 Graphics: 2GB VRAM
+Memory: 8GB
 Storage: 20GB
 
 
