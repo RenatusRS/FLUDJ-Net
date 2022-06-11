@@ -40,13 +40,31 @@ class BundledProductsM extends Model {
      *
      * @param  integer $idBundle
      * @param  integer $idProduct
-     * @return void
+     * @return boolean
      */
     public static function addToBundle($idBundle, $idProduct) {
-        (new BundledProductsM())->insert([
+        $model = (new BundledProductsM());
+        if ($model->existsInBundle($idBundle, $idProduct))
+            return false;
+        $model->insert([
             'id_bundle'  => $idBundle,
             'id_product' => $idProduct
         ]);
+        return true;
+    }
+    /**
+     * vraća true ako proizvod sa id-jem $idProduct postoji u kolekciji sa id-jem $idBundle
+     *
+     * @param  integer $idBundle id kolekcije
+     * @param  integer $idProduct id proizvoda
+     * @return boolean
+     */
+    public function existsInBundle($idBundle, $idProduct) {
+        $res = $this->where('id_bundle', $idBundle)
+                    ->where('id_product', $idProduct)
+                    ->first();
+
+        return (isset($res));
     }
     /**
      * vrati sve proizvode koji se nalaze u kolekciji sa id-jem $idBundle

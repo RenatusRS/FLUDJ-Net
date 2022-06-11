@@ -60,7 +60,7 @@ class Database extends Config {
         'hostname' => 'localhost',
         'username' => 'root',
         'password' => '',
-        'database' => 'fludj',
+        'database' => 'fludj_test',
         'DBDriver' => 'MySQLi',
         'DBPrefix' => '',
         'pConnect' => false,

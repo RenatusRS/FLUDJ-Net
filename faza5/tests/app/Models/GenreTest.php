@@ -85,7 +85,18 @@ class GenreTest extends CIUnitTestCase {
     }
     private function assertInsertComposite() {
         $model = $this->model;
-    } // TODO
+
+        $this->assertFalse($model->insertComposite(1, "Action"));
+        $this->assertTrue($model->insertComposite(1, "Masterpiece"));
+
+        $this->assertTrue($model->compositeExists(1, "Masterpiece"));
+
+        $model->where('id_product', 1)
+              ->where('genre_name', "Masterpiece")
+              ->delete();
+
+        $this->assertFalse($model->compositeExists(1, "Masterpiece"));
+    }
 
     // pomoćne
     private function assertSimilar($products) {

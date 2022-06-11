@@ -257,6 +257,7 @@ class ProductTest extends CIUnitTestCase {
         foreach ($userProducts as $p)
             $this->assertIsObject($p);
         $this->assertEquals(19, $userProducts[0]->id);
+        // $this->assertEquals(27, $userProducts[4]->id);
         $this->assertCount(41, $userProducts);
     } // TODO, funkcija koja se testira mora značajno da se promeni da bi se koristilo pametnije testiranje (sa assertIsSorted())
     private function assertGetSimilarProducts() {
