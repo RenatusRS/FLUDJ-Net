@@ -29,7 +29,7 @@ $userM = new UserM();
     <div>
         <select class="search" name="search" style="width: 300px; color: black;"></select>
     </div>
-    <div style="display:flex">
+    <div class="flex">
         <div style="flex: 1;">
             <h2>INCOMING REQUESTS</h2>
             <?php

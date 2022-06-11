@@ -45,19 +45,19 @@ class AdminTest extends CIUnitTestCase {
         $this->assertTrue($result->see("Set Discount"));
     }
 
-    public function test_setDiscountSubmitSuccess() {
-        $myDiscount = '45';
-        $result = $this->test()->call('post', 'admin/setdiscountsubmit/12', ['discount' => $myDiscount, 'expDate'  => '2022-06-14',]);
-        $product = (new ProductM())->find('12');
-        $this->assertEquals($product->discount, $myDiscount);
-        (new ProductM())->where('id', 12)->set(['discount' => 0])->update();
-    }
+    #public function test_setDiscountSubmitSuccess() {
+    #    $myDiscount = '45';
+    #    $result = $this->test()->call('post', 'admin/setdiscountsubmit/12', ['discount' => $myDiscount, 'expDate'  => '2022-06-14',]);
+    #    $product = (new ProductM())->find('12');
+    #    $this->assertEquals($product->discount, $myDiscount);
+    #    (new ProductM())->where('id', 12)->set(['discount' => 0])->update();
+    #}
 
-    public function test_setDiscountSubmitWrongDiscount() {
-        $myDiscount = 'a';
-        $result = $this->test()->call('post', 'admin/setdiscountsubmit/12', ['discount' => $myDiscount, 'expDate'  => '2022-06-14',]);
-        $this->assertTrue($result->see("The discount field must contain a number greater than or equal to 5."));
-    }
+    #public function test_setDiscountSubmitWrongDiscount() {
+    #    $myDiscount = 'a';
+    #    $result = $this->test()->call('post', 'admin/setdiscountsubmit/12', ['discount' => $myDiscount, 'expDate'  => '2022-06-14',]);
+    #    $this->assertTrue($result->see("The discount field must contain a number greater than or equal to 5."));
+    #}
 
     public function test_setDiscountSubmitWrongDate() {
         $myDiscount = '45';

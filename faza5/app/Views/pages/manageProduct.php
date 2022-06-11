@@ -43,7 +43,7 @@ if (!isset($product)) {
 <form name='manageProductForm' action="<?= site_url("Admin/manageProductSubmit") ?>" method="POST" enctype="multipart/form-data">
     <input type="hidden" name="id" value="<?php echo $product->id ?>" />
 
-    <div id=main style="display:flex;flex-wrap: wrap;">
+    <div id="main" style="display:flex;flex-wrap: wrap;">
         <div style="flex:100%; padding: 0 16px">
             <?php if (!empty($errors)) : ?>
                 <div style='color:red;'>
