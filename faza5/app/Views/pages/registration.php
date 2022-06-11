@@ -13,7 +13,7 @@ Opis: Stranica za registraciju
 
 <div id="short-main">
     <?php if (!empty($errors)) : ?>
-        <div style='color:red;'>
+        <div class="error">
             <?php foreach ($errors as $field => $error) : ?>
                 <p><?= $error ?></p>
             <?php endforeach ?>

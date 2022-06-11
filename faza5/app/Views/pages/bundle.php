@@ -15,7 +15,7 @@ Opis: Stranica za prikaz bundla
 
 <div id=middle-main>
     <h1><?php echo $bundle->name ?></h1>
-    <img class=smooth-border style="width:100%" src=" <?php echo base_url('uploads/bundle/' . $bundle->id . '/banner.jpg')  ?>">
+    <img class="smooth-border full-width" src=" <?php echo base_url('uploads/bundle/' . $bundle->id . '/banner.jpg')  ?>">
     <h2>About</h2>
     <?php foreach ($bundle->description as $line) { ?>
         <p>
@@ -24,17 +24,17 @@ Opis: Stranica za prikaz bundla
     <?php } ?>
 
     <h2>Products Included</h2>
-    <div style="background-color: rgb(0,0,0,0.6);">
+    <div class="t-black">
         <?php foreach ($bundledProducts as $product) { ?>
             <?php $owned = (in_array($product->id, $ownedProducts)); ?>
             <a href="<?php product_url($controller, $product->id) ?>">
-                <div style="display: flex;align-items: center; <?php if ($owned) echo 'opacity: 0.3;' ?>">
+                <div class="flex" style="align-items: center; <?php if ($owned) echo 'opacity: 0.3;' ?>">
                     <div style="flex:6">
                         <img style="width: 200px;vertical-align: middle" src="<?php product_banner($product->id) ?>">
                         <span><?php echo $product->name ?></span>
                     </div>
                     <div style="flex:1;text-align: right; padding: 15px; ">
-                        <?php if ($owned) echo 'already owned' ?>
+                        <?php if ($owned) echo 'Already Owned' ?>
                         <div style="<?php if ($owned) echo 'text-decoration: line-through' ?>">
                             $<?php echo number_format($product->price, 2) ?>
                         </div>
@@ -42,7 +42,7 @@ Opis: Stranica za prikaz bundla
                 </div>
             </a>
         <?php } ?>
-        <div style="display: flex;align-items: center;padding: 15px">
+        <div class="flex" style="align-items: center;padding: 15px">
             <div style="flex:2">
                 <h3>TOTAL PRICE</h3>
             </div>
@@ -52,7 +52,7 @@ Opis: Stranica za prikaz bundla
         </div>
     </div>
 
-    <form action="<?= site_url("User/buyBundle/{$bundle->id}") ?>" method="POST">
+    <form action="<?= site_url("user/buyBundle/{$bundle->id}") ?>" method="POST">
         <input type="hidden" name="price" value="<?php echo $price['price'] ?>" />
         <input type="hidden" name="discount" value="<?php echo $price['discount'] ?>" />
         <input type="hidden" name="final" value="<?php echo $price['final'] ?>" />

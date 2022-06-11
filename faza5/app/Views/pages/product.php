@@ -20,14 +20,9 @@ use App\Models\ProductM;
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
 
 <style>
-    .cursor {
-        cursor: pointer;
-    }
-
     .demo {
         opacity: 0.6;
         transition: 0.2s;
-
     }
 
     .activet,
@@ -46,7 +41,7 @@ use App\Models\ProductM;
         <select class="search" name="search" style="width: 300px; color: black;"></select>
     </div>
     <h1><?php echo $product->name ?></h1>
-    <div style="display: flex; margin-bottom: 0px">
+    <div class="flex" style="margin-bottom: 0px">
         <div style="flex: 6">
             <div style="margin-bottom: 10px;">
                 <div class="mySlides" style="display:none">
@@ -67,18 +62,18 @@ use App\Models\ProductM;
                     <img src="<?php echo base_url('uploads/product/' . $product->id . '/ss3.jpg')  ?>" style="width:100%">
                 </div>
             </div>
-            <div style="display:flex">
+            <div class="flex">
                 <div style="flex:1">
-                    <img class="demo cursor" src="<?php echo base_url('assets/thumbnail.png')  ?>" style="width:100%; height: 100%;" onclick="currentSlide(1)">
+                    <img class="demo pointer" src="<?php echo base_url('assets/thumbnail.png')  ?>" style="width:100%; height: 100%;" onclick="currentSlide(1)">
                 </div>
                 <div style="flex:1">
-                    <img class="demo cursor" src="<?php echo base_url('uploads/product/' . $product->id . '/ss1.jpg')  ?>" style="width:100%" onclick="currentSlide(2)">
+                    <img class="demo pointer" src="<?php echo base_url('uploads/product/' . $product->id . '/ss1.jpg')  ?>" style="width:100%" onclick="currentSlide(2)">
                 </div>
                 <div style="flex:1">
-                    <img class="demo cursor" src="<?php echo base_url('uploads/product/' . $product->id . '/ss2.jpg')  ?>" style="width:100%" onclick="currentSlide(3)">
+                    <img class="demo pointer" src="<?php echo base_url('uploads/product/' . $product->id . '/ss2.jpg')  ?>" style="width:100%" onclick="currentSlide(3)">
                 </div>
                 <div style="flex:1">
-                    <img class="demo cursor" src="<?php echo base_url('uploads/product/' . $product->id . '/ss3.jpg')  ?>" style="width:100%" onclick="currentSlide(4)">
+                    <img class="demo pointer" src="<?php echo base_url('uploads/product/' . $product->id . '/ss3.jpg')  ?>" style="width:100%" onclick="currentSlide(4)">
                 </div>
             </div>
             <?php if ($product_base != null) { ?>
@@ -233,12 +228,12 @@ use App\Models\ProductM;
     </div>
 
     <h2>More Like This</h2>
-    <div style="display: flex;margin:0 -5px 0 -5px">
+    <div class="flex" style="margin:0 -5px 0 -5px">
         <?php for ($i = 0; $i < 4; $i++) { ?>
             <div style="flex: 1; margin: 5px;">
                 <?php if (count($similar_products) > $i) { ?>
                     <a href="<?php echo site_url($controller . "/product/" . $similar_products[$i]->id) ?>">
-                        <img style="width:100%" src="<?php echo base_url('uploads/product/' . $similar_products[$i]->id . '/banner.jpg') ?>">
+                        <img class="full-width" src="<?php echo base_url('uploads/product/' . $similar_products[$i]->id . '/banner.jpg') ?>">
                         <h3><?php echo $similar_products[$i]->name ?></h3>
                     </a>
                 <?php } ?>
@@ -253,10 +248,10 @@ use App\Models\ProductM;
                 $id = $review['user']->id;
         ?>
                 <div id=<?php echo $id ?> style="color: rgb(255, 196, 0); background-color:rgb(0,0,0,0.6); border-radius: 5px; margin-bottom: 10px">
-                    <div style="display:flex; align-items: center;">
+                    <div class="flex" style="align-items: center;">
                         <a href="<?php echo site_url($controller . "/profile/" . $id) ?>">
                             <div style="flex: 1">
-                                <img width=70px class=smooth-border style="padding-right: 13px; border-radius: 5px 0 0 0;vertical-align: middle;" src="<?php echo $review['avatar'] ?>">
+                                <img width=70px class="smooth-border" style="padding-right: 13px; border-radius: 5px 0 0 0;vertical-align: middle;" src="<?php echo $review['avatar'] ?>">
                                 <span><?php echo $name ?></span>
                             </div>
                         </a>
@@ -280,7 +275,7 @@ use App\Models\ProductM;
                             </p>
                         <?php } ?>
                     </div>
-                    <div style="display:flex">
+                    <div class="flex">
                         <form style="flex: 1;" action=" <?= site_url("user/awardUser/$id/") ?>" method="POST">
                             <input style="border-radius: 0 0 0 5px; margin: 0" type="submit" class="btn" name="action" value="🌟">
                         </form>

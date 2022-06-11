@@ -15,7 +15,7 @@ Opis: Stranica za prikaz kupona
 
     <?php foreach ($coupons as $coupon) { ?>
         <a href="<?php product_url('user', $coupon->id) ?>">
-            <div style="color: black;background-color: rgb(255, 196, 0, 0.6);display:flex; align-items: center;margin: 10px 0; border: 2px solid rgb(255, 196, 0); border-radius: 5px">
+            <div class="smooth-border flex" style="color: black;background-color: rgb(255, 196, 0, 0.6); align-items: center;margin: 10px 0; border: 2px solid rgb(255, 196, 0);">
 
                 <div style="flex: 2">
                     <img style="width: 200px;" src=<?php product_banner($coupon->id) ?>>

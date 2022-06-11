@@ -24,12 +24,12 @@ if (!isset($bundle)) {
     <?php echo isset($bundle) ? "Edit: " . $bundle->name : "Add New Bundle"; ?>
 </title>
 
-<div id=main style="display:flex">
+<div id="main" style="display: flex">
     <form style="flex: 3; margin-right: 16px" name='manageBundleForm' action="<?= site_url("Admin/manageBundleSubmit") ?>" method="POST" enctype="multipart/form-data">
 
         <input type="hidden" name="id" value="<?php echo $bundle->id ?>" />
 
-        <div style="display:flex;">
+        <div class="flex">
             <div style="flex:3%;">
                 <?php if (!empty($errors)) : ?>
                     <div style='color:red;'>
@@ -67,7 +67,7 @@ if (!isset($bundle)) {
 
         <br>
         <?php if ($bundle->id == -1) : ?>
-            <div style='color:red;'>
+            <div class="error">
                 Create the bundle first then change its contents.
             </div>
         <?php else : ?>

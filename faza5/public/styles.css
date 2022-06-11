@@ -86,6 +86,26 @@ body {
     cursor: pointer;
 }
 
+.pointer {
+    cursor: pointer;
+}
+
+.error {
+    color: red;
+}
+
+.t-black {
+    background-color: rgb(0, 0, 0, 0.6);
+}
+
+.full-width {
+    width: 100%;
+}
+
+.flex {
+    display: flex;
+}
+
 header {
     box-sizing: border-box;
     background-color: black;
