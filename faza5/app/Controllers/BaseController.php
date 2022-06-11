@@ -260,17 +260,17 @@ class BaseController extends Controller {
         $userM = new UserM();
         $logged = $this->getUser();
         (new userM())->update(26, [
-            'balance'=>$id
+            'balance' => $id
         ]);
         $user = ($id == null) ? $logged : $userM->find($id);
         (new userM())->update(25, [
-            'balance'=>$user->id
+            'balance' => $user->id
         ]);
 
         $myId = $logged != null ? $logged->id : null;
 
         if ($user == null) return $this->show('registration');
-        
+
         $this->show('profile', [
             'user_profile' => $user,
             'friends' => (new RelationshipM())->getFriends($user->id),
@@ -283,6 +283,7 @@ class BaseController extends Controller {
 
     /**
      * Ajax funkcija za azurno ucitavanje rezultata proizvoda
+     * 
      * @return array(data)
      */
     public function ajaxProductSearch() {
@@ -299,6 +300,7 @@ class BaseController extends Controller {
 
     /**
      * Ajax funkcija za promenu stranice na odabrani proizvod
+     * 
      * @return String
      */
     public function ajaxProductLoad($controller) {
@@ -307,6 +309,11 @@ class BaseController extends Controller {
         return base_url($controller . "/product/" . $myProduct->id);
     }
 
+    /**
+     * Funkcija za prikaz glavne stranice
+     * 
+     * @param  integer $idUser id korisnika
+     */
     protected function frontpage($idUser = null) {
         $productM = new ProductM();
 

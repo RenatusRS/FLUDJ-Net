@@ -86,7 +86,7 @@ class User extends BaseController {
         $user = $this->getUser();
 
         $friends =  (new RelationshipM())->getFriends($user->id);
-        $friends = array_filter($friends, function($f) use(&$id) {
+        $friends = array_filter($friends, function ($f) use (&$id) {
             return (!(new OwnershipM())->owns($f->id, $id));
         });
 
@@ -347,7 +347,7 @@ class User extends BaseController {
     }
 
     /**
-     * prikaz stranice za kupovanje kolekcije
+     * Prikaz stranice za kupovanje kolekcije
      *
      * @param  integer $id id kolekcije
      * @return void
@@ -369,6 +369,12 @@ class User extends BaseController {
         ]);
     }
 
+    /**
+     * Funckija za procesiranje kupovine kolekcije
+     *
+     * @param  integer $id id kolekcije
+     * @return void
+     */
     public function buyBundleSubmit($id) {
         $finalPrice = $this->request->getPost('final');
         $user = $this->getUser();

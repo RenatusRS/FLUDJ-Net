@@ -374,7 +374,7 @@ class Admin extends BaseController {
         return redirect()->to(base_url());
     }
 
-     /**
+    /**
      *
      * Brisanje korisnika
      *
@@ -409,6 +409,13 @@ class Admin extends BaseController {
         return redirect()->to(base_url());
     }
 
+    /**
+     *
+     * Ajax funkcija za banovanje/unbanovanje korisnika
+     *
+     * @param  integer $id user
+     * @return void
+     */
     public function banajax() {
         $data = $this->request->getVar();
         $userM = new UserM();
@@ -423,6 +430,13 @@ class Admin extends BaseController {
         ));
     }
 
+    /**
+     *
+     * Ajax funkcija za promociju/demociju korisnika
+     *
+     * @param  integer $id user
+     * @return void
+     */
     public function promoteajax() {
         $data = $this->request->getVar();
         $userM = new UserM();

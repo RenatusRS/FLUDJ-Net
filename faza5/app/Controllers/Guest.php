@@ -13,21 +13,36 @@
 
 namespace App\Controllers;
 
-use App\Models\GenreM;
-use App\Models\ProductM;
 use App\Models\UserM;
-use App\Models\OwnershipM;
-use App\Models\RelationshipM;
 
 class Guest extends BaseController {
+
+    /**
+     *
+     * Glavna stranica
+     * 
+     * @return void
+     */
     public function index() {
         $this->frontpage();
     }
 
+    /**
+     *
+     * Stranica za prijavljivanje
+     * 
+     * @return void
+     */
     public function login($message = null) {
         $this->show('login', ['message' => $message]);
     }
 
+    /**
+     *
+     * Funkcija za procesiranje prijavljivanja
+     * 
+     * @return void
+     */
     public function loginSubmit() {
         if (!$this->validate(['username' => 'required', 'password' => 'required']))
             return $this->show('login', ['errors' => $this->validator->getErrors()]);
@@ -42,10 +57,22 @@ class Guest extends BaseController {
         return redirect()->to(site_url('user'));
     }
 
+    /**
+     *
+     * Stranica za registraciju
+     * 
+     * @return void
+     */
     public function registration() {
         $this->show('registration');
     }
 
+    /**
+     *
+     * Funkcija za procesiranje registracije
+     * 
+     * @return void
+     */
     public function registrationSubmit() {
         if (!$this->validate(['username' => 'required', 'password' => 'required']))
             return $this->show('registration', ['errors' => $this->validator->getErrors()]);
@@ -68,6 +95,13 @@ class Guest extends BaseController {
         return redirect()->to(site_url("user/profile/"));
     }
 
+    /**
+     *
+     * Pomocna funkcija za prikaz proizvoda
+     *
+     * @param  integer $id id proizvoda
+     * @return void
+     */
     protected function userViewProduct($id) {
         return [];
     }
