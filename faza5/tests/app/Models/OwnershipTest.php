@@ -15,19 +15,35 @@ class OwnershipTest extends CIUnitTestCase {
 
     // protected $seed = 'Tests\Support\Database\Seeds\OwnershipSeeder';
 
-    public function testModelFindAll() {
-        $model = new OwnershipM();
+    private $model;
 
-        // ===== OwnershipM::owns ========
+    public function testModelFindAll() {
+        $this->model = new OwnershipM();
+
+        $this->assertOwns();
+        $this->assertGetOwned();
+        $this->assertAcquire();
+        $this->assertGetRating();
+        $this->assertOwnedSum();
+        $this->assertMatchingGenres();
+        $this->assertFriendsLikes();
+    }
+
+    private function assertOwns() {
+        $model = $this->model;
+
         $exists = $model->owns(1, 1);
         $doesntExist = $model->owns(1, 2);
+
         $this->assertisBool($exists); // exists in db
         $this->assertTrue($exists);
 
         $this->assertisBool($doesntExist); // doesn't exist in db
         $this->assertFalse($doesntExist);
+    }
+    private function assertGetOwned() {
+        $model = $this->model;
 
-        // ==== OwnershipM::getOwned =====
         $owned = $model->getOwned(1);
         $doesntExist = $model->getOwned(14);
 
@@ -40,12 +56,11 @@ class OwnershipTest extends CIUnitTestCase {
 
         $this->assertIsArray($doesntExist);
         $this->assertCount(0, $doesntExist);
+    }
+    private function assertAcquire() {} // TODO
+    private function assertGetRating() {
+        $model = $this->model;
 
-
-        // ==== OwnershipM::acquire ======
-        // TODO
-
-        // ==== OwnershipM::getRating =====
         $hasRating = $model->getRating(1, 1);
         $doesntHaveRating = $model->getRating(34, 3);
         $doesntHaveProduct = $model->getRating(1, 2);
@@ -70,14 +85,8 @@ class OwnershipTest extends CIUnitTestCase {
 
         $this->assertIsInt($userAndProductNotExisting);
         $this->assertEquals(0, $userAndProductNotExisting);
-
-        // ==== OwnershipM::ownedSum =====
-        // TODO
-
-        // ==== OwnershipM::matchingGenres =====
-        // TODO
-
-        // ==== OwnershipM::friendsLikes =====
-        // TODO
     }
+    private function assertOwnedSum() { } // TODO
+    private function assertMatchingGenres() { } // TODO
+    private function assertFriendsLikes() { } // TODO
 }
