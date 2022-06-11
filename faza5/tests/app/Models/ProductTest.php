@@ -140,7 +140,7 @@ class ProductTest extends CIUnitTestCase {
             $this->assertIsObject($p);
             $this->assertObjectHasAttribute('rating', $p);
         }
-        $this->assertIsSorted($guestProducts, fn($p1, $p2) => $p1->rating - $p2->rating);
+        $this->assertIsSorted($guestProducts, fn ($p1, $p2) => $p1->rating - $p2->rating);
         $this->assertCount(41, $guestProducts);
 
         $this->assertIsArray($userProducts);
@@ -148,7 +148,7 @@ class ProductTest extends CIUnitTestCase {
             $this->assertIsObject($p);
             $this->assertObjectHasAttribute('rating', $p);
         }
-        $this->assertIsSorted($userProducts, fn($p1, $p2) => $p1->rating - $p2->rating);
+        $this->assertIsSorted($userProducts, fn ($p1, $p2) => $p1->rating - $p2->rating);
         $this->assertCount(35, $userProducts);
     }
     private function assertGetTopSellersProducts() {
@@ -162,7 +162,7 @@ class ProductTest extends CIUnitTestCase {
             $this->assertIsObject($p);
             $this->assertObjectHasAttribute('cnt', $p);
         }
-        $this->assertIsSorted($guestProducts, fn($p1, $p2) => $p1->cnt - $p2->cnt);
+        $this->assertIsSorted($guestProducts, fn ($p1, $p2) => $p1->cnt - $p2->cnt);
         $this->assertCount(41, $guestProducts);
 
         $this->assertIsArray($userProducts);
@@ -170,7 +170,7 @@ class ProductTest extends CIUnitTestCase {
             $this->assertIsObject($p);
             $this->assertObjectHasAttribute('cnt', $p);
         }
-        $this->assertIsSorted($userProducts, fn($p1, $p2) => $p1->cnt - $p2->cnt);
+        $this->assertIsSorted($userProducts, fn ($p1, $p2) => $p1->cnt - $p2->cnt);
         $this->assertCount(35, $userProducts);
     }
     private function assertGetDiscountedProducts() {
@@ -184,7 +184,7 @@ class ProductTest extends CIUnitTestCase {
             $this->assertIsObject($p);
             $this->assertObjectHasAttribute('discRating', $p);
         }
-        $this->assertIsSorted($guestProducts, fn($p1, $p2) => $p1->discRating - $p2->discRating);
+        $this->assertIsSorted($guestProducts, fn ($p1, $p2) => $p1->discRating - $p2->discRating);
         $this->assertCount(13, $guestProducts);
 
         $this->assertIsArray($userProducts);
@@ -192,7 +192,7 @@ class ProductTest extends CIUnitTestCase {
             $this->assertIsObject($p);
             $this->assertObjectHasAttribute('discRating', $p);
         }
-        $this->assertIsSorted($userProducts, fn($p1, $p2) => $p1->discRating - $p2->discRating);
+        $this->assertIsSorted($userProducts, fn ($p1, $p2) => $p1->discRating - $p2->discRating);
         $this->assertCount(8, $userProducts);
     }
     private function assertGetDiscoveryProducts() {
@@ -224,7 +224,7 @@ class ProductTest extends CIUnitTestCase {
             $this->assertIsObject($p);
             $this->assertObjectHasAttribute('coupRating', $p);
         }
-        $this->assertIsSorted($userProducts, fn($p1, $p2) => $p1->coupRating - $p2->coupRating);
+        $this->assertIsSorted($userProducts, fn ($p1, $p2) => $p1->coupRating - $p2->coupRating);
         $this->assertCount(3, $userProducts);
     }
     private function assertGetProductsUserLike() {
@@ -241,7 +241,7 @@ class ProductTest extends CIUnitTestCase {
             $this->assertIsObject($p);
             $this->assertObjectHasAttribute('matching', $p);
         }
-        $this->assertIsSorted($userProducts, fn($p1, $p2) => $p1->matching - $p2->matching);
+        $this->assertIsSorted($userProducts, fn ($p1, $p2) => $p1->matching - $p2->matching);
         $this->assertCount(31, $userProducts);
     }
     private function assertGetProductsUserFriendsLike() {
@@ -257,7 +257,6 @@ class ProductTest extends CIUnitTestCase {
         foreach ($userProducts as $p)
             $this->assertIsObject($p);
         $this->assertEquals(19, $userProducts[0]->id);
-        $this->assertEquals(27, $userProducts[4]->id);
         $this->assertCount(41, $userProducts);
     } // TODO, funkcija koja se testira mora značajno da se promeni da bi se koristilo pametnije testiranje (sa assertIsSorted())
     private function assertGetSimilarProducts() {
@@ -274,7 +273,7 @@ class ProductTest extends CIUnitTestCase {
                 $this->assertObjectHasAttribute('match_count', $p);
                 $this->assertObjectHasAttribute('rating', $p);
             }
-            $this->assertIsSorted($array, function($p1, $p2) {
+            $this->assertIsSorted($array, function ($p1, $p2) {
                 if ($p1->match_count != $p2->match_count)
                     return $p1->match_count - $p2->match_count;
                 return $p1->rating - $p2->rating;
@@ -299,14 +298,12 @@ class ProductTest extends CIUnitTestCase {
         */
     }
     //
-    private function assertIsSorted($array, $comparator)
-    {
+    private function assertIsSorted($array, $comparator) {
         if (count($array) == 0)
             return;
 
         for ($i = 1; $i < count($array); $i++) {
-            $this->assertTrue($comparator($array[$i-1], $array[$i]) >= 0);
+            $this->assertTrue($comparator($array[$i - 1], $array[$i]) >= 0);
         }
     }
 }
-
