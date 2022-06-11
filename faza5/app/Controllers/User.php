@@ -84,6 +84,9 @@ class User extends BaseController {
         $user = $this->getUser();
 
         $friends =  (new RelationshipM())->getFriends($user->id);
+        $friends = array_filter($friends, function($f) use(&$id) {
+            return (!(new OwnershipM())->owns($f->id, $id));
+        });
 
         $productM = new ProductM();
         $product = $productM->find($id);
