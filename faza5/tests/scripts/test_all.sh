@@ -5,8 +5,9 @@ source ./env.sh
 
 usage() {
     cat << EOF
-Usage: $(basename $0) [-m|-c|-a]
+Usage: $(basename $0) [-r] [-m|-c|-a]
 where:
+    -r refresh database prior to testing
     -m test only models
     -c test only controllers
     -a test all
@@ -16,8 +17,11 @@ EOF
 
 M=1
 C=1
-while getopts ":mcah" opt; do
+REFRESH_DB=
+while getopts ":mcahr" opt; do
     case $opt in
+        r) REFRESH_DB=1
+            ;;
         m) M=1; C=;
             ;;
         c) M=; C=1;
@@ -28,6 +32,12 @@ while getopts ":mcah" opt; do
             ;;
     esac
 done
+
+cd $SCRIPTS
+[ $REFRESH_DB ] &&
+    printf -- "Refreshing database..." &&
+    ./db.sh &&
+    printf -- "\nDatabase refreshed\n"
 
 
 cd $FAZA_5

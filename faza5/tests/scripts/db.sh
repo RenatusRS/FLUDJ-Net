@@ -2,7 +2,7 @@
 
 usage() {
 	cat << EOF
-Usage: $(basename $0) [-m|-c|-a]
+Usage: $(basename $0) [-rRh]
 where:
 	-r removes dump file
 	-R restore original database
@@ -17,10 +17,8 @@ source ./env.sh
 REFRESH_DUMP=
 REMOVE_DUMP=
 RESTORE_DB=
-while getopts ":drRh" opt; do
+while getopts ":rRh" opt; do
 	case $opt in
-		d) REFRESH_DUMP=1
-			;;
         r) REMOVE_DUMP=1
             ;;
 		R) RESTORE_DB=1
