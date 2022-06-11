@@ -21,8 +21,6 @@ class UserMTest extends CIUnitTestCase {
 
         $this->assertGetAvatar();
         $this->assertGetBackground();
-        $this->assertSetBan();
-        $this->assertSetPrivilege();
         $this->assertBanUser();
         $this->assertUnbanUser();
         $this->assertPromoteUser();
@@ -52,16 +50,32 @@ class UserMTest extends CIUnitTestCase {
         // $this->assertIsString($b2);
         // $this->assertEquals(base_url('assets/avatar.png'), $def);
     }
-    private function assertSetBan() {
-    } // TODO
-    private function assertSetPrivilege() {
-    } // TODO
     private function assertBanUser() {
-    } // TODO
+        $model = $this->model;
+
+        $this->assertTrue($model->find(2)->review_ban == 0);
+        $model->banUser(2);
+        $this->assertTrue($model->find(2)->review_ban == 1);
+    }
     private function assertUnbanUser() {
-    } // TODO
+        $model = $this->model;
+
+        $this->assertTrue($model->find(2)->review_ban == 1);
+        $model->unbanUser(2);
+        $this->assertTrue($model->find(2)->review_ban == 0);
+    }
     private function assertPromoteUser() {
-    } // TODO
+        $model = $this->model;
+
+        $this->assertTrue($model->find(2)->admin_rights == 0);
+        $model->promoteUser(2);
+        $this->assertTrue($model->find(2)->admin_rights == 1);
+    }
     private function assertDemoteUser() {
-    } // TODO
+        $model = $this->model;
+
+        $this->assertTrue($model->find(2)->admin_rights == 1);
+        $model->demoteUser(2);
+        $this->assertTrue($model->find(2)->admin_rights == 0);
+    }
 }
