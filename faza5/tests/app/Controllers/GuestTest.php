@@ -46,6 +46,9 @@ class GuestTest extends CIUnitTestCase {
     public function testRegistrationSubmit() {
         $result = $this->test()->call('post', 'guest/registrationSubmit', ['username' => 'hosey1234', 'password' => 'a']);
         $this->assertFalse($result->see("SIGN-IN"));
+
+        $userM = new UserM();
+        $userM->where('id', $userM->getInsertID())->delete();
     }
 
     public function testProfile() {

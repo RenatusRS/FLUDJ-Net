@@ -177,7 +177,7 @@ class UserTest extends CIUnitTestCase {
 
     public function test_awardUser() {
         $result = $this->test()->get('user/awardUser/25');
-        $this->assertTrue($result->see("Please slide the bar and press Award User."));
+        $this->assertTrue($result->see("Award points to"));
     }
 
     #public function test_deleteReviewSubmit() {

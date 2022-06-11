@@ -7,65 +7,6 @@
     "id": "44ad6415-83d6-4307-953e-16d56bfba9d0",
     "name": "7.10.02 - Slanje zahteva za dodavanje prijatelja",
     "commands": [{
-      "id": "f34f46fc-ef48-4171-a1cb-0d84bf43222a",
-      "comment": "",
-      "command": "open",
-      "target": "/",
-      "targets": [],
-      "value": ""
-    }, {
-      "id": "bdebc6d6-7626-4022-9e35-e6b58b172cb5",
-      "comment": "",
-      "command": "click",
-      "target": "linkText=SIGN-IN",
-      "targets": [
-        ["linkText=SIGN-IN", "linkText"],
-        ["css=li:nth-child(4) > a", "css:finder"],
-        ["xpath=//a[contains(text(),'SIGN-IN')]", "xpath:link"],
-        ["xpath=//a[@href='http://localhost:8080/guest/login/']", "xpath:href"],
-        ["xpath=//li[4]/a", "xpath:position"],
-        ["xpath=//a[contains(.,'SIGN-IN')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "ca7d87d3-f695-4662-bf29-b5699a82e97e",
-      "comment": "",
-      "command": "type",
-      "target": "name=username",
-      "targets": [
-        ["name=username", "name"],
-        ["css=.full:nth-child(2)", "css:finder"],
-        ["xpath=//input[@name='username']", "xpath:attributes"],
-        ["xpath=//div[@id='short-main']/form/input", "xpath:idRelative"],
-        ["xpath=//input", "xpath:position"]
-      ],
-      "value": "hose"
-    }, {
-      "id": "68d2ada5-7c4d-460b-81ba-d3e67d6dfedb",
-      "comment": "",
-      "command": "type",
-      "target": "name=password",
-      "targets": [
-        ["name=password", "name"],
-        ["css=.full:nth-child(4)", "css:finder"],
-        ["xpath=//input[@name='password']", "xpath:attributes"],
-        ["xpath=//div[@id='short-main']/form/input[2]", "xpath:idRelative"],
-        ["xpath=//input[2]", "xpath:position"]
-      ],
-      "value": "a"
-    }, {
-      "id": "12b4da1a-340e-4d20-a16f-0e76b037f447",
-      "comment": "",
-      "command": "click",
-      "target": "css=.btn",
-      "targets": [
-        ["css=.btn", "css:finder"],
-        ["xpath=//input[@value='SIGN-IN']", "xpath:attributes"],
-        ["xpath=//div[@id='short-main']/form/input[3]", "xpath:idRelative"],
-        ["xpath=//input[3]", "xpath:position"]
-      ],
-      "value": ""
-    }, {
       "id": "775a4a9b-c260-440e-84ec-128a63508b93",
       "comment": "",
       "command": "open",
@@ -73,431 +14,111 @@
       "targets": [],
       "value": ""
     }, {
-      "id": "a73812de-7125-4046-82ce-c142200a5c88",
-      "comment": "",
-      "command": "waitForElementPresent",
-      "target": "name=frnd_btn",
-      "targets": [],
-      "value": "30000"
-    }, {
-      "id": "994d9569-6641-4baf-8d2d-c9d6dc214b51",
+      "id": "129558f5-73ee-4157-9cfc-d97ecc49dbca",
       "comment": "",
       "command": "click",
-      "target": "name=frnd_btn",
+      "target": "id=friend-button",
       "targets": [
-        ["name=frnd_btn", "name"],
-        ["css=form > .btn", "css:finder"],
-        ["xpath=//input[@name='frnd_btn']", "xpath:attributes"],
-        ["xpath=//div[@id='profile-head']/div[2]/form/input", "xpath:idRelative"],
+        ["id=friend-button", "id"],
+        ["name=-1", "name"],
+        ["css=#friend-button", "css:finder"],
+        ["xpath=//input[@id='friend-button']", "xpath:attributes"],
+        ["xpath=//div[@id='profile-head']/div[2]/input", "xpath:idRelative"],
         ["xpath=//input", "xpath:position"]
       ],
       "value": ""
     }, {
-      "id": "19a2c3d7-90d2-4ca7-80ec-a8fe6d947f25",
-      "comment": "",
-      "command": "waitForElementPresent",
-      "target": "name=frnd_btn",
-      "targets": [],
-      "value": "30000"
-    }, {
-      "id": "d157016f-509f-4f3a-b1cb-efaab76c3c83",
+      "id": "c6c077b6-100a-4c88-9e21-11f4a208870c",
       "comment": "",
       "command": "assertValue",
-      "target": "name=frnd_btn",
+      "target": "id=friend-button",
       "targets": [
-        ["name=frnd_btn", "name"],
-        ["css=form > .btn", "css:finder"],
-        ["xpath=//input[@name='frnd_btn']", "xpath:attributes"],
-        ["xpath=//div[@id='profile-head']/div[2]/form/input", "xpath:idRelative"],
+        ["id=friend-button", "id"],
+        ["name=0", "name"],
+        ["css=#friend-button", "css:finder"],
+        ["xpath=//input[@id='friend-button']", "xpath:attributes"],
+        ["xpath=//div[@id='profile-head']/div[2]/input", "xpath:idRelative"],
         ["xpath=//input", "xpath:position"]
       ],
       "value": "Cancel Request"
-    }, {
-      "id": "bd6beb75-c7d2-4b6a-bf15-8d827baaaec9",
-      "comment": "",
-      "command": "click",
-      "target": "linkText=LOG OUT",
-      "targets": [
-        ["linkText=LOG OUT", "linkText"],
-        ["css=li:nth-child(4) > a", "css:finder"],
-        ["xpath=//a[contains(text(),'LOG OUT')]", "xpath:link"],
-        ["xpath=//a[@href='http://localhost:8080/user/logout/']", "xpath:href"],
-        ["xpath=//li[4]/a", "xpath:position"],
-        ["xpath=//a[contains(.,'LOG OUT')]", "xpath:innerText"]
-      ],
-      "value": ""
     }]
   }, {
     "id": "2d6f603f-739d-44bd-b2d2-27ff6746cefc",
     "name": "7.10.03 - Prihvatanje zahteva za dodavanje prijatelja",
     "commands": [{
-      "id": "b441c1dc-6669-4548-8ebf-26e338dcac59",
-      "comment": "",
-      "command": "open",
-      "target": "/",
-      "targets": [],
-      "value": ""
-    }, {
-      "id": "61ca91e2-cbe9-42f9-abb6-5fd80cb51d38",
-      "comment": "",
-      "command": "click",
-      "target": "linkText=SIGN-IN",
-      "targets": [
-        ["linkText=SIGN-IN", "linkText"],
-        ["css=li:nth-child(4) > a", "css:finder"],
-        ["xpath=//a[contains(text(),'SIGN-IN')]", "xpath:link"],
-        ["xpath=//a[@href='http://localhost:8080/guest/login/']", "xpath:href"],
-        ["xpath=//li[4]/a", "xpath:position"],
-        ["xpath=//a[contains(.,'SIGN-IN')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "f5799f67-effa-429a-90c8-afca0953bcf2",
-      "comment": "",
-      "command": "type",
-      "target": "name=username",
-      "targets": [
-        ["name=username", "name"],
-        ["css=.full:nth-child(2)", "css:finder"],
-        ["xpath=//input[@name='username']", "xpath:attributes"],
-        ["xpath=//div[@id='short-main']/form/input", "xpath:idRelative"],
-        ["xpath=//input", "xpath:position"]
-      ],
-      "value": "hose"
-    }, {
-      "id": "6ce53519-1d91-4332-938b-dd18fc544a26",
-      "comment": "",
-      "command": "type",
-      "target": "name=password",
-      "targets": [
-        ["name=password", "name"],
-        ["css=.full:nth-child(4)", "css:finder"],
-        ["xpath=//input[@name='password']", "xpath:attributes"],
-        ["xpath=//div[@id='short-main']/form/input[2]", "xpath:idRelative"],
-        ["xpath=//input[2]", "xpath:position"]
-      ],
-      "value": "a"
-    }, {
-      "id": "4dae3960-d455-4560-82fc-6d135d0f040d",
-      "comment": "",
-      "command": "click",
-      "target": "css=.btn",
-      "targets": [
-        ["css=.btn", "css:finder"],
-        ["xpath=//input[@value='SIGN-IN']", "xpath:attributes"],
-        ["xpath=//div[@id='short-main']/form/input[3]", "xpath:idRelative"],
-        ["xpath=//input[3]", "xpath:position"]
-      ],
-      "value": ""
-    }, {
       "id": "ec470bfb-ddb4-454a-bbe9-0eef2c66f148",
       "comment": "",
       "command": "open",
-      "target": "/user/profile/6",
+      "target": "/user/profile/15",
       "targets": [],
       "value": ""
     }, {
-      "id": "12595f31-2ded-42a9-8ea3-611f939650ed",
-      "comment": "",
-      "command": "waitForElementPresent",
-      "target": "name=frnd_btn",
-      "targets": [],
-      "value": "30000"
-    }, {
-      "id": "7036c2e2-f7e3-4846-b23c-fac1575c1172",
+      "id": "1e43b5f5-c17b-41ca-9a6f-1b5def7d67ae",
       "comment": "",
       "command": "click",
-      "target": "name=frnd_btn",
+      "target": "id=friend-button",
       "targets": [
-        ["name=frnd_btn", "name"],
-        ["css=form > .btn", "css:finder"],
-        ["xpath=//input[@name='frnd_btn']", "xpath:attributes"],
-        ["xpath=//div[@id='profile-head']/div[2]/form/input", "xpath:idRelative"],
+        ["id=friend-button", "id"],
+        ["name=2", "name"],
+        ["css=#friend-button", "css:finder"],
+        ["xpath=//input[@id='friend-button']", "xpath:attributes"],
+        ["xpath=//div[@id='profile-head']/div[2]/input", "xpath:idRelative"],
         ["xpath=//input", "xpath:position"]
       ],
       "value": ""
     }, {
-      "id": "686052bd-a3a0-4ad0-bec9-fd76848634e4",
-      "comment": "",
-      "command": "waitForElementPresent",
-      "target": "name=frnd_btn",
-      "targets": [],
-      "value": "30000"
-    }, {
-      "id": "938495d4-29eb-4f74-8fc7-5c51f5060f08",
+      "id": "570e6a27-332e-46df-a32f-0da511c57bb4",
       "comment": "",
       "command": "assertValue",
-      "target": "name=frnd_btn",
+      "target": "id=friend-button",
       "targets": [
-        ["name=frnd_btn", "name"],
-        ["css=form > .btn", "css:finder"],
-        ["xpath=//input[@name='frnd_btn']", "xpath:attributes"],
-        ["xpath=//div[@id='profile-head']/div[2]/form/input", "xpath:idRelative"],
+        ["id=friend-button", "id"],
+        ["name=1", "name"],
+        ["css=#friend-button", "css:finder"],
+        ["xpath=//input[@id='friend-button']", "xpath:attributes"],
+        ["xpath=//div[@id='profile-head']/div[2]/input", "xpath:idRelative"],
         ["xpath=//input", "xpath:position"]
       ],
       "value": "Remove Friend"
-    }, {
-      "id": "5fe4e7ca-731c-44c3-8c51-a9ebe0ed7433",
-      "comment": "",
-      "command": "click",
-      "target": "linkText=LOG OUT",
-      "targets": [
-        ["linkText=LOG OUT", "linkText"],
-        ["css=li:nth-child(4) > a", "css:finder"],
-        ["xpath=//a[contains(text(),'LOG OUT')]", "xpath:link"],
-        ["xpath=//a[@href='http://localhost:8080/user/logout/']", "xpath:href"],
-        ["xpath=//li[4]/a", "xpath:position"],
-        ["xpath=//a[contains(.,'LOG OUT')]", "xpath:innerText"]
-      ],
-      "value": ""
     }]
   }, {
     "id": "0e20d071-443f-408b-b7f4-cb935ed7fb10",
     "name": "7.10.04 - Odbijanje zahteva za prijateljstvo",
     "commands": [{
-      "id": "5dd03749-7d06-4ed0-91aa-f29edfc76189",
+      "id": "77f058c2-113b-42fc-88d3-6d5cf76f8070",
       "comment": "",
       "command": "open",
-      "target": "/",
+      "target": "/user/profile/2",
       "targets": [],
       "value": ""
     }, {
-      "id": "e3397698-8240-41b0-9db0-4fb1031a0168",
+      "id": "fb54a435-768f-4bd2-8a13-5dbd49e9ef43",
       "comment": "",
       "command": "click",
-      "target": "linkText=SIGN-IN",
+      "target": "id=friend-button",
       "targets": [
-        ["linkText=SIGN-IN", "linkText"],
-        ["css=li:nth-child(4) > a", "css:finder"],
-        ["xpath=//a[contains(text(),'SIGN-IN')]", "xpath:link"],
-        ["xpath=//a[@href='http://localhost:8080/guest/login/']", "xpath:href"],
-        ["xpath=//li[4]/a", "xpath:position"],
-        ["xpath=//a[contains(.,'SIGN-IN')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "662da99d-7181-4744-b4b7-cac136766e11",
-      "comment": "",
-      "command": "type",
-      "target": "name=username",
-      "targets": [
-        ["name=username", "name"],
-        ["css=.full:nth-child(2)", "css:finder"],
-        ["xpath=//input[@name='username']", "xpath:attributes"],
-        ["xpath=//div[@id='short-main']/form/input", "xpath:idRelative"],
-        ["xpath=//input", "xpath:position"]
-      ],
-      "value": "hose"
-    }, {
-      "id": "1dd1914b-ab0b-4fe8-af79-16fd000f1d66",
-      "comment": "",
-      "command": "type",
-      "target": "name=password",
-      "targets": [
-        ["name=password", "name"],
-        ["css=.full:nth-child(4)", "css:finder"],
-        ["xpath=//input[@name='password']", "xpath:attributes"],
-        ["xpath=//div[@id='short-main']/form/input[2]", "xpath:idRelative"],
-        ["xpath=//input[2]", "xpath:position"]
-      ],
-      "value": "a"
-    }, {
-      "id": "191b1a65-f4da-449b-b137-923e59e88985",
-      "comment": "",
-      "command": "click",
-      "target": "css=.btn",
-      "targets": [
-        ["css=.btn", "css:finder"],
-        ["xpath=//input[@value='SIGN-IN']", "xpath:attributes"],
-        ["xpath=//div[@id='short-main']/form/input[3]", "xpath:idRelative"],
-        ["xpath=//input[3]", "xpath:position"]
-      ],
-      "value": ""
-    }, {
-      "id": "d892cd74-a28c-4017-864a-04e37087dfb7",
-      "comment": "",
-      "command": "open",
-      "target": "/user/profile/8",
-      "targets": [],
-      "value": ""
-    }, {
-      "id": "1c8eb861-7c26-4d27-a09d-199ca54a7901",
-      "comment": "",
-      "command": "waitForElementPresent",
-      "target": "name=frnd_btn",
-      "targets": [],
-      "value": "30000"
-    }, {
-      "id": "d87edd3c-3d95-42fc-a3dd-9fecfa43e8b2",
-      "comment": "",
-      "command": "click",
-      "target": "name=frnd_btn",
-      "targets": [
-        ["name=frnd_btn", "name"],
-        ["css=form > .btn", "css:finder"],
-        ["xpath=//input[@name='frnd_btn']", "xpath:attributes"],
-        ["xpath=//div[@id='profile-head']/div[2]/form/input", "xpath:idRelative"],
+        ["id=friend-button", "id"],
+        ["name=0", "name"],
+        ["css=#friend-button", "css:finder"],
+        ["xpath=//input[@id='friend-button']", "xpath:attributes"],
+        ["xpath=//div[@id='profile-head']/div[2]/input", "xpath:idRelative"],
         ["xpath=//input", "xpath:position"]
       ],
       "value": ""
     }, {
-      "id": "958e632a-d95c-43b9-aa91-a5e419119b52",
-      "comment": "",
-      "command": "waitForElementPresent",
-      "target": "name=frnd_btn",
-      "targets": [],
-      "value": "30000"
-    }, {
-      "id": "b4133ada-af05-4083-bd03-e26a9cffed6c",
+      "id": "bbd97f62-bb66-4111-9f45-246007dfd003",
       "comment": "",
       "command": "assertValue",
-      "target": "name=frnd_btn",
+      "target": "id=friend-button",
       "targets": [
-        ["name=frnd_btn", "name"],
-        ["css=form > .btn", "css:finder"],
-        ["xpath=//input[@name='frnd_btn']", "xpath:attributes"],
-        ["xpath=//div[@id='profile-head']/div[2]/form/input", "xpath:idRelative"],
+        ["id=friend-button", "id"],
+        ["name=-1", "name"],
+        ["css=#friend-button", "css:finder"],
+        ["xpath=//input[@id='friend-button']", "xpath:attributes"],
+        ["xpath=//div[@id='profile-head']/div[2]/input", "xpath:idRelative"],
         ["xpath=//input", "xpath:position"]
       ],
       "value": "Add Friend"
-    }, {
-      "id": "119d4def-8a83-42a1-b6c0-d3f8848fc257",
-      "comment": "",
-      "command": "click",
-      "target": "linkText=LOG OUT",
-      "targets": [
-        ["linkText=LOG OUT", "linkText"],
-        ["css=li:nth-child(4) > a", "css:finder"],
-        ["xpath=//a[contains(text(),'LOG OUT')]", "xpath:link"],
-        ["xpath=//a[@href='http://localhost:8080/user/logout/']", "xpath:href"],
-        ["xpath=//li[4]/a", "xpath:position"],
-        ["xpath=//a[contains(.,'LOG OUT')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }]
-  }, {
-    "id": "a973dc1f-2a4b-4594-b4f8-ff1e928a4369",
-    "name": "7.10.03 - Uklanjanje prijatelja",
-    "commands": [{
-      "id": "b5a22596-9f13-40c0-af2e-2aa15703c723",
-      "comment": "",
-      "command": "open",
-      "target": "/",
-      "targets": [],
-      "value": "Send Request"
-    }, {
-      "id": "370e2844-a8b3-4672-a399-991a83e6bfed",
-      "comment": "",
-      "command": "click",
-      "target": "linkText=SIGN-IN",
-      "targets": [
-        ["linkText=SIGN-IN", "linkText"],
-        ["css=li:nth-child(4) > a", "css:finder"],
-        ["xpath=//a[contains(text(),'SIGN-IN')]", "xpath:link"],
-        ["xpath=//a[@href='http://localhost:8080/guest/login/']", "xpath:href"],
-        ["xpath=//li[4]/a", "xpath:position"],
-        ["xpath=//a[contains(.,'SIGN-IN')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "557d01a6-38db-45c7-b3e6-bacf339ce029",
-      "comment": "",
-      "command": "type",
-      "target": "name=username",
-      "targets": [
-        ["name=username", "name"],
-        ["css=.full:nth-child(2)", "css:finder"],
-        ["xpath=//input[@name='username']", "xpath:attributes"],
-        ["xpath=//div[@id='short-main']/form/input", "xpath:idRelative"],
-        ["xpath=//input", "xpath:position"]
-      ],
-      "value": "hose"
-    }, {
-      "id": "877ada30-5127-41dc-b479-d6c5bd01593b",
-      "comment": "",
-      "command": "type",
-      "target": "name=password",
-      "targets": [
-        ["name=password", "name"],
-        ["css=.full:nth-child(4)", "css:finder"],
-        ["xpath=//input[@name='password']", "xpath:attributes"],
-        ["xpath=//div[@id='short-main']/form/input[2]", "xpath:idRelative"],
-        ["xpath=//input[2]", "xpath:position"]
-      ],
-      "value": "a"
-    }, {
-      "id": "84afbe74-e314-45d2-bf99-056b5b85b665",
-      "comment": "",
-      "command": "click",
-      "target": "css=.btn",
-      "targets": [
-        ["css=.btn", "css:finder"],
-        ["xpath=//input[@value='SIGN-IN']", "xpath:attributes"],
-        ["xpath=//div[@id='short-main']/form/input[3]", "xpath:idRelative"],
-        ["xpath=//input[3]", "xpath:position"]
-      ],
-      "value": ""
-    }, {
-      "id": "5c097301-8806-400c-9086-ebe7ca469562",
-      "comment": "",
-      "command": "open",
-      "target": "/user/profile/7",
-      "targets": [],
-      "value": ""
-    }, {
-      "id": "72cd2aa7-4386-434b-9387-736b06166089",
-      "comment": "",
-      "command": "waitForElementPresent",
-      "target": "name=frnd_btn",
-      "targets": [],
-      "value": "30000"
-    }, {
-      "id": "7aded622-e6ed-44d0-9e96-88ae783c024b",
-      "comment": "",
-      "command": "click",
-      "target": "name=frnd_btn",
-      "targets": [
-        ["name=frnd_btn", "name"],
-        ["css=form > .btn", "css:finder"],
-        ["xpath=//input[@name='frnd_btn']", "xpath:attributes"],
-        ["xpath=//div[@id='profile-head']/div[2]/form/input", "xpath:idRelative"],
-        ["xpath=//input", "xpath:position"]
-      ],
-      "value": ""
-    }, {
-      "id": "bbf4f380-4fc1-4b14-9512-e7a810a038d3",
-      "comment": "",
-      "command": "waitForElementPresent",
-      "target": "name=frnd_btn",
-      "targets": [],
-      "value": "30000"
-    }, {
-      "id": "ac296914-bc03-4688-93de-ce95a7dcea42",
-      "comment": "",
-      "command": "assertValue",
-      "target": "name=frnd_btn",
-      "targets": [
-        ["name=frnd_btn", "name"],
-        ["css=form > .btn", "css:finder"],
-        ["xpath=//input[@name='frnd_btn']", "xpath:attributes"],
-        ["xpath=//div[@id='profile-head']/div[2]/form/input", "xpath:idRelative"],
-        ["xpath=//input", "xpath:position"]
-      ],
-      "value": "Accept Request"
-    }, {
-      "id": "b29f7d8b-ad21-446b-90d9-40ab8f8ff6dd",
-      "comment": "",
-      "command": "click",
-      "target": "linkText=LOG OUT",
-      "targets": [
-        ["linkText=LOG OUT", "linkText"],
-        ["css=li:nth-child(4) > a", "css:finder"],
-        ["xpath=//a[contains(text(),'LOG OUT')]", "xpath:link"],
-        ["xpath=//a[@href='http://localhost:8080/user/logout/']", "xpath:href"],
-        ["xpath=//li[4]/a", "xpath:position"],
-        ["xpath=//a[contains(.,'LOG OUT')]", "xpath:innerText"]
-      ],
-      "value": ""
     }]
   }, {
     "id": "4f1b8b16-64cf-41db-b2dd-62e15f714992",
@@ -1024,14 +645,60 @@
       ],
       "value": ""
     }]
+  }, {
+    "id": "ebbaa06c-25d1-44f8-a46f-58ed1003eb41",
+    "name": "7.10.03 - Uklanjanje prijatelja",
+    "commands": [{
+      "id": "e82bf26c-f76e-43c6-b597-0805a72a0e45",
+      "comment": "",
+      "command": "open",
+      "target": "/user/profile/2",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "014474b7-e83f-48e3-af00-c8e2a2188d85",
+      "comment": "",
+      "command": "click",
+      "target": "id=friend-button",
+      "targets": [
+        ["id=friend-button", "id"],
+        ["name=2", "name"],
+        ["css=#friend-button", "css:finder"],
+        ["xpath=//input[@id='friend-button']", "xpath:attributes"],
+        ["xpath=//div[@id='profile-head']/div[2]/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "a997273a-2e53-4a13-88c7-161097d6c8ab",
+      "comment": "",
+      "command": "assertValue",
+      "target": "id=friend-button",
+      "targets": [
+        ["id=friend-button", "id"],
+        ["name=1", "name"],
+        ["css=#friend-button", "css:finder"],
+        ["xpath=//input[@id='friend-button']", "xpath:attributes"],
+        ["xpath=//div[@id='profile-head']/div[2]/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": "Add Friend"
+    }]
   }],
   "suites": [{
-    "id": "e6c41dd9-0a76-4bfe-b746-5bca439e7ac8",
-    "name": "Default Suite",
+    "id": "77afa84a-65d9-4100-a0a5-50ba53db8a1b",
+    "name": "Prijatelji",
     "persistSession": false,
     "parallel": false,
     "timeout": 300,
-    "tests": ["44ad6415-83d6-4307-953e-16d56bfba9d0"]
+    "tests": ["ebbaa06c-25d1-44f8-a46f-58ed1003eb41", "2d6f603f-739d-44bd-b2d2-27ff6746cefc", "44ad6415-83d6-4307-953e-16d56bfba9d0", "0e20d071-443f-408b-b7f4-cb935ed7fb10"]
+  }, {
+    "id": "43b1ab9c-2593-4295-aad9-4e86b82da985",
+    "name": "Kolekcija",
+    "persistSession": false,
+    "parallel": false,
+    "timeout": 300,
+    "tests": ["e0bfe5c5-0919-4215-ad9e-13a68988ecb6", "4f1b8b16-64cf-41db-b2dd-62e15f714992", "22699658-c222-453d-8e68-536867e629d9", "4188ddbc-4539-4f64-ae0b-23e1ff215fa5"]
   }],
   "urls": ["http://localhost:8080/"],
   "plugins": []
