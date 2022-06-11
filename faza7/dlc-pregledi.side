@@ -1,0 +1,1246 @@
+{
+  "id": "b774fa54-5cb8-499c-8471-86b4aa890459",
+  "version": "2.0",
+  "name": "FLUDJ testiranje",
+  "url": "http://localhost:8080",
+  "tests": [{
+    "id": "994e5f86-7c94-4943-ba59-6f093874c426",
+    "name": "Pregled proizvoda SSU",
+    "commands": [{
+      "id": "38a185c8-7c83-4b56-88fb-68a837da377e",
+      "comment": "",
+      "command": "open",
+      "target": "/user",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "be4dd7a0-b32d-4c6d-a028-e484a346b197",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "1936x1056",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "4cd61981-1798-4d95-9e38-a2e24d6bf69e",
+      "comment": "",
+      "command": "storeWindowHandle",
+      "target": "root",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "757cb00f-7778-4639-8113-a93d238de4bb",
+      "comment": "",
+      "command": "selectWindow",
+      "target": "handle=${root}",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "139a0d62-78a8-4e58-b3d3-efd794fdd794",
+      "comment": "",
+      "command": "click",
+      "target": "css=a:nth-child(2) > div > span",
+      "targets": [
+        ["css=a:nth-child(2) > div > span", "css:finder"],
+        ["xpath=//div[@id='hero']/div[2]/a/div/span", "xpath:idRelative"],
+        ["xpath=//a/div/span", "xpath:position"],
+        ["xpath=//span[contains(.,'Forza Horizon 5')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "860cf87b-2c94-4759-b82c-6f8696f3643c",
+      "comment": "",
+      "command": "assertText",
+      "target": "css=div:nth-child(1) h2",
+      "targets": [],
+      "value": "About"
+    }]
+  }, {
+    "id": "77b787fd-1baa-417d-8e4a-cc52a457bd13",
+    "name": "Pregled recenzija SSU",
+    "commands": [{
+      "id": "025befbd-8dab-43b1-ae33-803833bc6809",
+      "comment": "",
+      "command": "open",
+      "target": "/",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "712c6f59-aac6-4ef1-80a4-9a7b98333c43",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "1936x1056",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "7311b98d-e861-42e7-9eeb-3b84fcb1ba25",
+      "comment": "",
+      "command": "click",
+      "target": "css=a:nth-child(2) > div > span",
+      "targets": [
+        ["css=a:nth-child(2) > div > span", "css:finder"],
+        ["xpath=//div[@id='hero']/div[2]/a/div/span", "xpath:idRelative"],
+        ["xpath=//a/div/span", "xpath:position"],
+        ["xpath=//span[contains(.,'Pit People')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "1dbd6a1d-8874-4b40-abae-054d7b64a4ce",
+      "comment": "",
+      "command": "assertValue",
+      "target": "css=form:nth-child(4) > .btn",
+      "targets": [
+        ["css=form:nth-child(4) > .btn", "css:finder"],
+        ["xpath=//input[@value='BUY']", "xpath:attributes"],
+        ["xpath=//div[@id='main']/div[2]/div[2]/form/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": "BUY"
+    }]
+  }, {
+    "id": "fad7e29a-2d57-4715-9bbb-1e9d7a9c3ffd",
+    "name": "Pregled proizvoda koje prijatelj poseduje SSU",
+    "commands": [{
+      "id": "a05c5cf0-a7ac-4e9e-ad4c-f0d5eb222498",
+      "comment": "",
+      "command": "open",
+      "target": "/user",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "c766604b-c4fe-4eca-8c7f-9be7b3508cb4",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "1900x1020",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "6b7eb4df-534d-44f4-9c69-2650dc2974ed",
+      "comment": "",
+      "command": "click",
+      "target": "linkText=cviki",
+      "targets": [
+        ["linkText=cviki", "linkText"],
+        ["css=li:nth-child(3) > a", "css:finder"],
+        ["xpath=//a[contains(text(),'cviki')]", "xpath:link"],
+        ["xpath=//a[@href='http://localhost:8080/user/profile/']", "xpath:href"],
+        ["xpath=//li[3]/a", "xpath:position"],
+        ["xpath=//a[contains(.,'cviki')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "ab41260f-e337-4fd1-a225-ff392722c5fc",
+      "comment": "",
+      "command": "click",
+      "target": "css=a:nth-child(1) > div > span",
+      "targets": [
+        ["css=a:nth-child(1) > div > span", "css:finder"],
+        ["xpath=//div[@id='main']/div[2]/div[2]/div/a/div/span", "xpath:idRelative"],
+        ["xpath=//div/span", "xpath:position"],
+        ["xpath=//span[contains(.,'swat')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "c3a5232e-4480-414a-8db9-179f799b7765",
+      "comment": "",
+      "command": "assertText",
+      "target": "css=div:nth-child(1) > h2:nth-child(1)",
+      "targets": [],
+      "value": "Products"
+    }]
+  }, {
+    "id": "8398f3eb-9071-4613-a0bc-67211b91b8d9",
+    "name": "Pregled recenzija koje je ostavio prijatelj SSU",
+    "commands": [{
+      "id": "b2d02806-3147-4c6e-abad-113b9e963a80",
+      "comment": "",
+      "command": "open",
+      "target": "/user",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "d3f8613e-6bed-4893-a6f2-14b71cf72a76",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "1900x1020",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "5782e1f4-570e-430a-bc1c-2923dfc6c10b",
+      "comment": "",
+      "command": "click",
+      "target": "linkText=cviki",
+      "targets": [
+        ["linkText=cviki", "linkText"],
+        ["css=li:nth-child(3) > a", "css:finder"],
+        ["xpath=//a[contains(text(),'cviki')]", "xpath:link"],
+        ["xpath=//a[@href='http://localhost:8080/user/profile/']", "xpath:href"],
+        ["xpath=//li[3]/a", "xpath:position"],
+        ["xpath=//a[contains(.,'cviki')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "93416756-e2a8-40a8-9c5e-d91ffc4529d8",
+      "comment": "",
+      "command": "click",
+      "target": "css=a:nth-child(1) > div > span",
+      "targets": [
+        ["css=a:nth-child(1) > div > span", "css:finder"],
+        ["xpath=//div[@id='main']/div[2]/div[2]/div/a/div/span", "xpath:idRelative"],
+        ["xpath=//div/span", "xpath:position"],
+        ["xpath=//span[contains(.,'swat')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "63225aed-5a0a-4df3-b72b-b939477061ae",
+      "comment": "",
+      "command": "assertText",
+      "target": "css=h2:nth-child(3)",
+      "targets": [],
+      "value": "Featured Review"
+    }]
+  }, {
+    "id": "b41bbcab-e5ae-44c0-baad-7b5e965c1ef6",
+    "name": "DLC - prikaz",
+    "commands": [{
+      "id": "2d756aa5-396c-466f-806d-7604f14eba4f",
+      "comment": "",
+      "command": "open",
+      "target": "/user/product/34",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "2fda0042-9b4f-43c6-bcaa-abb1aaecdbd4",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "1900x1020",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "d2b5fc58-8b5d-464e-b77e-5a3241e11db5",
+      "comment": "",
+      "command": "assertText",
+      "target": "css=a > div > span",
+      "targets": [],
+      "value": "This product is a DLC for Rust."
+    }]
+  }, {
+    "id": "59bfa19f-537f-442e-ac6b-03a9bc4bbf0d",
+    "name": "DLC - kupovina sa base game - uspesno",
+    "commands": [{
+      "id": "e2dc0199-800d-4dfe-8d4c-59f3468b4f2c",
+      "comment": "",
+      "command": "open",
+      "target": "/user/product/34",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "b85010e3-4549-4f1f-b0df-88c088178287",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "1900x1020",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "3904099b-9b8b-498f-af55-fb611047459f",
+      "comment": "",
+      "command": "click",
+      "target": "css=div:nth-child(2) .btn",
+      "targets": [
+        ["css=.btn", "css:finder"],
+        ["xpath=//input[@value='BUY']", "xpath:attributes"],
+        ["xpath=//div[@id='main']/div[2]/div[2]/form/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "69d7ec3a-b4bd-493f-b43f-69bc1719e874",
+      "comment": "",
+      "command": "click",
+      "target": "css=.btn",
+      "targets": [
+        ["css=.btn", "css:finder"],
+        ["xpath=//input[@value='Confirm Purchase']", "xpath:attributes"],
+        ["xpath=//div[@id='short-main']/form/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "782ae5c7-02d0-42bc-aa34-069f2dd73706",
+      "comment": "",
+      "command": "assertValue",
+      "target": "css=div:nth-child(2) .btn",
+      "targets": [
+        ["css=div:nth-child(2) .btn", "css:finder"],
+        ["xpath=//input[@value='BUY']", "xpath:attributes"],
+        ["xpath=//div[@id='main']/div[2]/div[2]/form/input", "xpath:idRelative"],
+        ["xpath=//div[2]/form/input", "xpath:position"]
+      ],
+      "value": "BUY"
+    }]
+  }, {
+    "id": "b538dde6-e00d-4360-bf25-f35939ccce39",
+    "name": "DLC - postavljanje",
+    "commands": [{
+      "id": "670c2439-87ab-4b7f-aa81-0c1ce356f131",
+      "comment": "",
+      "command": "open",
+      "target": "/user",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "596438c1-f316-4209-ac2e-46604b92bca7",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "1900x1020",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "bcb7c62d-ab72-4131-9bfa-3a7652a3e24a",
+      "comment": "",
+      "command": "click",
+      "target": "css=a:nth-child(1) > div",
+      "targets": [
+        ["css=a:nth-child(1) > div", "css:finder"],
+        ["xpath=//a/div", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "0f5c07a7-e7ef-4ada-a232-e8609e62e1ed",
+      "comment": "",
+      "command": "click",
+      "target": "name=name",
+      "targets": [
+        ["name=name", "name"],
+        ["css=div:nth-child(2) > .full:nth-child(2)", "css:finder"],
+        ["xpath=//input[@name='name']", "xpath:attributes"],
+        ["xpath=//div[@id='main']/div[2]/input", "xpath:idRelative"],
+        ["xpath=//div[2]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "e2e6465d-d6a2-4495-8a00-934aec422284",
+      "comment": "",
+      "command": "type",
+      "target": "name=name",
+      "targets": [
+        ["name=name", "name"],
+        ["css=div:nth-child(2) > .full:nth-child(2)", "css:finder"],
+        ["xpath=//input[@name='name']", "xpath:attributes"],
+        ["xpath=//div[@id='main']/div[2]/input", "xpath:idRelative"],
+        ["xpath=//div[2]/input", "xpath:position"]
+      ],
+      "value": "DLC"
+    }, {
+      "id": "aeb9f85f-0684-4ea0-84a3-0fdbf9b6ab53",
+      "comment": "",
+      "command": "type",
+      "target": "name=genres",
+      "targets": [
+        ["name=genres", "name"],
+        ["css=div:nth-child(2) > .full:nth-child(3)", "css:finder"],
+        ["xpath=//input[@name='genres']", "xpath:attributes"],
+        ["xpath=//div[@id='main']/div[2]/input[2]", "xpath:idRelative"],
+        ["xpath=//input[2]", "xpath:position"]
+      ],
+      "value": "Action Puzzle"
+    }, {
+      "id": "d7aaf160-4430-4ae5-8c8e-7ca91e58271e",
+      "comment": "",
+      "command": "click",
+      "target": "name=price",
+      "targets": [
+        ["name=price", "name"],
+        ["css=div:nth-child(2) > .full:nth-child(4)", "css:finder"],
+        ["xpath=//input[@name='price']", "xpath:attributes"],
+        ["xpath=//div[@id='main']/div[2]/input[3]", "xpath:idRelative"],
+        ["xpath=//input[3]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "65e5a4e0-0ab0-4566-b72c-caf1c49bc68c",
+      "comment": "",
+      "command": "type",
+      "target": "name=price",
+      "targets": [
+        ["name=price", "name"],
+        ["css=div:nth-child(2) > .full:nth-child(4)", "css:finder"],
+        ["xpath=//input[@name='price']", "xpath:attributes"],
+        ["xpath=//div[@id='main']/div[2]/input[3]", "xpath:idRelative"],
+        ["xpath=//input[3]", "xpath:position"]
+      ],
+      "value": "20"
+    }, {
+      "id": "5256b2cc-836a-4e34-a323-15c5b276e6a0",
+      "comment": "",
+      "command": "click",
+      "target": "name=developer",
+      "targets": [
+        ["name=developer", "name"],
+        ["css=div:nth-child(3) > .full:nth-child(2)", "css:finder"],
+        ["xpath=//input[@name='developer']", "xpath:attributes"],
+        ["xpath=//div[@id='main']/div[3]/input", "xpath:idRelative"],
+        ["xpath=//div[3]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "89d7e7a0-8290-438b-bf48-fa594a0ef480",
+      "comment": "",
+      "command": "type",
+      "target": "name=developer",
+      "targets": [
+        ["name=developer", "name"],
+        ["css=div:nth-child(3) > .full:nth-child(2)", "css:finder"],
+        ["xpath=//input[@name='developer']", "xpath:attributes"],
+        ["xpath=//div[@id='main']/div[3]/input", "xpath:idRelative"],
+        ["xpath=//div[3]/input", "xpath:position"]
+      ],
+      "value": "DLC"
+    }, {
+      "id": "81726ab6-f9be-45c1-aaea-d994a0e32beb",
+      "comment": "",
+      "command": "type",
+      "target": "name=publisher",
+      "targets": [
+        ["name=publisher", "name"],
+        ["css=div:nth-child(3) > .full:nth-child(3)", "css:finder"],
+        ["xpath=//input[@name='publisher']", "xpath:attributes"],
+        ["xpath=//div[@id='main']/div[3]/input[2]", "xpath:idRelative"],
+        ["xpath=//div[3]/input[2]", "xpath:position"]
+      ],
+      "value": "DLC"
+    }, {
+      "id": "f694f21e-4a58-4809-b745-520405f54319",
+      "comment": "",
+      "command": "type",
+      "target": "name=release_date",
+      "targets": [
+        ["name=release_date", "name"],
+        ["css=div:nth-child(3) > .full:nth-child(4)", "css:finder"],
+        ["xpath=//input[@name='release_date']", "xpath:attributes"],
+        ["xpath=//div[@id='main']/div[3]/input[3]", "xpath:idRelative"],
+        ["xpath=//div[3]/input[3]", "xpath:position"]
+      ],
+      "value": "2020-06-06"
+    }, {
+      "id": "93410b1a-c61d-411c-8280-a7b39000e360",
+      "comment": "",
+      "command": "click",
+      "target": "name=os_min",
+      "targets": [
+        ["name=os_min", "name"],
+        ["css=div:nth-child(4) > .full:nth-child(2)", "css:finder"],
+        ["xpath=//input[@name='os_min']", "xpath:attributes"],
+        ["xpath=//div[@id='main']/div[4]/input", "xpath:idRelative"],
+        ["xpath=//div[4]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "24e40034-3417-4558-9309-a25acd2baf1a",
+      "comment": "",
+      "command": "type",
+      "target": "name=os_min",
+      "targets": [
+        ["name=os_min", "name"],
+        ["css=div:nth-child(4) > .full:nth-child(2)", "css:finder"],
+        ["xpath=//input[@name='os_min']", "xpath:attributes"],
+        ["xpath=//div[@id='main']/div[4]/input", "xpath:idRelative"],
+        ["xpath=//div[4]/input", "xpath:position"]
+      ],
+      "value": "Windows 7"
+    }, {
+      "id": "d3ad3c0a-0312-458d-bda7-58286d0a3ee7",
+      "comment": "",
+      "command": "click",
+      "target": "name=os_rec",
+      "targets": [
+        ["name=os_rec", "name"],
+        ["css=div:nth-child(5) > .full:nth-child(2)", "css:finder"],
+        ["xpath=//input[@name='os_rec']", "xpath:attributes"],
+        ["xpath=//div[@id='main']/div[5]/input", "xpath:idRelative"],
+        ["xpath=//div[5]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "79fc0fd4-b50a-4f02-a5f3-eceb40a46a27",
+      "comment": "",
+      "command": "type",
+      "target": "name=os_rec",
+      "targets": [
+        ["name=os_rec", "name"],
+        ["css=div:nth-child(5) > .full:nth-child(2)", "css:finder"],
+        ["xpath=//input[@name='os_rec']", "xpath:attributes"],
+        ["xpath=//div[@id='main']/div[5]/input", "xpath:idRelative"],
+        ["xpath=//div[5]/input", "xpath:position"]
+      ],
+      "value": "Windows 8"
+    }, {
+      "id": "2ef0b3e7-be2f-42ea-bbba-727d964580ff",
+      "comment": "",
+      "command": "click",
+      "target": "name=cpu_min",
+      "targets": [
+        ["name=cpu_min", "name"],
+        ["css=div:nth-child(4) > .full:nth-child(3)", "css:finder"],
+        ["xpath=//input[@name='cpu_min']", "xpath:attributes"],
+        ["xpath=//div[@id='main']/div[4]/input[2]", "xpath:idRelative"],
+        ["xpath=//div[4]/input[2]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "6583f81a-d2c2-44f6-9fc3-1ec75296f319",
+      "comment": "",
+      "command": "type",
+      "target": "name=cpu_min",
+      "targets": [
+        ["name=cpu_min", "name"],
+        ["css=div:nth-child(4) > .full:nth-child(3)", "css:finder"],
+        ["xpath=//input[@name='cpu_min']", "xpath:attributes"],
+        ["xpath=//div[@id='main']/div[4]/input[2]", "xpath:idRelative"],
+        ["xpath=//div[4]/input[2]", "xpath:position"]
+      ],
+      "value": "Intel Core i7-3770"
+    }, {
+      "id": "5663b28e-2b55-4b3f-9e49-b68ffef2536d",
+      "comment": "",
+      "command": "click",
+      "target": "name=cpu_rec",
+      "targets": [
+        ["name=cpu_rec", "name"],
+        ["css=div:nth-child(5) > .full:nth-child(3)", "css:finder"],
+        ["xpath=//input[@name='cpu_rec']", "xpath:attributes"],
+        ["xpath=//div[@id='main']/div[5]/input[2]", "xpath:idRelative"],
+        ["xpath=//div[5]/input[2]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "b8d59eba-141b-40ce-92f8-7efd50336c0a",
+      "comment": "",
+      "command": "type",
+      "target": "name=cpu_rec",
+      "targets": [
+        ["name=cpu_rec", "name"],
+        ["css=div:nth-child(5) > .full:nth-child(3)", "css:finder"],
+        ["xpath=//input[@name='cpu_rec']", "xpath:attributes"],
+        ["xpath=//div[@id='main']/div[5]/input[2]", "xpath:idRelative"],
+        ["xpath=//div[5]/input[2]", "xpath:position"]
+      ],
+      "value": "Pentium 4 processor"
+    }, {
+      "id": "c7b23018-0e96-403b-ad72-872c684c3980",
+      "comment": "",
+      "command": "click",
+      "target": "name=gpu_min",
+      "targets": [
+        ["name=gpu_min", "name"],
+        ["css=div:nth-child(4) > .full:nth-child(4)", "css:finder"],
+        ["xpath=//input[@name='gpu_min']", "xpath:attributes"],
+        ["xpath=//div[@id='main']/div[4]/input[3]", "xpath:idRelative"],
+        ["xpath=//div[4]/input[3]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "de0114c2-fe15-445f-a169-230bee31db89",
+      "comment": "",
+      "command": "type",
+      "target": "name=gpu_min",
+      "targets": [
+        ["name=gpu_min", "name"],
+        ["css=div:nth-child(4) > .full:nth-child(4)", "css:finder"],
+        ["xpath=//input[@name='gpu_min']", "xpath:attributes"],
+        ["xpath=//div[@id='main']/div[4]/input[3]", "xpath:idRelative"],
+        ["xpath=//div[4]/input[3]", "xpath:position"]
+      ],
+      "value": "NVIDIA GeForce 6800"
+    }, {
+      "id": "65692939-7ff5-42e0-8eba-81e076610803",
+      "comment": "",
+      "command": "click",
+      "target": "name=gpu_rec",
+      "targets": [
+        ["name=gpu_rec", "name"],
+        ["css=div:nth-child(5) > .full:nth-child(4)", "css:finder"],
+        ["xpath=//input[@name='gpu_rec']", "xpath:attributes"],
+        ["xpath=//div[@id='main']/div[5]/input[3]", "xpath:idRelative"],
+        ["xpath=//div[5]/input[3]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "b892e030-b560-44e2-a7f5-ab8b92f51188",
+      "comment": "",
+      "command": "type",
+      "target": "name=gpu_rec",
+      "targets": [
+        ["name=gpu_rec", "name"],
+        ["css=div:nth-child(5) > .full:nth-child(4)", "css:finder"],
+        ["xpath=//input[@name='gpu_rec']", "xpath:attributes"],
+        ["xpath=//div[@id='main']/div[5]/input[3]", "xpath:idRelative"],
+        ["xpath=//div[5]/input[3]", "xpath:position"]
+      ],
+      "value": "NVIDIA GeForce GTX 970 4GB"
+    }, {
+      "id": "21e1405c-4554-42da-bef2-ef504856f91c",
+      "comment": "",
+      "command": "click",
+      "target": "name=ram_min",
+      "targets": [
+        ["name=ram_min", "name"],
+        ["css=div:nth-child(4) > .full:nth-child(5)", "css:finder"],
+        ["xpath=//input[@name='ram_min']", "xpath:attributes"],
+        ["xpath=//div[@id='main']/div[4]/input[4]", "xpath:idRelative"],
+        ["xpath=//input[4]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "7d1bb815-b228-4c08-9dc6-af146429722d",
+      "comment": "",
+      "command": "type",
+      "target": "name=ram_min",
+      "targets": [
+        ["name=ram_min", "name"],
+        ["css=div:nth-child(4) > .full:nth-child(5)", "css:finder"],
+        ["xpath=//input[@name='ram_min']", "xpath:attributes"],
+        ["xpath=//div[@id='main']/div[4]/input[4]", "xpath:idRelative"],
+        ["xpath=//input[4]", "xpath:position"]
+      ],
+      "value": "6GB"
+    }, {
+      "id": "6a4e8780-184b-4bee-90ec-bd6c412e4401",
+      "comment": "",
+      "command": "click",
+      "target": "name=ram_rec",
+      "targets": [
+        ["name=ram_rec", "name"],
+        ["css=div:nth-child(5) > .full:nth-child(5)", "css:finder"],
+        ["xpath=//input[@name='ram_rec']", "xpath:attributes"],
+        ["xpath=//div[@id='main']/div[5]/input[4]", "xpath:idRelative"],
+        ["xpath=//div[5]/input[4]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "2e383584-7665-4ccd-b390-a1cf724195cc",
+      "comment": "",
+      "command": "type",
+      "target": "name=ram_rec",
+      "targets": [
+        ["name=ram_rec", "name"],
+        ["css=div:nth-child(5) > .full:nth-child(5)", "css:finder"],
+        ["xpath=//input[@name='ram_rec']", "xpath:attributes"],
+        ["xpath=//div[@id='main']/div[5]/input[4]", "xpath:idRelative"],
+        ["xpath=//div[5]/input[4]", "xpath:position"]
+      ],
+      "value": "4GB "
+    }, {
+      "id": "a8aa4b68-bf25-4345-9d8c-94db9c073bf5",
+      "comment": "",
+      "command": "click",
+      "target": "name=mem_rec",
+      "targets": [
+        ["name=mem_rec", "name"],
+        ["css=div:nth-child(5) > .full:nth-child(6)", "css:finder"],
+        ["xpath=//input[@name='mem_rec']", "xpath:attributes"],
+        ["xpath=//div[@id='main']/div[5]/input[5]", "xpath:idRelative"],
+        ["xpath=//div[5]/input[5]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "1ca879a0-5991-45ec-992c-77b84dd468af",
+      "comment": "",
+      "command": "click",
+      "target": "css=#main > div:nth-child(5)",
+      "targets": [
+        ["css=#main > div:nth-child(5)", "css:finder"],
+        ["xpath=//div[@id='main']/div[5]", "xpath:idRelative"],
+        ["xpath=//div[5]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "cf94c797-7418-4bf9-bdbf-b7d247bed01c",
+      "comment": "",
+      "command": "click",
+      "target": "name=mem_rec",
+      "targets": [
+        ["name=mem_rec", "name"],
+        ["css=div:nth-child(5) > .full:nth-child(6)", "css:finder"],
+        ["xpath=//input[@name='mem_rec']", "xpath:attributes"],
+        ["xpath=//div[@id='main']/div[5]/input[5]", "xpath:idRelative"],
+        ["xpath=//div[5]/input[5]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "8d5774bb-d51d-4e3a-af4a-29bb52bfb2fb",
+      "comment": "",
+      "command": "type",
+      "target": "name=mem_rec",
+      "targets": [
+        ["name=mem_rec", "name"],
+        ["css=div:nth-child(5) > .full:nth-child(6)", "css:finder"],
+        ["xpath=//input[@name='mem_rec']", "xpath:attributes"],
+        ["xpath=//div[@id='main']/div[5]/input[5]", "xpath:idRelative"],
+        ["xpath=//div[5]/input[5]", "xpath:position"]
+      ],
+      "value": "1.8GB"
+    }, {
+      "id": "7ef787e7-8ac7-412f-b5cd-42b44359fbda",
+      "comment": "",
+      "command": "click",
+      "target": "name=mem_min",
+      "targets": [
+        ["name=mem_min", "name"],
+        ["css=div:nth-child(4) > .full:nth-child(6)", "css:finder"],
+        ["xpath=//input[@name='mem_min']", "xpath:attributes"],
+        ["xpath=//div[@id='main']/div[4]/input[5]", "xpath:idRelative"],
+        ["xpath=//input[5]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "22cb1384-9af7-4f56-ae4a-0769a5b8f997",
+      "comment": "",
+      "command": "type",
+      "target": "name=mem_min",
+      "targets": [
+        ["name=mem_min", "name"],
+        ["css=div:nth-child(4) > .full:nth-child(6)", "css:finder"],
+        ["xpath=//input[@name='mem_min']", "xpath:attributes"],
+        ["xpath=//div[@id='main']/div[4]/input[5]", "xpath:idRelative"],
+        ["xpath=//input[5]", "xpath:position"]
+      ],
+      "value": "105GB"
+    }, {
+      "id": "8158f51e-1e66-47c5-99d9-7cb52e504982",
+      "comment": "",
+      "command": "click",
+      "target": "name=base_game",
+      "targets": [
+        ["name=base_game", "name"],
+        ["css=div:nth-child(6) > .full", "css:finder"],
+        ["xpath=//input[@name='base_game']", "xpath:attributes"],
+        ["xpath=//div[@id='main']/div[6]/input", "xpath:idRelative"],
+        ["xpath=//div[6]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "29fbb04d-346a-453c-a498-4a0087004724",
+      "comment": "",
+      "command": "type",
+      "target": "name=base_game",
+      "targets": [
+        ["name=base_game", "name"],
+        ["css=div:nth-child(6) > .full", "css:finder"],
+        ["xpath=//input[@name='base_game']", "xpath:attributes"],
+        ["xpath=//div[@id='main']/div[6]/input", "xpath:idRelative"],
+        ["xpath=//div[6]/input", "xpath:position"]
+      ],
+      "value": "1"
+    }, {
+      "id": "a841cb16-42e1-4960-8585-d8fa15ff291b",
+      "comment": "",
+      "command": "click",
+      "target": "name=description",
+      "targets": [
+        ["name=description", "name"],
+        ["css=textarea", "css:finder"],
+        ["xpath=//textarea[@name='description']", "xpath:attributes"],
+        ["xpath=//div[@id='main']/div[8]/textarea", "xpath:idRelative"],
+        ["xpath=//textarea", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "5c1f81bb-d89b-4904-9b77-b01cf3e56a4f",
+      "comment": "",
+      "command": "type",
+      "target": "name=description",
+      "targets": [
+        ["name=description", "name"],
+        ["css=textarea", "css:finder"],
+        ["xpath=//textarea[@name='description']", "xpath:attributes"],
+        ["xpath=//div[@id='main']/div[8]/textarea", "xpath:idRelative"],
+        ["xpath=//textarea", "xpath:position"]
+      ],
+      "value": "DLC"
+    }, {
+      "id": "531f01f9-c9c4-402c-b6ea-85bbe921a1dd",
+      "comment": "",
+      "command": "click",
+      "target": "name=banner",
+      "targets": [
+        ["name=banner", "name"],
+        ["css=div:nth-child(7) > input:nth-child(2)", "css:finder"],
+        ["xpath=//input[@name='banner']", "xpath:attributes"],
+        ["xpath=//div[@id='main']/div[7]/input", "xpath:idRelative"],
+        ["xpath=//div[7]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "84a8fe3c-678c-41c1-9241-e6f28c1d7c16",
+      "comment": "",
+      "command": "type",
+      "target": "name=banner",
+      "targets": [
+        ["name=banner", "name"],
+        ["css=div:nth-child(7) > input:nth-child(2)", "css:finder"],
+        ["xpath=//input[@name='banner']", "xpath:attributes"],
+        ["xpath=//div[@id='main']/div[7]/input", "xpath:idRelative"],
+        ["xpath=//div[7]/input", "xpath:position"]
+      ],
+      "value": "C:\\wamp64\\www\\FLUDJ-Net\\faza7\\assets\\test.jpg"
+    }, {
+      "id": "4385b3d5-8576-4e00-9863-ef88b35c5f02",
+      "comment": "",
+      "command": "click",
+      "target": "name=capsule",
+      "targets": [
+        ["name=capsule", "name"],
+        ["css=div:nth-child(7) > input:nth-child(3)", "css:finder"],
+        ["xpath=//input[@name='capsule']", "xpath:attributes"],
+        ["xpath=//div[@id='main']/div[7]/input[2]", "xpath:idRelative"],
+        ["xpath=//div[7]/input[2]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "6e712ec8-1002-42d6-8e42-b9c2bd9dfb6f",
+      "comment": "",
+      "command": "type",
+      "target": "name=capsule",
+      "targets": [
+        ["name=capsule", "name"],
+        ["css=div:nth-child(7) > input:nth-child(3)", "css:finder"],
+        ["xpath=//input[@name='capsule']", "xpath:attributes"],
+        ["xpath=//div[@id='main']/div[7]/input[2]", "xpath:idRelative"],
+        ["xpath=//div[7]/input[2]", "xpath:position"]
+      ],
+      "value": "C:\\wamp64\\www\\FLUDJ-Net\\faza7\\assets\\test.jpg"
+    }, {
+      "id": "2f565e6e-09eb-476c-9ccf-7fcee17cf23b",
+      "comment": "",
+      "command": "click",
+      "target": "name=background",
+      "targets": [
+        ["name=background", "name"],
+        ["css=div:nth-child(7) > input:nth-child(4)", "css:finder"],
+        ["xpath=//input[@name='background']", "xpath:attributes"],
+        ["xpath=//div[@id='main']/div[7]/input[3]", "xpath:idRelative"],
+        ["xpath=//div[7]/input[3]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "5f3a5c83-4b1b-4eec-991d-d3da1e1a2dce",
+      "comment": "",
+      "command": "type",
+      "target": "name=background",
+      "targets": [
+        ["name=background", "name"],
+        ["css=div:nth-child(7) > input:nth-child(4)", "css:finder"],
+        ["xpath=//input[@name='background']", "xpath:attributes"],
+        ["xpath=//div[@id='main']/div[7]/input[3]", "xpath:idRelative"],
+        ["xpath=//div[7]/input[3]", "xpath:position"]
+      ],
+      "value": "C:\\wamp64\\www\\FLUDJ-Net\\faza7\\assets\\test.png"
+    }, {
+      "id": "175080d9-499c-4bc0-abb8-bf78ccc6bcf2",
+      "comment": "",
+      "command": "click",
+      "target": "name=video",
+      "targets": [
+        ["name=video", "name"],
+        ["css=div:nth-child(7) > input:nth-child(5)", "css:finder"],
+        ["xpath=//input[@name='video']", "xpath:attributes"],
+        ["xpath=//div[@id='main']/div[7]/input[4]", "xpath:idRelative"],
+        ["xpath=//div[7]/input[4]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "2bc277b9-ea61-4c3e-8f85-f0d4f60d1039",
+      "comment": "",
+      "command": "type",
+      "target": "name=video",
+      "targets": [
+        ["name=video", "name"],
+        ["css=div:nth-child(7) > input:nth-child(5)", "css:finder"],
+        ["xpath=//input[@name='video']", "xpath:attributes"],
+        ["xpath=//div[@id='main']/div[7]/input[4]", "xpath:idRelative"],
+        ["xpath=//div[7]/input[4]", "xpath:position"]
+      ],
+      "value": "C:\\wamp64\\www\\FLUDJ-Net\\faza7\\assets\\test.webm"
+    }, {
+      "id": "452bc751-0b24-4132-adc7-058676f7a953",
+      "comment": "",
+      "command": "click",
+      "target": "name=ss1",
+      "targets": [
+        ["name=ss1", "name"],
+        ["css=div:nth-child(7) > input:nth-child(6)", "css:finder"],
+        ["xpath=//input[@name='ss1']", "xpath:attributes"],
+        ["xpath=//div[@id='main']/div[7]/input[5]", "xpath:idRelative"],
+        ["xpath=//div[7]/input[5]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "8fff2699-f5b3-4e3e-b808-90ab7a427cf4",
+      "comment": "",
+      "command": "type",
+      "target": "name=ss1",
+      "targets": [
+        ["name=ss1", "name"],
+        ["css=div:nth-child(7) > input:nth-child(6)", "css:finder"],
+        ["xpath=//input[@name='ss1']", "xpath:attributes"],
+        ["xpath=//div[@id='main']/div[7]/input[5]", "xpath:idRelative"],
+        ["xpath=//div[7]/input[5]", "xpath:position"]
+      ],
+      "value": "C:\\wamp64\\www\\FLUDJ-Net\\faza7\\assets\\test.jpg"
+    }, {
+      "id": "ccfa338e-2e3f-41f4-a1ea-def702a1bb94",
+      "comment": "",
+      "command": "click",
+      "target": "name=ss2",
+      "targets": [
+        ["name=ss2", "name"],
+        ["css=input:nth-child(7)", "css:finder"],
+        ["xpath=//input[@name='ss2']", "xpath:attributes"],
+        ["xpath=//div[@id='main']/div[7]/input[6]", "xpath:idRelative"],
+        ["xpath=//input[6]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "d68d2a8b-272e-4a40-a968-0d90df609eb2",
+      "comment": "",
+      "command": "type",
+      "target": "name=ss2",
+      "targets": [
+        ["name=ss2", "name"],
+        ["css=input:nth-child(7)", "css:finder"],
+        ["xpath=//input[@name='ss2']", "xpath:attributes"],
+        ["xpath=//div[@id='main']/div[7]/input[6]", "xpath:idRelative"],
+        ["xpath=//input[6]", "xpath:position"]
+      ],
+      "value": "C:\\wamp64\\www\\FLUDJ-Net\\faza7\\assets\\test.jpg"
+    }, {
+      "id": "73a340b8-4943-40c0-aba6-9335f57c8bb3",
+      "comment": "",
+      "command": "click",
+      "target": "name=ss3",
+      "targets": [
+        ["name=ss3", "name"],
+        ["css=input:nth-child(8)", "css:finder"],
+        ["xpath=//input[@name='ss3']", "xpath:attributes"],
+        ["xpath=//div[@id='main']/div[7]/input[7]", "xpath:idRelative"],
+        ["xpath=//input[7]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "8de34e1d-5415-4df3-9b93-8b1f57148118",
+      "comment": "",
+      "command": "type",
+      "target": "name=ss3",
+      "targets": [
+        ["name=ss3", "name"],
+        ["css=input:nth-child(8)", "css:finder"],
+        ["xpath=//input[@name='ss3']", "xpath:attributes"],
+        ["xpath=//div[@id='main']/div[7]/input[7]", "xpath:idRelative"],
+        ["xpath=//input[7]", "xpath:position"]
+      ],
+      "value": "C:\\wamp64\\www\\FLUDJ-Net\\faza7\\assets\\test.jpg"
+    }, {
+      "id": "52ae1c7b-508e-46e6-9070-cc45c35b3334",
+      "comment": "",
+      "command": "click",
+      "target": "css=.btn",
+      "targets": [
+        ["css=.btn", "css:finder"],
+        ["xpath=//input[@value='SUBMIT']", "xpath:attributes"],
+        ["xpath=//div[@id='main']/input", "xpath:idRelative"],
+        ["xpath=//form/div/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "5c60dac7-5478-48f5-a26b-fb8e2b9360e3",
+      "comment": "",
+      "command": "assertValue",
+      "target": "css=.btn",
+      "targets": [
+        ["css=.btn", "css:finder"],
+        ["xpath=//input[@value='BUY']", "xpath:attributes"],
+        ["xpath=//div[@id='main']/div[2]/div[2]/form/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": "BUY"
+    }]
+  }, {
+    "id": "8ede34ef-cd4c-4a49-bf79-7ee9d68a9cce",
+    "name": "DLC - kupovina vec ima - neuspesno",
+    "commands": [{
+      "id": "33497eb9-92f4-4a2a-b662-455650980d7d",
+      "comment": "",
+      "command": "open",
+      "target": "/user/product/34",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "bd8400d3-8707-4319-ba47-87bc840cb951",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "1900x1020",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "c4f42eb3-9375-4fdf-b421-41bcd3ee381c",
+      "comment": "",
+      "command": "click",
+      "target": "css=div:nth-child(2) .btn",
+      "targets": [
+        ["css=div:nth-child(2) .btn", "css:finder"],
+        ["xpath=//input[@value='BUY']", "xpath:attributes"],
+        ["xpath=//div[@id='main']/div[2]/div[2]/form/input", "xpath:idRelative"],
+        ["xpath=//div[2]/form/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "b10230a5-a0b3-457f-9a7d-68aafe5c6feb",
+      "comment": "",
+      "command": "click",
+      "target": "css=.btn",
+      "targets": [
+        ["css=.btn", "css:finder"],
+        ["xpath=//input[@value='Confirm Purchase']", "xpath:attributes"],
+        ["xpath=//div[@id='short-main']/form/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "43c4a3fb-1401-4576-ab62-26503db39001",
+      "comment": "",
+      "command": "verifyText",
+      "target": "id=msg",
+      "targets": [
+        ["id=msg", "id"],
+        ["css=#msg", "css:finder"],
+        ["xpath=//span[@id='msg']", "xpath:attributes"],
+        ["xpath=//div[@id='short-main']/form/span", "xpath:idRelative"],
+        ["xpath=//form/span", "xpath:position"],
+        ["xpath=//span[contains(.,'User already owns this product.')]", "xpath:innerText"]
+      ],
+      "value": "User already owns this product."
+    }]
+  }, {
+    "id": "8ead2420-542c-4271-85a2-3c2c45b3d127",
+    "name": "DLC - kupovina ali nema para - neuspesno",
+    "commands": [{
+      "id": "98f5042a-59eb-4554-afac-d5488c712c75",
+      "comment": "",
+      "command": "open",
+      "target": "/user/product/34",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "004440d4-bd8f-4d85-94cb-58edc1d136fa",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "1900x1020",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "d71ed709-3a9c-423e-b612-270d645ec1ff",
+      "comment": "",
+      "command": "click",
+      "target": "css=.btn",
+      "targets": [
+        ["css=.btn", "css:finder"],
+        ["xpath=//input[@value='BUY']", "xpath:attributes"],
+        ["xpath=//div[@id='main']/div[2]/div[2]/form/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "f17ad972-7234-4434-bb4c-502417c930ab",
+      "comment": "",
+      "command": "click",
+      "target": "css=.btn",
+      "targets": [
+        ["css=.btn", "css:finder"],
+        ["xpath=//input[@value='Confirm Purchase']", "xpath:attributes"],
+        ["xpath=//div[@id='short-main']/form/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "5f15f098-a387-47ca-9712-3248aec9dce2",
+      "comment": "",
+      "command": "verifyText",
+      "target": "id=msg",
+      "targets": [
+        ["id=msg", "id"],
+        ["css=#msg", "css:finder"],
+        ["xpath=//span[@id='msg']", "xpath:attributes"],
+        ["xpath=//div[@id='short-main']/form/span", "xpath:idRelative"],
+        ["xpath=//form/span", "xpath:position"],
+        ["xpath=//span[contains(.,'You have insufficient funds.')]", "xpath:innerText"]
+      ],
+      "value": "You have insufficient funds."
+    }]
+  }, {
+    "id": "59fb25af-d1d0-4d9f-a064-21e3e0607868",
+    "name": "DLC - kupovina ali nema base game",
+    "commands": [{
+      "id": "de7949a2-457c-41a0-b81f-cc94f8af0295",
+      "comment": "",
+      "command": "open",
+      "target": "/user/product/34",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "794f624a-cb7f-4d97-b8c1-d5b3e788603a",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "1900x1020",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "fcfb197b-64d7-4b35-8ac5-33347fbc2e91",
+      "comment": "",
+      "command": "click",
+      "target": "css=.btn",
+      "targets": [
+        ["css=.btn", "css:finder"],
+        ["xpath=//input[@value='BUY']", "xpath:attributes"],
+        ["xpath=//div[@id='main']/div[2]/div[2]/form/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "a46b1154-6f65-4607-b021-c1f350a19d27",
+      "comment": "",
+      "command": "click",
+      "target": "css=.btn",
+      "targets": [
+        ["css=.btn", "css:finder"],
+        ["xpath=//input[@value='Confirm Purchase']", "xpath:attributes"],
+        ["xpath=//div[@id='short-main']/form/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "b3a94099-bdd9-4945-a55f-7c7022b25b72",
+      "comment": "",
+      "command": "assertText",
+      "target": "id=msg",
+      "targets": [
+        ["id=msg", "id"],
+        ["css=#msg", "css:finder"],
+        ["xpath=//span[@id='msg']", "xpath:attributes"],
+        ["xpath=//div[@id='short-main']/form/span", "xpath:idRelative"],
+        ["xpath=//form/span", "xpath:position"]
+      ],
+      "value": "User doesn't own the base product."
+    }]
+  }, {
+    "id": "80b74678-6575-4bc3-95ff-47e57aa4d5b0",
+    "name": "Personalizovani profil SSU",
+    "commands": [{
+      "id": "e800c764-edea-4ce8-a77f-2eebede991e3",
+      "comment": "",
+      "command": "open",
+      "target": "/user",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "460f9eb6-996e-46ac-a6b5-d271eeb021ac",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "1900x1020",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "6a5ab7b8-6e1f-4cb9-ab06-6c81cf82e058",
+      "comment": "",
+      "command": "click",
+      "target": "linkText=luka",
+      "targets": [
+        ["linkText=luka", "linkText"],
+        ["css=li:nth-child(3) > a", "css:finder"],
+        ["xpath=//a[contains(text(),'luka')]", "xpath:link"],
+        ["xpath=//a[@href='http://localhost:8080/user/profile/']", "xpath:href"],
+        ["xpath=//li[3]/a", "xpath:position"],
+        ["xpath=//a[contains(.,'luka')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "1ed97c95-1e25-4224-bfec-ebf64ed77446",
+      "comment": "",
+      "command": "click",
+      "target": "css=.btn",
+      "targets": [
+        ["css=.btn", "css:finder"],
+        ["xpath=//input[@value='Edit Profile']", "xpath:attributes"],
+        ["xpath=//div[@id='profile-head']/div[2]/a/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "04b12a67-0a1d-442c-88f9-777d5297b867",
+      "comment": "",
+      "command": "click",
+      "target": "css=body",
+      "targets": [
+        ["css=body", "css:finder"],
+        ["xpath=//body", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "4ee74991-d9fe-41de-9d52-520e874bd41a",
+      "comment": "",
+      "command": "type",
+      "target": "name=description",
+      "targets": [
+        ["name=description", "name"],
+        ["css=textarea", "css:finder"],
+        ["xpath=//textarea[@name='description']", "xpath:attributes"],
+        ["xpath=//div[@id='main']/form/textarea", "xpath:idRelative"],
+        ["xpath=//textarea", "xpath:position"]
+      ],
+      "value": "Test Description"
+    }, {
+      "id": "2331e8c3-3274-441e-955c-3f2f0dfd955d",
+      "comment": "",
+      "command": "click",
+      "target": "name=editbtn",
+      "targets": [
+        ["name=editbtn", "name"],
+        ["css=.btn", "css:finder"],
+        ["xpath=//input[@name='editbtn']", "xpath:attributes"],
+        ["xpath=//div[@id='main']/form/input[4]", "xpath:idRelative"],
+        ["xpath=//input[4]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "0c633988-cc9a-43d1-bac7-60a25eef72c6",
+      "comment": "",
+      "command": "assertText",
+      "target": "id=desc",
+      "targets": [
+        ["id=msg", "id"],
+        ["css=#msg", "css:finder"],
+        ["xpath=//span[@id='msg']", "xpath:attributes"],
+        ["xpath=//div[@id='profile-head']/div/span", "xpath:idRelative"],
+        ["xpath=//span", "xpath:position"],
+        ["xpath=//span[contains(.,'Test Description')]", "xpath:innerText"]
+      ],
+      "value": "Test Description"
+    }]
+  }],
+  "suites": [{
+    "id": "62c4c697-f963-4dd2-800d-ef016dfd327c",
+    "name": "Default Suite",
+    "persistSession": false,
+    "parallel": false,
+    "timeout": 300,
+    "tests": ["994e5f86-7c94-4943-ba59-6f093874c426"]
+  }, {
+    "id": "c6237226-e673-49b8-b4e3-b2b395f8699d",
+    "name": "DLC SSU",
+    "persistSession": false,
+    "parallel": false,
+    "timeout": 300,
+    "tests": ["b41bbcab-e5ae-44c0-baad-7b5e965c1ef6", "b538dde6-e00d-4360-bf25-f35939ccce39", "59bfa19f-537f-442e-ac6b-03a9bc4bbf0d", "8ede34ef-cd4c-4a49-bf79-7ee9d68a9cce", "8ead2420-542c-4271-85a2-3c2c45b3d127", "59fb25af-d1d0-4d9f-a064-21e3e0607868"]
+  }],
+  "urls": ["http://localhost:8080/"],
+  "plugins": []
+}

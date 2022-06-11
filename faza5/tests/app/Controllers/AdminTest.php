@@ -50,6 +50,7 @@ class AdminTest extends CIUnitTestCase {
         $result = $this->test()->call('post', 'admin/setdiscountsubmit/12', ['discount' => $myDiscount, 'expDate'  => '2022-06-14',]);
         $product = (new ProductM())->find('12');
         $this->assertEquals($product->discount, $myDiscount);
+        (new ProductM())->where('id', 12)->set(['discount' => 0])->update();
     }
 
     public function test_setDiscountSubmitWrongDiscount() {
@@ -64,6 +65,7 @@ class AdminTest extends CIUnitTestCase {
         $this->assertTrue($result->see("Set Discount"));
     }
 
+    /*
     public function test_deleteUser() {
         $result = $this->test()->get('admin/deleteUser/15');
         $user = (new UserM())->find('15');
@@ -80,15 +82,38 @@ class AdminTest extends CIUnitTestCase {
         $result = $this->test()->get('admin/deleteBundle/2');
         $prod = (new BundleM())->find('2');
         $this->assertNull($prod);
+
+        //DISCOUNT PRODUCT 12
+        //DELETED USER 15
+        //DELETED PRODUCT 33
+        //DELETED BUNDLE 2
+        $db      = \Config\Database::connect();
+        $builder = $db->table('user');
+        $data = [
+        'id' => '15',
+        'username' => 'mimi7',
+        'password' => 'mimi7',
+        'admin_rights' => 0,
+        'balance' => 40.00,
+        'review_ban' => 0,
+        'description' => 'User has not set a description.',
+        'real_name' => 'Mihajlo',
+        'nickname' => 'mimi7',
+        'featured_review' => NULL,
+        'points' => 400,
+        'overflow' => 0];
+        $builder->insert($data);
+        (new UserM())->where('username','mimi7')->set(['id' => 15]);
+        $builder = $db->table('product');
     }
 
-    // public function test_deleteReview() {
-    //     $result=$this->test()->get('admin/DeleteReviewAdminSubmit/12/17');
-    //     $res=(new OwnershipM())->asArray()->where('id_product', '12')->where('id_user','17')->findAll();
-    //     if(!$res) $this->assertNull($res[0]['text']);
-    //     else {
-    //         $this->assertNull($res);
-    //     }
-    // }   
-
+    public function test_deleteReview() {
+        $result=$this->test()->get('admin/DeleteReviewAdminSubmit/12/17');
+        $res=(new OwnershipM())->asArray()->where('id_product', '12')->where('id_user','17')->findAll();
+        if(!$res) $this->assertNull($res[0]['text']);
+        else {
+            $this->assertNull($res);
+        }
+    }   
+    */
 }

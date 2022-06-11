@@ -1,10 +1,8 @@
 <?php
 
 /**
- * @author
- *  Djordje Stanojevic 2019/0288
+ * @author 
  *  Uros Loncar 2019/0691
- *  Luka Cvijan 2019/0154
  *  Fedja Mladenovic 2019/0613
  * 
  * Opis: Kontroler za gosta
@@ -34,9 +32,9 @@ class Guest extends BaseController {
         if (!$this->validate(['username' => 'required', 'password' => 'required']))
             return $this->show('login', ['errors' => $this->validator->getErrors()]);
 
-        $user = (new UserM())->where('username', $this->request->getVar('username'))->first();
+        $user = (new UserM())->where('username', $this->request->getPost('username'))->first();
 
-        if ($user == null || $user->password != $this->request->getVar('password'))
+        if ($user == null || $user->password != $this->request->getPost('password'))
             return $this->login('Wrong username or password!');
 
         $this->session->set('user_id', $user->id);

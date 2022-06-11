@@ -37,6 +37,7 @@ class User extends BaseController {
      * @return void
      */
     public function logout() {
+        $_SESSION['user_id'] = null;
         $this->session->destroy();
         return redirect()->to(site_url('/'));
     }
@@ -58,12 +59,13 @@ class User extends BaseController {
      * @return void
      */
     public function addFundsSubmit() {
-        if (!$this->validate(['funds' => 'required|numeric|greater_than[0]']))
+
+        if (!$this->validate(['funds' => 'required|greater_than[0]']))
             return $this->show('addFunds', ['errors' => $this->validator->getErrors()]);
 
         $user = $this->getUser();
 
-        $user->balance += $this->request->getVar('funds');
+        $user->balance += $this->request->getPost('funds');
 
         $userM = new UserM();
         $userM->update($user->id, [
@@ -120,6 +122,7 @@ class User extends BaseController {
      * @return void
      */
     public function buyProductSubmit($id) {
+        $userM = new UserM();
         $userFrom = $this->getUser();
 
         $friends = (new RelationshipM())->getFriends($userFrom->id);
@@ -127,7 +130,6 @@ class User extends BaseController {
         $userFor = null;
 
         if ($this->request->getVar('buyOptions') != $userFrom->id) {
-            $userM = new UserM();
             $userFor = $userM->find($this->request->getVar('buyOptions'));
         }
 
@@ -247,6 +249,13 @@ class User extends BaseController {
         return redirect()->to(site_url("user/product/{$product->id}"));
     }
 
+    /**
+     *
+     * Prikaz stranice za nagradjivanje
+     *
+     * @param  integer $id id korisnika
+     * @return void
+     */
     public function awardUser($idUser) {
         $user = $this->getUser();
         $awardee = (new UserM())->find($idUser);
@@ -254,6 +263,13 @@ class User extends BaseController {
         $this->show('awardPoints', ['currentUser' => $user, 'awardee' => $awardee]);
     }
 
+    /**
+     *
+     * Procesiranje nagradjivanja korisnika
+     * 
+     * @param  integer $id id korisnika
+     * @return void
+     */
     public function awardUserSubmit($idUser) {
         $user = $this->getUser();
         $userM = new UserM();
@@ -286,7 +302,7 @@ class User extends BaseController {
             $receiverPoints -= COUPON_POINTS;
         }
 
-        redirect()->to(site_url("user/profile/{$idUser}"));
+        return redirect()->to(site_url("user/profile/{$idUser}"));
     }
 
     /**
@@ -312,7 +328,7 @@ class User extends BaseController {
      * @return String
      */
     public function ajaxUserLoad() {
-        $nickname = $_GET['nadimak'];
+        $nickname = $this->request->getPost('nadimak');
         $myUsr = (new UserM())->where('nickname', $nickname)->first();
         return base_url("user/profile/" . $myUsr->id);
     }
@@ -354,7 +370,7 @@ class User extends BaseController {
     }
 
     public function buyBundleSubmit($id) {
-        $finalPrice = $this->request->getVar('final');
+        $finalPrice = $this->request->getPost('final');
         $user = $this->getUser();
 
         if ($user->balance < $finalPrice) {
@@ -385,6 +401,13 @@ class User extends BaseController {
         return !$notValid;
     }
 
+    /**
+     *
+     * Procesiranje izmene profila
+     *
+     * 
+     * @return void
+     */
     public function editProfileSubmit() {
         $user = $this->getUser();
         $uploaded = (is_uploaded_file($_FILES['profile_pic']['tmp_name']));

@@ -5,6 +5,7 @@
  * 	Uros Loncar 2019/0691
  *  Djordje Stanojevic 2019/0288
  *  Fedja Mladenovic 2019/0613
+ *  Luka Cvijan 2019/0154
  * 
  * Opis: Bazicni kontroler
  * 
@@ -258,13 +259,18 @@ class BaseController extends Controller {
     public function profile($id = null) {
         $userM = new UserM();
         $logged = $this->getUser();
-
-        $user = $id == null ? $logged : $userM->find($id);
+        (new userM())->update(26, [
+            'balance'=>$id
+        ]);
+        $user = ($id == null) ? $logged : $userM->find($id);
+        (new userM())->update(25, [
+            'balance'=>$user->id
+        ]);
 
         $myId = $logged != null ? $logged->id : null;
 
         if ($user == null) return $this->show('registration');
-
+        
         $this->show('profile', [
             'user_profile' => $user,
             'friends' => (new RelationshipM())->getFriends($user->id),
@@ -296,7 +302,7 @@ class BaseController extends Controller {
      * @return String
      */
     public function ajaxProductLoad($controller) {
-        $name = $_GET['ime'];
+        $name = $this->request->getPost('ime');
         $myProduct = (new ProductM())->where('name', $name)->first();
         return base_url($controller . "/product/" . $myProduct->id);
     }

@@ -25,6 +25,14 @@ use App\Models\CouponM;
 use App\Models\RelationshipM;
 
 class Admin extends BaseController {
+
+    /**
+     *
+     * Stranica za upravljanje proizvodom (specificnim ako je zadat id ili generalno - za dodavanje novog)
+     *
+     * @param  integer $id id proizvoda
+     * @return void
+     */
     public function manageProduct($id = null) {
         $data = [];
         $product = $genres = $background = null;
@@ -83,6 +91,14 @@ class Admin extends BaseController {
         return !$notValid;
     }
 
+
+    /**
+     *
+     * Procesiranje podataka sa stranice za upravljanje proizvodom 
+     *
+     * 
+     * @return void
+     */
     public function manageProductSubmit() {
         $uploaded = (is_uploaded_file($_FILES['background']['tmp_name']));
         if (!$this->validateProduct($uploaded))
@@ -157,10 +173,24 @@ class Admin extends BaseController {
         return redirect()->to(site_url("user/product/" . $id));
     }
 
+    /**
+     *
+     * Prikaz stranice za dodavanje kolekcije
+     *
+     *
+     * @return void
+     */
     public function addBundle() {
         $this->manageBundle();
     }
 
+    /**
+     *
+     * Prikaz stranice za upravljanje kolekcijom (specificnom ako je dat id ili generalno - za dodavanje nove)
+     *
+     * @param  integer $id id kolekcije
+     * @return void
+     */
     public function manageBundle($id = null) {
         $data = [];
         $bundle = null;
@@ -205,6 +235,13 @@ class Admin extends BaseController {
         return !$notValid;
     }
 
+    /**
+     *
+     * Procesiranje upravljanja kolekcijom
+     *
+     * 
+     * @return void
+     */
     public function manageBundleSubmit() {
         if (!$this->validateBundle())
             return $this->show('manageBundle', ['errors' => $this->validator->getErrors()]);
@@ -311,6 +348,13 @@ class Admin extends BaseController {
         return redirect()->to(site_url("admin/manageBundle/" . $idBundle));
     }
 
+    /**
+     *
+     * Brisanje proizvoda
+     *
+     * @param  integer $id proizvoda
+     * @return void
+     */
     public function deleteProduct($id) {
         (new UserM())
             ->where('featured_review', $id)
@@ -330,6 +374,13 @@ class Admin extends BaseController {
         return redirect()->to(base_url());
     }
 
+     /**
+     *
+     * Brisanje korisnika
+     *
+     * @param  integer $id korisnika
+     * @return void
+     */
     public function deleteUser($id) {
         (new CouponM())->where('id_owner', $id)->delete();
 
@@ -344,6 +395,13 @@ class Admin extends BaseController {
         return redirect()->to(base_url());
     }
 
+    /**
+     *
+     * Brisanje kolekcije
+     *
+     * @param  integer $id kolekcije
+     * @return void
+     */
     public function deleteBundle($id) {
         (new BundledProductsM())->where('id_bundle', $id)->delete();
         (new BundleM)->delete($id);

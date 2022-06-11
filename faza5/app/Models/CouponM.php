@@ -120,7 +120,7 @@ class CouponM extends Model {
     public static function awardCoupon($idUser) {
         $products = (new ProductM())->getDiscoveryProducts($idUser);
         $products = array_values(array_filter($products, function ($p) use (&$idUser) {
-            $c = CouponM::couponWorth($idUser, $p['id']);
+            $c = CouponM::couponWorth($idUser, $p->id);
             return ($c < MAX_COUPON_DISCOUNT);
         })); // lambda filtrira sve proizvode za koje postoji max kupon, a array values vraća ključeve da kreću od 0
 
@@ -129,7 +129,7 @@ class CouponM extends Model {
             return false;
 
         $choice = $products[rand(0, $cnt - 1)];
-        CouponM::upgradeCoupon($idUser, $choice['id']);
+        CouponM::upgradeCoupon($idUser, $choice->id);
         return true;
     }
 
@@ -144,7 +144,8 @@ class CouponM extends Model {
         $points = (int)($spent * POINTS_PRODUCT);
 
         $userM = new UserM();
-        $currentPoints = $userM->points + $points;
+        $user = $userM->find($idUser);
+        $currentPoints = $user->points + $points;
 
         $userM->update($idUser, [
             'points' => $currentPoints
