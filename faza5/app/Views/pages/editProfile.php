@@ -22,7 +22,7 @@ $us = (new UserM())->where('id', $user->id)->first();
 
 <div id="main" style="margin: 100px auto; width: 325px; padding: 15px; border-radius: 9px;">
     <?php if (!empty($errors)) : ?>
-        <div style='color:red;'>
+        <div class="error">
             <?php foreach ($errors as $field => $error) : ?>
                 <p><?= $error ?></p>
             <?php endforeach ?>

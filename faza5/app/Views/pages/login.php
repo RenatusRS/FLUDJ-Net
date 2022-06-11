@@ -12,7 +12,7 @@ Opis: Stranica za logovanje u sistem
 <title>Login</title>
 
 <div id="short-main">
-    <form name='loginForm' action="<?= site_url("Guest/loginSubmit") ?>" method="POST">
+    <form name='loginForm' action="<?= site_url("guest/loginSubmit") ?>" method="POST">
         <span class="input-label">Username</span>
         <input type="text" name="username" class="full" value="<?= set_value('username') ?>" />
         <?php

@@ -52,14 +52,14 @@ Opis: Header template
                 </a>
             <?php } ?>
             <?php if (isset($user_profile) && $user != $user_profile) { ?>
-                <div id="admin-promote" class="not-selectable" style="cursor: pointer;">
+                <div id="admin-promote" class="not-selectable pointer">
                     <?php if ($user_profile->admin_rights) { ?>
                         <i class="bi bi-chevron-double-down"></i><br />Demote Admin
                     <?php } else { ?>
                         <i class="bi bi-chevron-double-up"></i><br />Promote Admin
                     <?php } ?>
                 </div>
-                <div id="admin-ban" class="not-selectable" style="cursor: pointer;">
+                <div id="admin-ban" class="not-selectable pointer">
                     <?php if (!$user_profile->review_ban) { ?>
                         <i class=" bi bi-slash-circle"></i><br />Review Ban
                     <?php } else { ?>
