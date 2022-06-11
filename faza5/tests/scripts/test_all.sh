@@ -1,9 +1,7 @@
 #!/bin/sh
 
-MODELS="tests/app/Models"
-CONTROLLERS="tests/app/Controllers"
-PHPUNIT="./vendor/bin/phpunit"
 cd "$(dirname "$(readlink -f "$0")")"
+source ./env.sh
 
 usage() {
     cat << EOF
@@ -32,17 +30,16 @@ while getopts ":mcah" opt; do
 done
 
 
-cd "../../"
-echo $PWD
+cd $FAZA_5
 
 if [ $M ]; then
-    for file in $MODELS/*.php; do
+    for file in $MODEL_TESTS/*.php; do
         $PHPUNIT $file || exit
     done
 fi
 
 if [ $C ]; then
-    for file in $CONTROLLERS/*.php; do
+    for file in $CONTROLLER_TESTS/*.php; do
         $PHPUNIT $file || exit
     done
 fi
