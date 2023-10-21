@@ -1,9 +1,6 @@
 <?php
 
 /**
- * @author
- * Uros Loncar 2019/0691
- * 
  * Opis: Filter za /guest/ stranice
  * 
  * @version 1.0

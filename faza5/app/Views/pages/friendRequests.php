@@ -1,8 +1,4 @@
 <!--
-Autori:
-    Uros Loncar 2019/0691
-	Djordje Stanojevic 2019/0288
-
 Opis: Stranica za pregled zahteva za prijateljstvo, uz mogucnost prihvatanja i odbijanja dolazecih
 i ponistenja od poslatog zahteva
 

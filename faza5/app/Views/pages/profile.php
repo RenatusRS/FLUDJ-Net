@@ -1,8 +1,4 @@
 <!--
-Autori:
-	Djordje Stanojevic 2019/0288
-	Uros Loncar 2019/0691
-	
 Opis: Stranica profila korisnika, sa ispisanom listom prijatelja (sopstveni profil ili tudji)
 Ako je tudji profil - mogucnost dodavanja, uklanjanja, odbijanja i prihvatanja zahteva za prijatelja
 

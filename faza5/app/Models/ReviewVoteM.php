@@ -1,9 +1,6 @@
 <?php
 
 /**
- * @author
- * Luka Cvijan 2019/0154
- * 
  * Opis: Model za glasanje na recenzijama
  * 
  * @version 1.0

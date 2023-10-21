@@ -1,7 +1,4 @@
 <!--
-Autori:
-	Uros Loncar 2019/0691
-	
 Opis: Header template
 
 @version 1.1

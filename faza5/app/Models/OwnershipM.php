@@ -1,10 +1,6 @@
 <?php
 
 /**
- * @author
- * Uros Loncar 2019/0691
- * Fedja Mladenovic 2019/0613
- * 
  * Opis: Model za recenzije i posedovanje produkta
  * 
  * @version 1.0

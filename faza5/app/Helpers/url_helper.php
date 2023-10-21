@@ -1,9 +1,6 @@
 <?php
 
 /**
- * @author
- * Uros Loncar 2019/0691
- * 
  * Opis: Pomocnik za dohvatanje asseta
  * 
  * @version 1.0

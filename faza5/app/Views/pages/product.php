@@ -1,9 +1,4 @@
 <!--
-Autori:
-    Uros Loncar 2019/0691
-	Djordje Stanojevic 2019/0288
-    Luka Cvijan 2019/0154
-	
 Opis: Stranica za prikaz produkta
 
 @version 1.1

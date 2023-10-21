@@ -1,8 +1,4 @@
 <!--
-Autori:
-	Djordje Stanojevic 2019/0288
-	Uros Loncar 2019/0691
-
 Opis: Stranica za podesavanje podataka na svom profilu
 
 @version 1.1

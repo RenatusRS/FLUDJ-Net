@@ -1,11 +1,6 @@
 <?php
 
 /**
- * @author
- * 	Uros Loncar 2019/0691
- *  Luka Cvijan 2019/01548
- *  Fedja Mladenovic 2019/0613
- * 
  * Opis: Bazicni kontroler
  * 
  * @version 1.3

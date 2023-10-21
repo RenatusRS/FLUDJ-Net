@@ -1,7 +1,4 @@
-<!--
-Autori:
-	Uros Loncar 2019/0691
-	
+<!--	
 Opis: Stranica za prikaz kupona
 
 @version 1.1

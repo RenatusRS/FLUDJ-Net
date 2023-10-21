@@ -1,8 +1,4 @@
 <!--
-Autori:
-		Uros Loncar 2019/0691
-		Luka Cvijan 2019/0154
-	
 Opis: Stranica za postavljanje popusta
 
 @version 1.1

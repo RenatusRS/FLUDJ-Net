@@ -1,9 +1,6 @@
 <?php
 
 /**
- * @author
- * Fedja Mladenovic 2019/0613
- * 
  * Opis: Model za produkte u bundlu
  * 
  * @version 1.0

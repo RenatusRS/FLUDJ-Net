@@ -1,8 +1,4 @@
 <!--
-Autori:
-    Uros Loncar 2019/0691
-    Djordje Stanojevic 2019/0288
-	
 Opis: Indeksna stranica
 
 @version 1.1

@@ -1,10 +1,6 @@
 <?php
 
 /**
- * @author 
- *  Uros Loncar 2019/0691
- *  Fedja Mladenovic 2019/0613
- * 
  * Opis: Kontroler za gosta
  * 
  * @version 1.3

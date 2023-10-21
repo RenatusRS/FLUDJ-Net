@@ -1,8 +1,4 @@
 <!-- 
-Autori:
-    Luka Cvijan 2019/0154
-    Uros Loncar 2019/0691
-	
 Opis: Stranica za kupovinu proizvoda
 
 @version 1.1

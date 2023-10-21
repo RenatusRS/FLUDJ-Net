@@ -1,7 +1,4 @@
 <!--
-Autori:
-	Uros Loncar 2019/0691
-	
 Opis: Template koji se ucitava na svakoj stranici
 
 @version 1.1

@@ -1,10 +1,6 @@
 <?php
 
 /**
- * @author
- * Djorđe Stanojević 2019/0288
- * Luka Cvijan       2019/0154
- *
  * Opis: Model za veze izmedju korisnika
  *
  * @version 1.0
